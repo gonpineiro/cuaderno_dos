@@ -29,15 +29,7 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function store(StoreProductRequest $request)
     {
-
-        $validator = Validator::make($request->all(), Product::$validate_store);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         $product = Product::create($request->all());
-
         return new ProductResource($product);
     }
 

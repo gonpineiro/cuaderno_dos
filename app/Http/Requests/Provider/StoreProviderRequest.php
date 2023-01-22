@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Product;
+namespace App\Http\Requests\Provider;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductRequest extends FormRequest
+class StoreProviderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,6 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|max:10',
-            'provider_id' => 'required|integer',
         ];
     }
 
@@ -34,9 +33,6 @@ class StoreProductRequest extends FormRequest
         return [
             'name.required' => 'name es requerido',
             'name.max' => 'name no debe superar el maximo de 10 caracteres',
-
-            'provider_id.required' => 'provider_id es requerido',
-            'provider_id.integer' => 'provider_id debe ser un entero',
         ];
     }
 }

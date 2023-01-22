@@ -42,7 +42,10 @@ class Handler extends ExceptionHandler
 
         /** Ocuerre un error en la base de datos */
         $this->renderable(function (QueryException $e) {
-            return response()->json(['message' => 'Error en la base de datos']);
+            return response()->json([
+                'message' => 'Error en la base de datos',
+                'error' => $e
+            ]);
         });
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProviderController;
 use App\Http\Controllers\Api\ApiController;
 
 Route::post('login', [ApiController::class, 'login']);
@@ -13,6 +14,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('get_user', [ApiController::class, 'get_user']);
 
     Route::resource('producto', ProductController::class);
+    Route::resource('proveedor', ProviderController::class);
 });
 
 

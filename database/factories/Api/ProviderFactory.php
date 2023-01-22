@@ -2,10 +2,9 @@
 
 namespace Database\Factories\Api;
 
-use App\Models\Api\Provider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductFactory extends Factory
+class ProviderFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,7 +15,6 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'provider_id' => $this->faker->randomElement(Provider::all())['id'],
         ];
     }
 }
