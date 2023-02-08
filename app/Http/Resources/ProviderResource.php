@@ -14,10 +14,7 @@ class ProviderResource extends JsonResource
      */
     public function toArray($request)
     {
-        $array = [
-            "id" => $this->id,
-            "name" => $this->name,
-        ];
+        $array = parent::toArray($request);
 
         if ($request->query('productos') == "true") {
             $array['productos'] = $this->products;

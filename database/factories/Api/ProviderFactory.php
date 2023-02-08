@@ -15,6 +15,7 @@ class ProviderFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
+            'email' => $this->faker->email(),
         ];
     }
 }
