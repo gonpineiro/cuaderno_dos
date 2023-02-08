@@ -10,8 +10,29 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'code',
+        'provider_code',
+        'factory_code',
+        'equivalence',
+
+        'description',
+        'model',
+        'engine',
+        'observation',
+
+        'min_stock',
+        'empty_stock',
+
+        'ship',
+        'module',
+        'side',
+        'column',
+        'row',
+
+        'verified',
+
         'provider_id',
+        'brand_id',
     ];
 
     public function provider()

@@ -24,15 +24,14 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:10',
+            'code' => 'unique:products',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre es requerido',
-            'name.max' => 'El Nombre no debe superar el maximo de 10 caracteres',
+            'code.unique' => 'code ya se encuentra registrado',
         ];
     }
 }
