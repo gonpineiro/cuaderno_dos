@@ -40,7 +40,7 @@ class ProductFactory extends Factory
             'row' => $this->faker->randomDigitNotNull(),        /* 0D */
 
             'provider_id' => $this->faker->randomElement(Provider::all())['id'],
-            'brand_id' => $this->faker->randomElement(Table::all())['id'],
+            'brand_id' => $this->faker->randomElement(Table::where('name', 'brand')->get())['id'],
         ];
     }
 }

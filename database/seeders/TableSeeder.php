@@ -14,10 +14,10 @@ class TableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tables')->insert(['name' => 'brands', 'code' => '1', 'value' => 'FIAT']);
-        DB::table('tables')->insert(['name' => 'brands', 'code' => '2', 'value' => 'RENO']);
-        DB::table('tables')->insert(['name' => 'brands', 'code' => '3', 'value' => 'CITROEN']);
-        DB::table('tables')->insert(['name' => 'brands', 'code' => '4', 'value' => 'BMW']);
-        DB::table('tables')->insert(['name' => 'brands', 'code' => '5', 'value' => 'ALGO']);
+        DB::table('tables')->insert(['name' => 'brand', 'code' => '1', 'value' => 'FIAT']);
+        DB::table('tables')->insert(['name' => 'brand', 'code' => '2', 'value' => 'RENO']);
+        DB::table('tables')->insert(['name' => 'brand', 'code' => '3', 'value' => 'CITROEN']);
+        DB::table('tables')->insert(['name' => 'brand', 'code' => '4', 'value' => 'BMW']);
+        DB::table('tables')->insert(['name' => 'brand', 'code' => '5', 'value' => 'ALGO']);
     }
 }
