@@ -19,5 +19,8 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'brand', 'code' => '3', 'value' => 'CITROEN']);
         DB::table('tables')->insert(['name' => 'brand', 'code' => '4', 'value' => 'BMW']);
         DB::table('tables')->insert(['name' => 'brand', 'code' => '5', 'value' => 'ALGO']);
+
+        DB::table('tables')->insert(['name' => 'order', 'code' => '1', 'value' => 'online']);
+        DB::table('tables')->insert(['name' => 'order', 'code' => '2', 'value' => 'simple']);
     }
 }

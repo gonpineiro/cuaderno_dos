@@ -40,6 +40,10 @@ class Product extends Model
         return $this->belongsTo(Provider::class);
     }
 
+    public function orders(){
+        return $this->belongsToMany(Order::class);
+    }
+
     public function brand()
     {
         return $this->belongsTo(Table::class);

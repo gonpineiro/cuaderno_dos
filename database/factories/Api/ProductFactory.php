@@ -16,8 +16,9 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        $asd = $this->faker->unique();
         return [
-            'code' => $this->faker->randomNumber(5, true),
+            'code' => $this->faker->unique()->numberBetween(100, 652135),
             'factory_code' => $this->faker->randomNumber(5, true),
             'equivalence' => $this->faker->randomNumber(5, true),
 
@@ -30,14 +31,14 @@ class ProductFactory extends Factory
             'empty_stock' => $this->faker->boolean(),
 
             /*  Configuracion global */
-            'ship' => 1,                                        /* DD */
-            'module' => $this->faker->randomDigitNotNull(),     /* DD */
+            'ship' => 1,
+            'module' => $this->faker->randomDigitNotNull(),
             /* - */
             'side' => 'D'
             /** F A I D */
             ,
-            'column' => $this->faker->randomDigitNotNull(),     /* 0D */
-            'row' => $this->faker->randomDigitNotNull(),        /* 0D */
+            'column' => $this->faker->randomDigitNotNull(),
+            'row' => $this->faker->randomDigitNotNull(),
 
             'provider_id' => $this->faker->randomElement(Provider::all())['id'],
             'brand_id' => $this->faker->randomElement(Table::where('name', 'brand')->get())['id'],
