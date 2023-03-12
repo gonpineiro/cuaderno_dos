@@ -35,12 +35,21 @@ class Product extends Model
         'brand_id',
     ];
 
+    protected $hidden = [
+        'pivot',
+        'provider_id',
+        'brand_id',
+        'created_at',
+        'updated_at'
+    ];
+
     public function provider()
     {
         return $this->belongsTo(Provider::class);
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->belongsToMany(Order::class);
     }
 

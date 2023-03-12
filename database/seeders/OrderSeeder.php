@@ -21,7 +21,7 @@ class OrderSeeder extends Seeder
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
-                $order = OrderProduct::create(['order_id' => $id, 'product_id' => $i]);
+                $order = OrderProduct::create(['order_id' => $id, 'product_id' => $i, 'state_id' => 8]);
             }
         });
     }

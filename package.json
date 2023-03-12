@@ -8,6 +8,7 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
+        "route:reset": "php artisan route:clear && php artisan route:cache",
         "reset": "php artisan migrate:reset && php artisan migrate && php artisan db:seed"
     },
     "devDependencies": {

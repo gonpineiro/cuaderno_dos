@@ -47,5 +47,12 @@ class Handler extends ExceptionHandler
                 'error' => $e
             ]);
         });
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'error' => true
+            ]);
+        });
     }
 }

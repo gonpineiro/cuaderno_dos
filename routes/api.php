@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProviderController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\UserController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -13,8 +15,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('refresh', [ApiController::class, 'refresh']);
     Route::get('get_user', [ApiController::class, 'get_user']);
 
-    Route::resource('producto', ProductController::class);
+    Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
+    Route::resource('producto', ProductController::class);
+    Route::resource('orden', OrderController::class);
 });
 
 
