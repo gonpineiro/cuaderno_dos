@@ -18,6 +18,7 @@ class OrderResource extends JsonResource
         $array['user'] = $this->user->name;
         $array['type'] = $this->user->type;
         $array['detail'] =  OrderProduct::collection($this->detail);
+        $array['algo'] = $this->getPercentages();
         $array['count_pendientes'] = 100;
 
         return $array;

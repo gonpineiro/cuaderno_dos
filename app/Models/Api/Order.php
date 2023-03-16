@@ -36,4 +36,31 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\User::class);
     }
+
+    public function getPercentages()
+    {
+        $array['pendiente'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
+        });
+
+        $array['avisado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'avisado';
+        });
+
+        $array['cancelado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'cancelado';
+        });
+
+        $array['rechazado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'rechazado';
+        });
+
+        $count = count($this->detail);
+
+        foreach ($array as $key => $value) {
+            $array[$key] = ($value * 100) / $count;
+        }
+
+        return $array;
+    }
 }
