@@ -97,9 +97,10 @@ class ApiController extends \App\Http\Controllers\Controller
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
         return response()->json([
+            'user'=> auth()->user(),
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $JWTAuth::factory()->getTTL() * 60
+            'expires_in' => $JWTAuth::factory()->getTTL() * 60 * 1000
         ]);
     }
 }

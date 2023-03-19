@@ -15,6 +15,7 @@ class Order extends Model
 
     protected $hidden = [
         'user_id',
+        'type_id',
         'updated_at',
         'pivot',
     ];

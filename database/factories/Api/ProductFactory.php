@@ -16,7 +16,6 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $asd = $this->faker->unique();
         return [
             'code' => $this->faker->unique()->numberBetween(100, 652135),
             'factory_code' => $this->faker->randomNumber(5, true),

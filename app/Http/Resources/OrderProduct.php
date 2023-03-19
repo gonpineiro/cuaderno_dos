@@ -14,7 +14,13 @@ class OrderProduct extends JsonResource
      */
     public function toArray($request)
     {
-        $array['product'] =  $this->product;
+        if ($this->product) {
+            $array['product'] =  $this->product;
+        }
+
+        if ($this->otherProduct) {
+            $array['product'] =  $this->otherProduct;
+        }
         $array['state'] =  $this->state->value;
 
         return $array;

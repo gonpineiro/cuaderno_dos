@@ -7,6 +7,7 @@ use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Api\Order;
 use App\Models\Api\OrderProduct;
+use Illuminate\Http\Request;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
@@ -15,9 +16,13 @@ class OrderController extends \App\Http\Controllers\Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return OrderResource::collection(Order::all());
+        if ($type = $request->query('type')) {
+            return OrderResource::collection(Order::where('type_id', $type)->get());
+        } else {
+            return OrderResource::collection(Order::all());
+        }
     }
 
     /**

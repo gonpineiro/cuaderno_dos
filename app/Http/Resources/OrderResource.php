@@ -16,11 +16,39 @@ class OrderResource extends JsonResource
     {
         $array = parent::toArray($request);
         $array['user'] = $this->user->name;
-        $array['type'] = $this->user->type;
-        $array['detail'] =  OrderProduct::collection($this->detail);
-        $array['algo'] = $this->getPercentages();
-        $array['count_pendientes'] = 100;
+        $array['type'] = $this->type->value;
+        $array['percentages'] = $this->getPercentages();
+
+        /* online */
+        if ($this->type->value == 'online') {
+            $array['detail'] = $this->online($request);
+        }
+
+        /* Pedido */
+        if ($this->type->value == 'pedido') {
+            $array['detail'] = $this->pedido($request);
+        }
+
+        /* Siniestro */
+        if ($this->type->value == 'siniestro') {
+            $array['detail'] = $this->siniestro($request);
+        }
 
         return $array;
+    }
+
+    private function online($request)
+    {
+        return OrderProduct::collection($this->detail);
+    }
+
+    private function pedido($request)
+    {
+        return OrderProduct::collection($this->detail);
+    }
+
+    private function siniestro($request)
+    {
+        return OrderProduct::collection($this->detail);
     }
 }
