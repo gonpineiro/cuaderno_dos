@@ -14,15 +14,17 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         if ($type = $request->query('type')) {
-            return OrderResource::collection(Order::where('type_id', $type)->get());
+            $order =  OrderResource::collection(Order::where('type_id', $type)->get());
         } else {
-            return OrderResource::collection(Order::all());
+            $order = OrderResource::collection(Order::all());
         }
+
+        return sendResponse($order);
     }
 
     /**

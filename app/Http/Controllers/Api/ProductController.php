@@ -18,7 +18,8 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function index()
     {
-        return ProductResource::collection(Product::all());
+        $products = ProductResource::collection(Product::all());
+        return $products;
     }
 
     /**

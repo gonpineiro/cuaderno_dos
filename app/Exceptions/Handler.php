@@ -37,22 +37,16 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            return response()->json(['message' => 'Recurso no encontrado']);
+            return sendResponse(null, $e, 300);
         });
 
         /** Ocuerre un error en la base de datos */
         $this->renderable(function (QueryException $e) {
-            return response()->json([
-                'message' => 'Error en la base de datos',
-                'error' => $e
-            ]);
+            return sendResponse(null, $e, 301);
         });
 
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => true
-            ]);
+            return sendResponse(null, $e->getMessage(), 302);
         });
     }
 }
