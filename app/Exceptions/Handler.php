@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            return sendResponse(null, $e, 300);
+            return sendResponse(null, $e->getMessage(), 300);
         });
 
         /** Ocuerre un error en la base de datos */

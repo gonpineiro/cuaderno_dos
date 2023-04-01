@@ -16,6 +16,7 @@ class Order extends Model
     protected $hidden = [
         'user_id',
         'type_id',
+        'client_id',
         'updated_at',
         'pivot',
     ];
@@ -28,14 +29,19 @@ class Order extends Model
     {
         return $this->hasMany(OrderProduct::class);
     }
-    public function type()
+
+    public function client()
     {
-        return $this->belongsTo(Table::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+    public function type()
+    {
+        return $this->belongsTo(Table::class);
     }
 
     public function getPercentages()

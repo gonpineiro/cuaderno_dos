@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Api;
 
+use App\Models\Api\Client;
 use App\Models\Api\Table;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,6 +19,7 @@ class OrderFactory extends Factory
         return [
             'user_id' =>  $this->faker->randomElement(User::all())['id'],
             'type_id' =>  $this->faker->randomElement(Table::where('name', 'order_type')->get())['id'],
+            'client_id' =>  $this->faker->randomElement(Client::all())['id'],
             'detalle' => $this->faker->word(),
         ];
     }
