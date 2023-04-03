@@ -20,7 +20,7 @@ class OrderSeeder extends Seeder
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
-                OrderProduct::create(['order_id' => $order->id, 'product_id' => $i, 'state_id' => rand(9, 12)]);
+                $this->createOrderProduct($order, $i, 'product_id');
             }
         });
 
@@ -29,7 +29,7 @@ class OrderSeeder extends Seeder
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
-                OrderProduct::create(['order_id' => $order->id, 'other_id' => $i, 'state_id' => rand(9, 12)]);
+                $this->createOrderProduct($order, $i, 'other_id');
             }
         });
 
@@ -40,11 +40,25 @@ class OrderSeeder extends Seeder
             for ($i = 1; $i <= 10; $i++) {
 
                 if (isEven($i)) {
-                    OrderProduct::create(['order_id' => $order->id, 'product_id' => $i, 'state_id' => rand(9, 12)]);
+                    $this->createOrderProduct($order, $i, 'product_id');
                 } else {
-                    OrderProduct::create(['order_id' => $order->id, 'other_id' => $i, 'state_id' => rand(9, 12)]);
+                    $this->createOrderProduct($order, $i, 'other_id');
                 }
             }
         });
+    }
+
+    private function createOrderProduct($order, $int, $order_type)
+    {
+        $orderProduct = [
+            'order_id' => $order->id,
+            $order_type => $int,
+            'state_id' => rand(9, 12),
+
+            'amount' => rand(1, 6),
+            'unit_price' => rand(500, 80000),
+            'detalle' => "Detalle: $order->id",
+        ];
+        OrderProduct::create($orderProduct);
     }
 }

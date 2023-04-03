@@ -7,7 +7,9 @@ use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Api\Order;
 use App\Models\Api\OrderProduct;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
@@ -35,38 +37,91 @@ class OrderController extends \App\Http\Controllers\Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        $order = Order::create(['detalle' => $request->get('detalle')]);
-        $products_id = $request->all()['products'];
+        DB::beginTransaction();
 
-        if (!$this->storeOrderProduct($products_id, $order->id)) {
+        try {
+            $user = auth()->user();
 
-            $order = Order::findOrFail($order->id);
-            $order->delete();
-
-            return response()->json([
-                'data' => null,
-                'message' => null,
-                'error' => 'No se pudieron guardar los '
+            $order = Order::create([
+                'user_id' => $user->id,
+                'detalle' => $request->detalle,
+                'type_id' => $request->type_id,
+                'client_id' => $request->client_id,
             ]);
-        }
 
-        return new OrderResource($order);
+            if (!$this->storeOrderProduct($request, $order->id)) {
+                DB::rollBack();
+
+                return response()->json([
+                    'data' => null,
+                    'message' => null,
+                    'error' => 'No se pudieron guardar los productos de la orden'
+                ]);
+            }
+
+            DB::commit();
+
+            return new OrderResource($order);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
     }
 
-    private function storeOrderProduct($products_id, $order_id)
-    {
-        $products_id = explode(',', $products_id);
 
-        /* Verificamos elementos duplicados */
-        if (count(array_unique($products_id)) < count($products_id)) {
-            return false;
+    private function storeOrderProduct($request, $order_id)
+    {
+        $orders_products = $request->orders_products;
+
+        if ($this->hayDuplicados($orders_products)) {
+            throw new Exception("Existen productos duplicados");
         }
 
-        $orders = array_map(function ($product_id) use ($order_id) {
-            return ['order_id' => $order_id, 'product_id' => (int)$product_id];
-        }, $products_id);
+        foreach ($orders_products as $product) {
+            $product = (object) $product;
 
-        return OrderProduct::insert($orders);
+            $array = [
+                'order_id' => $order_id,
+                'state_id' => $product->state_id,
+                'amount' => $product->amount,
+                'unit_price' => $product->amount,
+                'detalle' => $product->detalle,
+            ];
+
+            /* Cuando es un producto del catalogo */
+            if (isset($product->isProduct) && $product->isProduct) {
+                $array['product_id'] = (int) $product->id;
+            }
+
+            /* Cuando no es un producto del catalogo */
+            if (isset($product->isOtherProduct) && $product->isOtherProduct) {
+                $array['other_id'] = (int) $product->id;
+            }
+
+            if (!OrderProduct::create($array)) {
+                throw new Exception("No se pudo crear un detalle de la orden");
+            }
+        }
+        return true;
+    }
+
+    private function hayDuplicados($productos)
+    {
+        // Agrupa los productos por su campo "id"
+        $productos_agrupados = collect($productos)->groupBy('id');
+
+        // Filtra los grupos que tengan más de un elemento
+        $productos_sin_repetidos = $productos_agrupados->filter(function ($grupo) {
+            return count($grupo) == 1;
+        })->flatten(1)->values()->all();
+
+        // Verifica si hay elementos repetidos y muestra un mensaje de error
+        if (count($productos_sin_repetidos) != count($productos)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

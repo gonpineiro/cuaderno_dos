@@ -15,9 +15,16 @@ class CreateOrderProductTable extends Migration
     {
         Schema::create('order_product', function (Blueprint $table) {
             $table->unsignedBigInteger('order_id');
+
+            /* Requieren que sea nulos porque o va ser uno o el otro, jamas ambos */
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('other_id')->nullable();
             $table->unsignedBigInteger('state_id');
+
+            /* Detalle del pedido */
+            $table->integer('amount');
+            $table->float('unit_price');
+            $table->string('detalle');
 
             /* Relaciones */
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

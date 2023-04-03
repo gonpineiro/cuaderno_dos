@@ -21,11 +21,11 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin'),
         ]);
 
-        /* DB::table('users')->insert([
+        DB::table('users')->insert([
             'name' => 'Número uno',
             'email' => 'u@u.com',
             'password' => Hash::make('u'),
-        ]); */
+        ]);
 
         $this->call([
             TableSeeder::class,
