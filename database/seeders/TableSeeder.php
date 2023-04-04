@@ -29,9 +29,9 @@ class TableSeeder extends Seeder
         /* Productos existentes | no existentes */
         DB::table('tables')->insert(['name' => 'order_type', 'code' => '3', 'value' => 'siniestro']);
 
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '1', 'value' => 'pendiente']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '2', 'value' => 'avisado']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '3', 'value' => 'cancelado']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '4', 'value' => 'rechazado']);
+        DB::table('tables')->insert(['name' => 'order_state', 'code' => '1', 'value' => 'pendiente', 'background_color' => 'red', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_state', 'code' => '2', 'value' => 'avisado', 'background_color' => 'yellow', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_state', 'code' => '3', 'value' => 'cancelado', 'background_color' => 'blue', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_state', 'code' => '4', 'value' => 'rechazado', 'background_color' => 'gray', 'color' => 'black']);
     }
 }
