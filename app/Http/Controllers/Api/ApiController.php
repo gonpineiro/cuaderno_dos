@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Api\Table;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -97,7 +98,8 @@ class ApiController extends \App\Http\Controllers\Controller
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
         return response()->json([
-            'user'=> auth()->user(),
+            'user' => auth()->user(),
+            'tables' => Table::all(),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $JWTAuth::factory()->getTTL() * 60 * 1000
