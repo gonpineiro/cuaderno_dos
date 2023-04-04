@@ -37,6 +37,7 @@ class OrderController extends \App\Http\Controllers\Controller
      */
     public function store(StoreOrderRequest $request)
     {
+        $data = $request->all();
         DB::beginTransaction();
 
         try {
@@ -44,7 +45,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $order = Order::create([
                 'user_id' => $user->id,
-                'detalle' => $request->detalle,
+                'detalle' => '$request->detalle',
                 'type_id' => $request->type_id,
                 'client_id' => $request->client_id,
             ]);
@@ -83,7 +84,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $array = [
                 'order_id' => $order_id,
-                'state_id' => $product->state_id,
+                'state_id' => $product->estado['value'],
                 'amount' => $product->amount,
                 'unit_price' => $product->amount,
                 'detalle' => $product->detalle,
