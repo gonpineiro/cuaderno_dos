@@ -45,7 +45,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $order = Order::create([
                 'user_id' => $user->id,
-                'detalle' => '$request->detalle',
+                'description' => '$request->description',
                 'type_id' => $request->type_id,
                 'client_id' => $request->client_id,
             ]);
@@ -84,7 +84,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $array = [
                 'order_id' => $order_id,
-                'state_id' => $product->estado['value'],
+                'state_id' => $product->state_id,
                 'amount' => $product->amount,
                 'unit_price' => $product->amount,
                 'detalle' => $product->detalle,
@@ -99,6 +99,8 @@ class OrderController extends \App\Http\Controllers\Controller
             if (isset($product->isOtherProduct) && $product->isOtherProduct) {
                 $array['other_id'] = (int) $product->id;
             }
+
+            unset($array['id']);
 
             if (!OrderProduct::create($array)) {
                 throw new Exception("No se pudo crear un detalle de la orden");

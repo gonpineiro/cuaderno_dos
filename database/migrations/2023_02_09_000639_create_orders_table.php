@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('type_id');
 
-            $table->string('detalle');
+            $table->string('description');
 
             $table->timestamps();
 
