@@ -27,8 +27,13 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
-            'orders_products' => 'required',
             'type_id' => 'required',
+            'orders_products' => 'required',
+
+            'engine' => 'required',
+            'chasis' => 'required',
+            'payment_method' => 'required',
+            'invoice_number' => 'required',
         ];
     }
 
@@ -38,6 +43,11 @@ class StoreOrderRequest extends FormRequest
         return [
             'client_id.required' => 'El Cliente es requerido',
             'orders_products.required' => 'Productos es requerido',
+
+            'engine.required' => 'Vehículo/Motor es requerido',
+            'chasis.required' => 'Chasis es requerido',
+            'payment_method.required' => 'Forma de pago es requerido',
+            'invoice_number.required' => 'Número de factura es requerido',
         ];
     }
 

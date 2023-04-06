@@ -19,6 +19,10 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('type_id');
 
+            $table->string('engine');
+            $table->string('chasis');
+            $table->string('payment_method');
+            $table->string('invoice_number');
             $table->string('description')->nullable();
 
             $table->timestamps();

@@ -20,7 +20,12 @@ class OrderFactory extends Factory
             'user_id' =>  $this->faker->randomElement(User::all())['id'],
             'type_id' =>  $this->faker->randomElement(Table::where('name', 'order_type')->get())['id'],
             'client_id' =>  $this->faker->randomElement(Client::all())['id'],
-            'description' => $this->faker->word(),
+
+            'engine' => $this->faker->bothify('????######'),
+            'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
+            'payment_method' => $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']),
+            'invoice_number' => $this->faker->numberBetween(10100, 10900),
+            'description' => $this->faker->text(200),
         ];
     }
 }

@@ -21,9 +21,9 @@ class ProductFactory extends Factory
             'factory_code' => $this->faker->randomNumber(5, true),
             'equivalence' => $this->faker->randomNumber(5, true),
 
-            'description' => $this->faker->word(),
+            'description' => $this->faker->text(200),
             'model' => $this->faker->word(),
-            'engine' => $this->faker->word(),
+            'engine' => $this->faker->bothify('????######'),
             'observation' => $this->faker->sentence(3),
 
             'min_stock' => $this->faker->boolean(),

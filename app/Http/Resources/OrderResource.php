@@ -16,7 +16,7 @@ class OrderResource extends JsonResource
     {
         $array = parent::toArray($request);
         $array['user'] = $this->user->name;
-        $array['client'] = $this->client->name;
+        $array['client'] = $this->client;
         $array['type'] = $this->type->value;
         $array['percentages'] = $this->getPercentages();
 
