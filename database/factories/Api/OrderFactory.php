@@ -20,7 +20,7 @@ class OrderFactory extends Factory
             'user_id' =>  $this->faker->randomElement(User::all())['id'],
             'type_id' =>  $this->faker->randomElement(Table::where('name', 'order_type')->get())['id'],
             'client_id' =>  $this->faker->randomElement(Client::all())['id'],
-            'detalle' => $this->faker->word(),
+            'description' => $this->faker->word(),
         ];
     }
 }

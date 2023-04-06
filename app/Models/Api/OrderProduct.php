@@ -13,7 +13,6 @@ class OrderProduct extends Model
         'other_id',
         'amount',
         'unit_price',
-        'description'
     ];
 
     protected $table = 'order_product';

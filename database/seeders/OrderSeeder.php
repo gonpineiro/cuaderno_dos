@@ -16,7 +16,7 @@ class OrderSeeder extends Seeder
     public function run()
     {
         /* Online */
-        Order::factory()->times(30)->create(['type_id' => 6])->each(function ($order) {
+        Order::factory()->times(3)->create(['type_id' => 6])->each(function ($order) {
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
@@ -25,7 +25,7 @@ class OrderSeeder extends Seeder
         });
 
         /* Pedido */
-        Order::factory()->times(30)->create(['type_id' => 7])->each(function ($order) {
+        Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
@@ -34,7 +34,7 @@ class OrderSeeder extends Seeder
         });
 
         /* siniestro */
-        Order::factory()->times(30)->create(['type_id' => 8])->each(function ($order) {
+        Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
 
             /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
@@ -57,7 +57,7 @@ class OrderSeeder extends Seeder
 
             'amount' => rand(1, 6),
             'unit_price' => rand(500, 80000),
-            'detalle' => "Detalle: $order->id",
+            'description' => "Detalle: $order->id",
         ];
         OrderProduct::create($orderProduct);
     }

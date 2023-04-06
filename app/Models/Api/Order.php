@@ -12,7 +12,7 @@ class Order extends Model
         'user_id',
         'client_id',
         'type_id',
-        'detalle',
+        'description',
     ];
 
     protected $hidden = [

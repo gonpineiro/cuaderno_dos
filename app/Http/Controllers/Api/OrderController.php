@@ -37,19 +37,17 @@ class OrderController extends \App\Http\Controllers\Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        $data = $request->all();
         DB::beginTransaction();
 
         try {
             $user = auth()->user();
 
-            $order = Order::create([
-                'user_id' => $user->id,
-                'description' => '$request->description',
-                'type_id' => $request->type_id,
-                'client_id' => $request->client_id,
-            ]);
+            $data = $request->all();
+            $data['user_id'] = $user->id;
 
+            $order = Order::create($data);
+
+            /* Intentamos guardar lss ordernes productos */
             if (!$this->storeOrderProduct($request, $order->id)) {
                 DB::rollBack();
 
@@ -62,14 +60,13 @@ class OrderController extends \App\Http\Controllers\Controller
 
             DB::commit();
 
-            return new OrderResource($order);
+            return sendResponse(new OrderResource($order));
         } catch (Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
-
 
     private function storeOrderProduct($request, $order_id)
     {
@@ -79,30 +76,23 @@ class OrderController extends \App\Http\Controllers\Controller
             throw new Exception("Existen productos duplicados");
         }
 
-        foreach ($orders_products as $product) {
-            $product = (object) $product;
+        foreach ($orders_products as $order_product) {
 
-            $array = [
-                'order_id' => $order_id,
-                'state_id' => $product->state_id,
-                'amount' => $product->amount,
-                'unit_price' => $product->amount,
-                'detalle' => $product->detalle,
-            ];
+            $order_product['order_id'] = $order_id;
 
-            /* Cuando es un producto del catalogo */
-            if (isset($product->isProduct) && $product->isProduct) {
-                $array['product_id'] = (int) $product->id;
+            /* Cuando es un order_producto del catalogo */
+            if (isset($order_product['isProduct']) && $order_product['isProduct']) {
+                $order_product['product_id'] = (int) $order_product['id'];
             }
 
-            /* Cuando no es un producto del catalogo */
-            if (isset($product->isOtherProduct) && $product->isOtherProduct) {
-                $array['other_id'] = (int) $product->id;
+            /* Cuando no es un order_producto del catalogo */
+            if (isset($order_product['isOtherProduct']) && $order_product['isOtherProduct']) {
+                $order_product['other_id'] = (int) $order_product['id'];
             }
 
-            unset($array['id']);
+            unset($order_product['id']);
 
-            if (!OrderProduct::create($array)) {
+            if (!OrderProduct::create($order_product)) {
                 throw new Exception("No se pudo crear un detalle de la orden");
             }
         }

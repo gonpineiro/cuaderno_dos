@@ -22,17 +22,17 @@ class OrderResource extends JsonResource
 
         /* online */
         if ($this->type->value == 'online') {
-            $array['detail'] = $this->online($request);
+            $array['orders_products'] = $this->online($request);
         }
 
         /* Pedido */
         if ($this->type->value == 'pedido') {
-            $array['detail'] = $this->pedido($request);
+            $array['orders_products'] = $this->pedido($request);
         }
 
         /* Siniestro */
         if ($this->type->value == 'siniestro') {
-            $array['detail'] = $this->siniestro($request);
+            $array['orders_products'] = $this->siniestro($request);
         }
 
         return $array;

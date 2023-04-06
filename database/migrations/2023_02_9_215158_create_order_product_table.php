@@ -24,7 +24,7 @@ class CreateOrderProductTable extends Migration
             /* Detalle del pedido */
             $table->integer('amount');
             $table->float('unit_price');
-            $table->string('detalle');
+            $table->string('description')->nullable();
 
             /* Relaciones */
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

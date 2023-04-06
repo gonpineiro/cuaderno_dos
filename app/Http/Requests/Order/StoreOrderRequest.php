@@ -36,8 +36,8 @@ class StoreOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'orders_products.required' => 'Requiere seleccionar al menos un producto',
-            'client_id.required' => 'Debe seleccionar un cliente',
+            'client_id.required' => 'El Cliente es requerido',
+            'orders_products.required' => 'Productos es requerido',
         ];
     }
 
