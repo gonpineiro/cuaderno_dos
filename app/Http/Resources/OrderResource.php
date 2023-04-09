@@ -15,24 +15,35 @@ class OrderResource extends JsonResource
     public function toArray($request)
     {
         $array = parent::toArray($request);
-        $array['user'] = $this->user->name;
-        $array['client'] = $this->client;
-        $array['type'] = $this->type->value;
-        $array['percentages'] = $this->getPercentages();
 
-        /* online */
-        if ($this->type->value == 'online') {
-            $array['orders_products'] = $this->online($this->details);
+        $data_type = $request->query('data_type');
+        if (!$data_type) {
+            $array['user'] = $this->user;
+            $array['client'] = $this->client;
+            $array['type'] = $this->type;
+            $array['percentages'] = $this->getPercentages();
+
+            /* online */
+            if ($this->type->value == 'online') {
+                $array['orders_products'] = $this->online($this->details);
+            }
+
+            /* Pedido */
+            if ($this->type->value == 'pedido') {
+                $array['orders_products'] = $this->pedido($request);
+            }
+
+            /* Siniestro */
+            if ($this->type->value == 'siniestro') {
+                $array['orders_products'] = $this->siniestro($request);
+            }
         }
 
-        /* Pedido */
-        if ($this->type->value == 'pedido') {
-            $array['orders_products'] = $this->pedido($request);
-        }
-
-        /* Siniestro */
-        if ($this->type->value == 'siniestro') {
-            $array['orders_products'] = $this->siniestro($request);
+        if ($data_type && $data_type == 'table') {
+            unset($array['description']);
+            $array['user'] = $this->user->name;
+            $array['client'] = $this->client->name;
+            $array['type'] = $this->type->value;
         }
 
         return $array;

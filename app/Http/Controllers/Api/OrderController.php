@@ -67,7 +67,6 @@ class OrderController extends \App\Http\Controllers\Controller
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
-
     private function storeOrderProduct($request, $order_id)
     {
         $orders_products = $request->orders_products;
