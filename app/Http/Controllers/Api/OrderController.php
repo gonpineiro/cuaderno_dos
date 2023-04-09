@@ -121,12 +121,12 @@ class OrderController extends \App\Http\Controllers\Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Api\Order  $order
-     * @return \App\Http\Resources\OrderResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $order = Order::findOrFail($id);
-        return new OrderResource($order);
+        return sendResponse(new OrderResource($order));
     }
 
     /**
