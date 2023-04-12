@@ -15,15 +15,15 @@ class OrderProduct extends JsonResource
     public function toArray($request)
     {
         /* Producto dentro del catalogo */
-        $orden = parent::toArray($request);
+        $array = parent::toArray($request);
 
         if ($this->product) {
-            $array = parent::toArray($this->product);
+            $array['product'] = new ProductResource($this->product);
         }
 
         /* Producto que no se encuentra en el catalogo */
         if ($this->otherProduct) {
-            $array = parent::toArray($this->otherProduct);
+            $array['product'] = parent::toArray($this->otherProduct);
         }
         $array['state'] =  $this->state;
 

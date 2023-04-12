@@ -22,6 +22,7 @@ class OrderResource extends JsonResource
             $array['client'] = $this->client;
             $array['type'] = $this->type;
             $array['percentages'] = $this->getPercentages();
+            $detalle = parent::toArray($this->detail);
 
             /* online */
             if ($this->type->value == 'online') {
