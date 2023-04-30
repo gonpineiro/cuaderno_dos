@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
 {
+
     protected $fillable = [
         'order_id',
         'state_id',
@@ -13,6 +14,7 @@ class OrderProduct extends Model
         'other_id',
         'amount',
         'unit_price',
+        'description'
     ];
 
     protected $table = 'order_product';

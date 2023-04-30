@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProviderController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderProductController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TableController;
 
@@ -23,6 +24,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cliente', ClientController::class);
     Route::resource('producto', ProductController::class);
     Route::resource('orden', OrderController::class);
+
+    Route::post('update_order_product', [OrderProductController::class, 'update']);
 });
 
 

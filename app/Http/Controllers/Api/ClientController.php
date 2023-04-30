@@ -17,63 +17,63 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $products = ClientResource::collection(Client::all());
-        $count = count($products);
+        $clients = ClientResource::collection(Client::all());
+        $count = count($clients);
 
-        if ($request->query('compare_total') == $count) {
+        if ($request->query('compare_total') === $count) {
             return sendResponse('equals');
         }
-        return $products;
+        return sendResponse($clients);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Client\StoreClientRequest  $request
+     * @param  \App\Http\Requests\Client\StoreClientRequest $request
      * @return \App\Http\Resources\ClientResource|\Illuminate\Http\JsonResponse
      */
     public function store(StoreClientRequest $request)
     {
-        $product = Client::create($request->all());
-        return new ClientResource($product);
+        $client = Client::create($request->all());
+        return new ClientResource($client);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Client  $product
-     * @return \App\Http\Resources\ClientResource
+     * @param  \App\Models\Api\Client $client
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        $product = Client::findOrFail($id);
-        return new ClientResource($product);
+        $client = Client::findOrFail($id);
+        return sendResponse(new ClientResource($client));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Client\UpdateClientRequest  $request
-     * @param  \App\Models\Api\Client  $product
+     * @param  \App\Http\Requests\Client\UpdateClientRequest $request
+     * @param  \App\Models\Api\Client $client
      * @return \App\Http\Resources\ClientResource
      */
     public function update(UpdateClientRequest $request, $id)
     {
-        $product = Client::findOrFail($id);
-        $product->fill($request->all())->save();
-        return new ClientResource($product);
+        $client = Client::findOrFail($id);
+        $client->fill($request->all())->save();
+        return new ClientResource($client);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Client  $product
-     * @return \App\Http\Resources\ClientResource
+     * @param  \App\Models\Api\Client $client
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $product = Client::findOrFail($id);
-        $product->delete();
-        return new ClientResource($product);
+        $client = Client::findOrFail($id);
+        $client->delete();
+        return sendResponse(new ClientResource($client));
     }
 }
