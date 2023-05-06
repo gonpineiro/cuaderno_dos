@@ -67,6 +67,7 @@ class OrderController extends \App\Http\Controllers\Controller
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
+
     private function storeOrderProduct($request, $order_id)
     {
         $orders_products = $request->orders_products;
@@ -80,7 +81,7 @@ class OrderController extends \App\Http\Controllers\Controller
             $order_product['order_id'] = $order_id;
 
             /* Cuando es un order_producto del catalogo */
-            if (isset($order_product['isProduct']) && $order_product['isProduct']) {
+            if (isset($order_product['is_product']) && $order_product['is_product']) {
                 $order_product['product_id'] = (int) $order_product['id'];
             }
 
@@ -131,15 +132,39 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Order\UpdateOrderRequest  $request
-     * @param  \App\Models\Api\Order  $order
-     * @return \App\Http\Resources\OrderResource
+     * @param  \App\Http\Requests\Order\UpdateOrderRequest $request
+     * @param  \App\Models\Api\Order $order
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateOrderRequest $request, $id)
     {
-        $order = Order::findOrFail($id);
-        $order->fill($request->all())->save();
-        return new OrderResource($order);
+        DB::beginTransaction();
+
+        try {
+            $order = Order::findOrFail($id);
+            $order->fill($request->all())->save();
+
+            OrderProduct::where('order_id', $id)->delete();
+
+            /* Intentamos guardar lss ordernes productos */
+            if (!$this->storeOrderProduct($request, $order->id)) {
+                DB::rollBack();
+
+                return response()->json([
+                    'data' => null,
+                    'message' => null,
+                    'error' => 'No se pudieron guardar los productos de la orden'
+                ]);
+            }
+
+            DB::commit();
+
+            return sendResponse(new OrderResource($order));
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
     }
 
     /**
