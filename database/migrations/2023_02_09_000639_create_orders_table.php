@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('chasis');
             $table->string('payment_method');
             $table->string('invoice_number');
-            $table->string('description')->nullable();
+            $table->string('observation')->nullable();
 
             $table->timestamps();
 

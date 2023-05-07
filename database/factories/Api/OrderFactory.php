@@ -25,7 +25,7 @@ class OrderFactory extends Factory
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
             'payment_method' => $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']),
             'invoice_number' => $this->faker->numberBetween(10100, 10900),
-            'description' => $this->faker->text(200),
+            'observation' => $this->faker->text(200),
         ];
     }
 }

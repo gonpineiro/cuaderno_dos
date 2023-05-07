@@ -50,10 +50,7 @@ class ApiController extends \App\Http\Controllers\Controller
         }
 
         if (!$token = \Tymon\JWTAuth\Facades\JWTAuth::attempt($credentials)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Login credentials are invalid.',
-            ], 400);
+            return sendResponse(null, 'Credenciales invalidas', 400);
         }
 
         return $this->respondWithToken($token);
@@ -97,12 +94,15 @@ class ApiController extends \App\Http\Controllers\Controller
     protected function respondWithToken($token)
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
-        return response()->json([
+
+        $data = [
             'user' => auth()->user(),
             'tables' => Table::all(),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $JWTAuth::factory()->getTTL() * 60 * 1000
-        ]);
+        ];
+
+        return sendResponse($data);
     }
 }

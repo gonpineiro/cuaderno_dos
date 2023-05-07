@@ -16,7 +16,7 @@ class Order extends Model
         'chasis',
         'payment_method',
         'invoice_number',
-        'description'
+        'observation'
     ];
 
     protected $hidden = [
