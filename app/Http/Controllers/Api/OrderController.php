@@ -132,7 +132,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
         try {
             $data = $request->all();
-            
+
             $order = Order::findOrFail($id);
 
             $order->fill($data)->save();
@@ -164,12 +164,30 @@ class OrderController extends \App\Http\Controllers\Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Api\Order  $order
-     * @return \App\Http\Resources\OrderResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $order = Order::findOrFail($id);
-        $order->delete();
-        return new OrderResource($order);
+        DB::beginTransaction();
+
+        try {
+            $order = Order::findOrFail($id);
+            $entregado = OrderProduct::where('order_id', $id)->where('state_id', 11)->exists();
+
+            if ($entregado) {
+                throw new Exception("No se puede eliminar un pedido con un producto entregado");
+            }
+
+            $order->delete();
+            OrderProduct::where('order_id', $id)->delete();
+
+            DB::commit();
+
+            return sendResponse($id);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $id);
+        }
     }
 }
