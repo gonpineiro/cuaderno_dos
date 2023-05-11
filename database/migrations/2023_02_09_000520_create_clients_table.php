@@ -23,7 +23,9 @@ class CreateClientsTable extends Migration
             $table->string('adress')->nullable();
             $table->string('cuit')->nullable();
             $table->boolean('is_company')->default(0);
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

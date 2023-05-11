@@ -27,14 +27,16 @@ class CreateOrderProductTable extends Migration
             $table->float('unit_price');
             $table->string('description')->nullable();
 
+            $table->softDeletes();
+
             /* Relaciones */
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('other_id')->references('id')->on('product_others')->onDelete('cascade');
+            /* $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('other_id')->references('id')->on('product_others')->onDelete('cascade'); */
             $table->foreign('state_id')->references('id')->on('tables')->onDelete('cascade');
 
-            $table->unique(['order_id', 'product_id']);
-            $table->unique(['order_id', 'other_id']);
+            /* $table->unique(['order_id', 'product_id']);
+            $table->unique(['order_id', 'other_id']); */
         });
     }
 

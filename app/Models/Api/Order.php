@@ -4,10 +4,12 @@ namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'client_id',
@@ -18,6 +20,8 @@ class Order extends Model
         'invoice_number',
         'observation'
     ];
+
+    protected $dates = ['deleted_at'];
 
     protected $hidden = [
         'user_id',

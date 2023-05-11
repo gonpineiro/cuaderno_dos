@@ -80,16 +80,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $order_product['order_id'] = $order_id;
 
-            /* Cuando es un order_producto del catalogo */
-            if (isset($order_product['is_product']) && $order_product['is_product']) {
-                $order_product['product_id'] = (int) $order_product['id'];
-            }
-
-            /* Cuando no es un order_producto del catalogo */
-            if (isset($order_product['isOtherProduct']) && $order_product['isOtherProduct']) {
-                $order_product['other_id'] = (int) $order_product['id'];
-            }
-
             unset($order_product['id']);
 
             if (!OrderProduct::create($order_product)) {
@@ -102,7 +92,7 @@ class OrderController extends \App\Http\Controllers\Controller
     private function hayDuplicados($productos)
     {
         // Agrupa los productos por su campo "id"
-        $productos_agrupados = collect($productos)->groupBy('id');
+        $productos_agrupados = collect($productos)->groupBy('product_id');
 
         // Filtra los grupos que tengan más de un elemento
         $productos_sin_repetidos = $productos_agrupados->filter(function ($grupo) {
@@ -141,8 +131,11 @@ class OrderController extends \App\Http\Controllers\Controller
         DB::beginTransaction();
 
         try {
+            $data = $request->all();
+            
             $order = Order::findOrFail($id);
-            $order->fill($request->all())->save();
+
+            $order->fill($data)->save();
 
             OrderProduct::where('order_id', $id)->delete();
 

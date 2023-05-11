@@ -3,9 +3,11 @@
 namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderProduct extends Model
 {
+    use SoftDeletes;
 
     protected $fillable = [
         'order_id',
@@ -16,6 +18,10 @@ class OrderProduct extends Model
         'unit_price',
         'description'
     ];
+
+    protected $hidden = ['id'];
+
+    protected $dates = ['deleted_at'];
 
     protected $table = 'order_product';
 

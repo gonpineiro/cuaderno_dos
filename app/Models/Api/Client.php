@@ -4,10 +4,11 @@ namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'dni',
@@ -19,6 +20,8 @@ class Client extends Model
         'cuit',
         'is_company',
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function orders()
     {
