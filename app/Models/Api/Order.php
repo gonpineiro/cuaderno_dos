@@ -56,26 +56,37 @@ class Order extends Model
 
     public function getPercentages()
     {
+
         $array['pendiente'] = $this->detail->sum(function ($a) {
             return  $a->state->value == 'pendiente';
         });
 
-        $array['avisado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'avisado';
+        $array['a retirar'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'a retirar';
+        });
+
+        $array['entregado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'entregado';
         });
 
         $array['cancelado'] = $this->detail->sum(function ($a) {
             return  $a->state->value == 'cancelado';
         });
 
-        $array['rechazado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'rechazado';
-        });
-
         $count = count($this->detail);
 
         foreach ($array as $key => $value) {
             $array[$key] = ($value * 100) / $count;
+        }
+
+        if ($array['pendiente'] > 0) {
+            $array['estado_general'] = 'pendiente';
+        } else if ($array['a retirar'] > 0) {
+            $array['estado_general'] = 'a retirar';
+        } else if ($array['entregado'] > 0) {
+            $array['estado_general'] = 'entregado';
+        } else if ($array['cancelado'] == 100) {
+            $array['estado_general'] = 'cancelado';
         }
 
         return $array;
