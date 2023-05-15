@@ -61,8 +61,8 @@ class Order extends Model
             return  $a->state->value == 'pendiente';
         });
 
-        $array['a retirar'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'a retirar';
+        $array['retirar'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'retirar';
         });
 
         $array['entregado'] = $this->detail->sum(function ($a) {
@@ -81,14 +81,47 @@ class Order extends Model
 
         if ($array['pendiente'] > 0) {
             $array['estado_general'] = 'pendiente';
-        } else if ($array['a retirar'] > 0) {
-            $array['estado_general'] = 'a retirar';
+        } else if ($array['retirar'] > 0) {
+            $array['estado_general'] = 'retirar';
         } else if ($array['entregado'] > 0) {
             $array['estado_general'] = 'entregado';
-        } else if ($array['cancelado'] == 100) {
+        } else if ($array['cancelado'] > 0) {
             $array['estado_general'] = 'cancelado';
         }
 
         return $array;
+    }
+
+    public function getGeneralState()
+    {
+        $pendiente = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
+        });
+
+        $aRetirar = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'retirar';
+        });
+
+        $entregado = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'entregado';
+        });
+
+        $cancelado = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'cancelado';
+        });
+
+        $estadoGeneral = '';
+
+        if ($pendiente > 0) {
+            $estadoGeneral = 'pendiente';
+        } else if ($aRetirar > 0) {
+            $estadoGeneral = 'retirar';
+        } else if ($entregado > 0) {
+            $estadoGeneral = 'entregado';
+        } else if ($cancelado > 0) {
+            $estadoGeneral = 'cancelado';
+        }
+
+        return $estadoGeneral;
     }
 }
