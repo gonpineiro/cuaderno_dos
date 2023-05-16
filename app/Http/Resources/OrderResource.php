@@ -47,8 +47,8 @@ class OrderResource extends JsonResource
             $array['user'] = $this->user->name;
             $array['client'] = $this->client;
             $array['type'] = $this->type->value;
-            $array['estado_general'] = $this->getGeneralState();
         }
+        $array['estado_general'] = $this->getGeneralState();
 
         return $array;
     }

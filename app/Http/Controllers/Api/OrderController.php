@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Mail\MiCorreoMailable;
 use App\Models\Api\Order;
 use App\Models\Api\OrderProduct;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
@@ -189,5 +191,18 @@ class OrderController extends \App\Http\Controllers\Controller
 
             return sendResponse(null, $e->getMessage(), 300, $id);
         }
+    }
+
+    public function enviarCorreo()
+    {
+
+        // Enviar el correo electrónico
+        $correo = new MiCorreoMailable();
+        Mail::to('destinatario@example.com')->send($correo);
+
+        // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
+
+        // Redireccionar a una página de éxito, por ejemplo
+        return redirect()->route('correo.enviado');
     }
 }
