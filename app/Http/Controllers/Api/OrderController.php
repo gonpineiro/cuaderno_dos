@@ -8,6 +8,7 @@ use App\Http\Resources\OrderResource;
 use App\Mail\MiCorreoMailable;
 use App\Models\Api\Order;
 use App\Models\Api\OrderProduct;
+use App\Models\Api\Table;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -139,6 +140,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $order->fill($data)->save();
 
+            /* CORREGIR; NO HAY QUE BORRAR; HAY QUE ACTUALIZAR */
             OrderProduct::where('order_id', $id)->delete();
 
             /* Intentamos guardar lss ordernes productos */
@@ -151,6 +153,33 @@ class OrderController extends \App\Http\Controllers\Controller
                     'error' => 'No se pudieron guardar los productos de la orden'
                 ]);
             }
+
+            DB::commit();
+
+            return sendResponse(new OrderResource($order));
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function updateState(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $orders_products = OrderProduct::where('order_id', $id)->get();
+
+            foreach ($orders_products as $order_product) {
+                /* Verificamos que cada order_product no tenga el estado de entregado o cancelado */
+                if ($order_product->state_id != 11 && $order_product->state_id != 12) {
+                    $order_product->state_id = (int)$request->value;
+                    $order_product->save();
+                }
+            }
+
+            $order = Order::find($id);
 
             DB::commit();
 
