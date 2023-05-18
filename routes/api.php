@@ -23,12 +23,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('proveedor', ProviderController::class);
     Route::resource('cliente', ClientController::class);
     Route::resource('producto', ProductController::class);
+
     Route::resource('orden', OrderController::class);
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
+
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 
     Route::post('update_order_product', [OrderProductController::class, 'update']);
 });
+Route::get('orden/pdf/{id}', [OrderController::class, 'getPdfPedido']);
 
 
 

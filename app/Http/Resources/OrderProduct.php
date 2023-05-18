@@ -25,8 +25,8 @@ class OrderProduct extends JsonResource
         if ($this->otherProduct) {
             $array['product'] = parent::toArray($this->otherProduct);
         }
-        $array['state'] =  $this->state;
 
+        $array['state'] =  $this->state;
 
         return $array;
     }

@@ -19,8 +19,6 @@ class OrderProduct extends Model
         'description'
     ];
 
-    protected $hidden = ['id'];
-
     protected $dates = ['deleted_at'];
 
     protected $table = 'order_product';

@@ -13,6 +13,8 @@ zip.addLocalFolder("./routes", '/routes');
 zip.addLocalFolder("./storage", '/storage');
 zip.addLocalFolder("./tests", '/tests');
 
+zip.addLocalFolder("./vendor", '/vendor');
+
 /* Agregamos los archivos */
 zip.addLocalFile('.styleci.yml');
 zip.addLocalFile('artisan');

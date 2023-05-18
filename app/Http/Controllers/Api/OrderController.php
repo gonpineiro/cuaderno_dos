@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderProduct as OrderProductResource;
 use App\Mail\MiCorreoMailable;
 use App\Models\Api\Order;
 use App\Models\Api\OrderProduct;
 use App\Models\Api\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -233,5 +235,17 @@ class OrderController extends \App\Http\Controllers\Controller
 
         // Redireccionar a una página de éxito, por ejemplo
         return redirect()->route('correo.enviado');
+    }
+
+    public function getPdfPedido($id)
+    {
+        $order = Order::find($id);
+        $order->client;
+        $orders_products = OrderProductResource::collection($order->detail);
+
+        //return view('pdf.template', ['pedido' => $order, 'orders_products' => $orders_products]);
+        $pdf = Pdf::loadView('pdf.template', ['pedido' => $order, 'orders_products' => $orders_products]);
+
+        return $pdf->download('informe.pdf');
     }
 }
