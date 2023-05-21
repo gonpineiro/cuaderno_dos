@@ -16,27 +16,25 @@ class OrderSeeder extends Seeder
     public function run()
     {
         /* Online */
-        Order::factory()->times(3)->create(['type_id' => 6])->each(function ($order) {
+        Order::factory()->times(500)->create(['type_id' => 6])->each(function ($order) {
 
             /* Por cada orden asociamos los 10 primeros productos */
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= 3; $i++) {
                 $this->createOrderProduct($order, $i, 'product_id');
             }
         });
 
         /* Pedido */
-        Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
+        /* Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
 
-            /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
                 $this->createOrderProduct($order, $i, 'other_id');
             }
-        });
+        }); */
 
         /* siniestro */
-        Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
+        /* Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
 
-            /* Por cada orden asociamos los 10 primeros productos */
             for ($i = 1; $i <= 10; $i++) {
 
                 if (isEven($i)) {
@@ -45,7 +43,7 @@ class OrderSeeder extends Seeder
                     $this->createOrderProduct($order, $i, 'other_id');
                 }
             }
-        });
+        }); */
     }
 
     private function createOrderProduct($order, $int, $order_type)

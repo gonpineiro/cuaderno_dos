@@ -94,19 +94,20 @@ class Order extends Model
 
     public function getGeneralState()
     {
-        $pendiente = $this->detail->sum(function ($a) {
+        $detail = $this->detail;
+        $pendiente = $detail->sum(function ($a) {
             return  $a->state->value == 'pendiente';
         });
 
-        $aRetirar = $this->detail->sum(function ($a) {
+        $aRetirar = $detail->sum(function ($a) {
             return  $a->state->value == 'retirar';
         });
 
-        $entregado = $this->detail->sum(function ($a) {
+        $entregado = $detail->sum(function ($a) {
             return  $a->state->value == 'entregado';
         });
 
-        $cancelado = $this->detail->sum(function ($a) {
+        $cancelado = $detail->sum(function ($a) {
             return  $a->state->value == 'cancelado';
         });
 

@@ -248,4 +248,27 @@ class OrderController extends \App\Http\Controllers\Controller
 
         return $pdf->download('informe.pdf');
     }
+
+    public function getReportePedidosOnline()
+    {
+        $orders = Order::where('type_id', 6)->get();
+        $orders = OrderResource::collection($orders)->resolve();
+
+        $reporte = array_reduce($orders, function ($carry, $e) {
+
+            if ($e['estado_general'] == 'retirar') {
+                $carry->retirar++;
+            }
+            if ($e['estado_general'] == 'pendiente') {
+                $carry->pendiente++;
+            }
+            if ($e['estado_general'] == 'cancelado') {
+                $carry->cancelado++;
+            }
+
+            return $carry;
+        }, (object) ['retirar' => 0, 'pendiente' => 0, 'cancelado' => 0]);
+
+        return sendResponse($reporte);
+    }
 }

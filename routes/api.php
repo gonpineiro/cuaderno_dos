@@ -24,8 +24,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cliente', ClientController::class);
     Route::resource('producto', ProductController::class);
 
-    Route::resource('orden', OrderController::class);
+    Route::get('orden/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
+    Route::resource('orden', OrderController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 

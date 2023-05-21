@@ -42,6 +42,7 @@ class OrderResource extends JsonResource
             }
         }
 
+        /* Informacion acotada para las tablas */
         if ($data_type && $data_type == 'table') {
             unset($array['description']);
             $array['user'] = $this->user->name;
