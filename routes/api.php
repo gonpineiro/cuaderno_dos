@@ -7,9 +7,9 @@ use App\Http\Controllers\Api\ProviderController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\PriceQuoteController;
 use App\Http\Controllers\Api\OrderProductController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\TableController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -27,6 +27,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('orden/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
     Route::resource('orden', OrderController::class);
+
+    Route::resource('cotizacion', PriceQuoteController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 
