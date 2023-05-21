@@ -55,12 +55,7 @@ class OrderController extends \App\Http\Controllers\Controller
             /* Intentamos guardar lss ordernes productos */
             if (!$this->storeOrderProduct($request, $order->id)) {
                 DB::rollBack();
-
-                return response()->json([
-                    'data' => null,
-                    'message' => null,
-                    'error' => 'No se pudieron guardar los productos de la orden'
-                ]);
+                return sendResponse(null, 'No se pudieron guardar los productos de la orden');
             }
 
             DB::commit();
@@ -77,15 +72,21 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $orders_products = $request->orders_products;
 
-        if ($this->hayDuplicados($orders_products)) {
+        /* if ($this->hayDuplicados($orders_products)) {
             throw new Exception("Existen productos duplicados");
-        }
+        } */
 
         foreach ($orders_products as $order_product) {
 
             $order_product['order_id'] = $order_id;
+            $order_product['state_id'] = $order_product['state']['id'];
 
-            unset($order_product['id']);
+            if ($order_product['product']['is_product']) {
+                $order_product['product_id'] = $order_product['product']['id'];
+            } else {
+                $order_product['other_id'] = $order_product['product']['id'];
+            }
+
 
             if (!OrderProduct::create($order_product)) {
                 throw new Exception("No se pudo crear un detalle de la orden");

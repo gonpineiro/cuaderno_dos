@@ -16,10 +16,10 @@ class OrderSeeder extends Seeder
     public function run()
     {
         /* Online */
-        Order::factory()->times(500)->create(['type_id' => 6])->each(function ($order) {
+        Order::factory()->times(100)->create(['type_id' => 6])->each(function ($order) {
 
             /* Por cada orden asociamos los 10 primeros productos */
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= 4; $i++) {
                 $this->createOrderProduct($order, $i, 'product_id');
             }
         });
