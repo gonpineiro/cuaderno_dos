@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderProductController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TableController;
+use App\Http\Controllers\CityController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -21,6 +22,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
+    Route::resource('ciudad', CityController::class);
     Route::resource('cliente', ClientController::class);
     Route::resource('producto', ProductController::class);
 

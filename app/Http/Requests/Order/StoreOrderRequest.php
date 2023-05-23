@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Order;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\TraitRequest;
 
 class StoreOrderRequest extends FormRequest
 {
+    use TraitRequest;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -49,10 +49,5 @@ class StoreOrderRequest extends FormRequest
             'payment_method.required' => 'Forma de pago es requerido',
             'invoice_number.required' => 'Número de factura es requerido',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(sendResponse(null, $validator->errors(), 422));
     }
 }
