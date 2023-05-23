@@ -28,7 +28,7 @@ class CityController extends \App\Http\Controllers\Controller
     public function store(StoreCityRequest $request)
     {
         $city = City::create($request->all());
-        return new CityResource($city);
+        return sendResponse(new CityResource($city));
     }
 
     /**

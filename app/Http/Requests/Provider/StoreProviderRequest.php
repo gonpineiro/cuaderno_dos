@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Provider;
 
+use App\Http\Requests\TraitRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProviderRequest extends FormRequest
 {
+    use TraitRequest;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,18 +27,19 @@ class StoreProviderRequest extends FormRequest
     {
         return [
             'name' => 'required|max:25',
-            'email' => 'required|max:255',
+            'email' => 'required|unique:providers|max:255',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'name es requerido',
-            'name.max' => 'name no debe superar el maximo de 25 caracteres',
+            'name.required' => 'Nombre es requerido',
+            'name.max' => 'Nombre no debe superar el maximo de 25 caracteres',
 
-            'email.required' => 'email es requerido',
-            'email.max' => 'email no debe superar el maximo de 255 caracteres',
+            'email.required' => 'Email es requerido',
+            'email.unique' => 'Ya existe un proveedor con ese correo electronico',
+            'email.max' => 'Email no debe superar el maximo de 255 caracteres',
         ];
     }
 }

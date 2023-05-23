@@ -15,7 +15,7 @@ class ProviderFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
-            'email' => $this->faker->email(),
+            'email' => $this->faker->unique()->email(),
         ];
     }
 }
