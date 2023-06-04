@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Api;
 
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ClientFactory extends Factory
@@ -18,7 +19,7 @@ class ClientFactory extends Factory
             'name' => $this->faker->name(),
             'phone' => $this->faker->unique()->phoneNumber(),
             'email' => $this->faker->email(),
-            'city' => $this->faker->city(),
+            'city_id' =>  $this->faker->randomElement(City::all())['id'],
             'adress' => $this->faker->address(),
             'cuit' => $this->faker->unique()->numberBetween(10000000001, 30000000009),
             'is_company' => $this->faker->boolean(),

@@ -16,8 +16,17 @@ class ClientResource extends JsonResource
     {
         $array = parent::toArray($request);
 
-        if ($request->query('orders') == "true") {
-            $array['orders'] = $this->orders;
+        $data_type = $request->query('data_type');
+        $withOrder = (bool) $request->query('withOrder');
+
+        if (!$data_type) {
+            $withOrder && $array['orders'] = $this->orders;
+            $array['city'] = $this->city;
+        }
+
+        if ($data_type && $data_type == 'table') {
+            $array['city'] = $this->city;
+            $array['province'] = $this->city->province;
         }
 
         return $array;

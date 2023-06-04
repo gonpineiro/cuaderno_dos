@@ -15,10 +15,17 @@ class Client extends Model
         'name',
         'phone',
         'email',
-        'city',
+        'city_id',
         'adress',
         'cuit',
         'is_company',
+    ];
+
+    protected $hidden = [
+        'city_id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     protected $dates = ['deleted_at'];
@@ -26,5 +33,22 @@ class Client extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(\App\Models\City::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($cliente) {
+            if ($cliente->orders()->count() > 0) {
+                // Si el cliente tiene pedidos, lanza una excepción para evitar la eliminación
+                throw new \Exception("No se puede eliminar el cliente porque tiene pedidos asociados.");
+            }
+        });
     }
 }

@@ -34,7 +34,8 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        $client = Client::create($request->all());
+        $body = $request->all();
+        $client = Client::create($body);
         return new ClientResource($client);
     }
 
@@ -72,8 +73,12 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $client = Client::findOrFail($id);
-        $client->delete();
-        return sendResponse(new ClientResource($client));
+        try {
+            $client = Client::findOrFail($id);
+            $client->delete();
+            return sendResponse(new ClientResource($client));
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage());
+        }
     }
 }
