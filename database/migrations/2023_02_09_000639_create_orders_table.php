@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('type_id');
+            $table->unsignedBigInteger('price_quote_id')->nullable();
 
             $table->string('engine');
             $table->string('chasis');

@@ -14,24 +14,24 @@ class TableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tables')->insert(['name' => 'brand', 'code' => '1', 'value' => 'FIAT']);
-        DB::table('tables')->insert(['name' => 'brand', 'code' => '2', 'value' => 'RENO']);
-        DB::table('tables')->insert(['name' => 'brand', 'code' => '3', 'value' => 'CITROEN']);
-        DB::table('tables')->insert(['name' => 'brand', 'code' => '4', 'value' => 'BMW']);
-        DB::table('tables')->insert(['name' => 'brand', 'code' => '5', 'value' => 'ALGO']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'FIAT']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'RENO']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'CITROEN']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'BMW']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'ALGO']);
 
         /* Productos existentes */
-        DB::table('tables')->insert(['name' => 'order_type', 'code' => '1', 'value' => 'online']);
+        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'online']);
 
         /* Productos no existentes */
-        DB::table('tables')->insert(['name' => 'order_type', 'code' => '2', 'value' => 'pedido']);
+        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'pedido']);
 
         /* Productos existentes | no existentes */
-        DB::table('tables')->insert(['name' => 'order_type', 'code' => '3', 'value' => 'siniestro']);
+        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'siniestro']);
 
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '1', 'value' => 'pendiente', 'background_color' => 'red', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '2', 'value' => 'retirar', 'background_color' => 'yellow', 'color' => 'black']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '3', 'value' => 'entregado', 'background_color' => 'green', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_state', 'code' => '4', 'value' => 'cancelado', 'background_color' => 'gray', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_state', 'value' => 'pendiente', 'background_color' => 'red', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_state', 'value' => 'retirar', 'background_color' => 'yellow', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_state', 'value' => 'entregado', 'background_color' => 'green', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_state', 'value' => 'cancelado', 'background_color' => 'gray', 'color' => 'black']);
     }
 }

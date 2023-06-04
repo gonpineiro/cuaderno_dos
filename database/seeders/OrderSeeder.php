@@ -25,15 +25,15 @@ class OrderSeeder extends Seeder
         });
 
         /* Pedido */
-        /* Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
+        Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
 
             for ($i = 1; $i <= 10; $i++) {
                 $this->createOrderProduct($order, $i, 'other_id');
             }
-        }); */
+        });
 
         /* siniestro */
-        /* Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
+        Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
 
             for ($i = 1; $i <= 10; $i++) {
 
@@ -43,7 +43,7 @@ class OrderSeeder extends Seeder
                     $this->createOrderProduct($order, $i, 'other_id');
                 }
             }
-        }); */
+        });
     }
 
     private function createOrderProduct($order, $int, $order_type)

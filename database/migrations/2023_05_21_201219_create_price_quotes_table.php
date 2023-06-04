@@ -17,6 +17,7 @@ class CreatePriceQuotesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('order_id')->nullable();
 
             $table->string('engine');
             $table->string('chasis');
@@ -30,6 +31,11 @@ class CreatePriceQuotesTable extends Migration
             /* Relaciones */
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders');
+        });
+
+        Schema::table('orders', function (Blueprint $table) {
+            $table->foreign('price_quote_id')->references('id')->on('price_quotes');
         });
     }
 
@@ -40,6 +46,10 @@ class CreatePriceQuotesTable extends Migration
      */
     public function down()
     {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['price_quote_id']);
+        });
+
         Schema::dropIfExists('price_quotes');
     }
 }

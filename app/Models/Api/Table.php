@@ -10,8 +10,7 @@ class Table extends Model
     use HasFactory;
 
     protected $hidden = [
-        'code',
-        'activo',
+        'enable',
         'description',
         'created_at',
         'updated_at',
