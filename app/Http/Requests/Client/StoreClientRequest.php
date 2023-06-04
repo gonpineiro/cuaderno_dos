@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Client;
 
+use App\Http\Requests\TraitRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreClientRequest extends FormRequest
 {
+    use TraitRequest;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,29 +31,27 @@ class StoreClientRequest extends FormRequest
             'dni' => 'required|max:8|min:8|unique:clients',
             'name' => 'required|max:35',
             'email' => 'required|email|max:100|unique:clients',
+            'city_id' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'dni.required' => 'documento es requerido',
-            'dni.max' => 'formato del documento es invalido',
-            'dni.min' => 'formato del documento es invalido',
-            'dni.unique' => 'documento ya se encuentra registrado',
+            'dni.required' => 'Documento es requerido',
+            'dni.max' => 'Formato del documento es invalido',
+            'dni.min' => 'Formato del documento es invalido',
+            'dni.unique' => 'Documento ya se encuentra registrado',
 
-            'name.required' => 'nombre es requerido',
-            'name.max' => 'nombre no debe superar los 35 caracteres',
+            'name.required' => 'Nombre es requerido',
+            'name.max' => 'Nombre no debe superar los 35 caracteres',
 
-            'email.required' => 'correo electronico es requerido',
-            'email.max' => 'correo electronico no debe superar los 100 caracteres',
-            'email.email' => 'correo electronico invalido',
-            'email.unique' => 'correo electronico ya existente',
+            'email.required' => 'Correo electronico es requerido',
+            'email.max' => 'Correo electronico no debe superar los 100 caracteres',
+            'email.email' => 'Correo electronico invalido',
+            'email.unique' => 'Correo electronico ya existente',
+
+            'city_id.required' => 'La ciudad es requerida',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(sendResponse(null, $validator->errors(), 422));
     }
 }

@@ -21,6 +21,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
+    Route::resource('ciudad', CityController::class);
     Route::resource('cliente', ClientController::class);
     Route::resource('producto', ProductController::class);
 
