@@ -28,7 +28,7 @@ class OrderResource extends JsonResource
 
             /* online */
             if ($this->type->value == 'online') {
-                $array['orders_products'] = $this->online();
+                $array['orders_products'] = OrderProduct::collection($this->detail);
             }
 
             /* Pedido */

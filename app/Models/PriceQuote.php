@@ -35,7 +35,8 @@ class PriceQuote extends Model
     }
     public function detail()
     {
-        return $this->hasMany(\App\Models\Api\OrderProduct::class);
+        $productos = $this->hasMany(PriceQuoteProduct::class);
+        return $productos;
     }
 
     public function client()

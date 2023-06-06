@@ -18,6 +18,13 @@ class PriceQuoteResource extends JsonResource
 
         /* Parametros del GET */
         $data_type = $request->query('data_type');
+        /* Solicitamos todos los datos del objeto - Ideal si solo traemos elementos limitados */
+        if (!$data_type) {
+            $array['user'] = $this->user->toArray();
+            $array['client'] = $this->client->toArray();
+
+            $array['price_quotes_products'] = PriceQuoteProductResource::collection($this->detail);
+        }
 
         if ($data_type && $data_type == 'table') {
             unset($array['description']);
