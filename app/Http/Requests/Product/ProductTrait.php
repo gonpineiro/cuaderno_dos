@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Models\Api\Table;
+use App\Models\Table;
 
 trait ProductTrait
 {

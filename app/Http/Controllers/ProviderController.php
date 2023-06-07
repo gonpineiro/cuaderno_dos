@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Models\Api\Provider;
+use App\Models\Provider;
 use App\Http\Requests\Provider\StoreProviderRequest;
 use App\Http\Requests\Provider\UpdateProviderRequest;
 use App\Http\Resources\ProviderResource;
@@ -34,7 +34,7 @@ class ProviderController extends \App\Http\Controllers\Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Provider  $provider
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
@@ -47,7 +47,7 @@ class ProviderController extends \App\Http\Controllers\Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Provider\UpdateProviderRequest  $request
-     * @param  \App\Models\Api\Provider  $provider
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateProviderRequest $request, $id)
@@ -60,7 +60,7 @@ class ProviderController extends \App\Http\Controllers\Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Provider  $provider
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Api\Provider;
+use App\Models\Provider;
 use Illuminate\Database\Seeder;
 
 class ProviderSeeder extends Seeder

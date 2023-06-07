@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PriceQuoteResource;
+use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Models\PriceQuote;
-use Illuminate\Http\Request;
 
 class PriceQuoteController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $priceQuote = PriceQuoteResource::collection(PriceQuote::all());
         return sendResponse($priceQuote);
@@ -16,7 +15,7 @@ class PriceQuoteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Order  $priceQuote
+     * @param  \App\Models\Order  $priceQuote
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)

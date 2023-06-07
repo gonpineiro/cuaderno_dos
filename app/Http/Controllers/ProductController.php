@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Validator;
-
-use App\Models\Api\Product;
+use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -37,7 +35,7 @@ class ProductController extends \App\Http\Controllers\Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Product  $product
+     * @param  \App\Models\Product  $product
      * @return \App\Http\Resources\ProductResource
      */
     public function show($id)
@@ -50,7 +48,7 @@ class ProductController extends \App\Http\Controllers\Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Product\UpdateProductRequest  $request
-     * @param  \App\Models\Api\Product  $product
+     * @param  \App\Models\Product  $product
      * @return \App\Http\Resources\ProductResource
      */
     public function update(UpdateProductRequest $request, $id)
@@ -63,7 +61,7 @@ class ProductController extends \App\Http\Controllers\Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Product  $product
+     * @param  \App\Models\Product  $product
      * @return \App\Http\Resources\ProductResource
      */
     public function destroy($id)

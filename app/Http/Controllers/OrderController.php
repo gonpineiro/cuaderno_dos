@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\OrderProduct as OrderProductResource;
+use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Order\OrderProductResource;
 use App\Mail\MiCorreoMailable;
-use App\Models\Api\Order;
-use App\Models\Api\OrderProduct;
-use App\Models\Api\Table;
+use App\Models\Order;
+use App\Models\OrderProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
@@ -38,7 +37,7 @@ class OrderController extends \App\Http\Controllers\Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\Order\StoreOrderRequest  $request
-     * @return \App\Http\Resources\OrderResource|\Illuminate\Http\JsonResponse
+     * @return \App\Http\Resources\Order\OrderResource|\Illuminate\Http\JsonResponse
      */
     public function store(StoreOrderRequest $request)
     {
@@ -116,7 +115,7 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Order  $order
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
@@ -129,7 +128,7 @@ class OrderController extends \App\Http\Controllers\Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Order\UpdateOrderRequest $request
-     * @param  \App\Models\Api\Order $order
+     * @param  \App\Models\Order $order
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateOrderRequest $request, $id)
@@ -197,7 +196,7 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Order  $order
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)

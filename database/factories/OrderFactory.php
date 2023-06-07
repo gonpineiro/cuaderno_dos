@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories\Api;
+namespace Database\Factories;
 
-use App\Models\Api\Client;
-use App\Models\Api\Table;
+use App\Models\Client;
+use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

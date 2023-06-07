@@ -31,7 +31,7 @@ class PriceQuote extends Model
 
     public function products()
     {
-        return $this->belongsToMany(\App\Models\Api\Product::class);
+        return $this->belongsToMany(Product::class);
     }
     public function detail()
     {
@@ -41,7 +41,7 @@ class PriceQuote extends Model
 
     public function client()
     {
-        return $this->belongsTo(\App\Models\Api\Client::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function user()

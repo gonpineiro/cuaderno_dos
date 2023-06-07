@@ -35,7 +35,7 @@ class CityController extends \App\Http\Controllers\Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\Order\StoreOrderRequest  $request
-     * @return \App\Http\Resources\OrderResource|\Illuminate\Http\JsonResponse
+     * @return \App\Http\Resources\CityResource|\Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -47,7 +47,7 @@ class CityController extends \App\Http\Controllers\Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Order\UpdateOrderRequest $request
-     * @param  \App\Models\Api\Order $city
+     * @param  \App\Models\City $city
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateCityRequest $request, $id)

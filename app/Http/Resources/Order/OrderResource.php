@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Order;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,7 +28,7 @@ class OrderResource extends JsonResource
 
             /* online */
             if ($this->type->value == 'online') {
-                $array['orders_products'] = OrderProduct::collection($this->detail);
+                $array['orders_products'] = OrderProductResource::collection($this->detail);
             }
 
             /* Pedido */
@@ -56,16 +56,16 @@ class OrderResource extends JsonResource
 
     private function online(/* $request */)
     {
-        return OrderProduct::collection($this->detail);
+        return OrderProductResource::collection($this->detail);
     }
 
     private function pedido(/* $request */)
     {
-        return OrderProduct::collection($this->detail);
+        return OrderProductResource::collection($this->detail);
     }
 
     private function siniestro(/* $request */)
     {
-        return OrderProduct::collection($this->detail);
+        return OrderProductResource::collection($this->detail);
     }
 }

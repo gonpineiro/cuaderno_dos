@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Api\Order;
-use App\Models\Api\OrderProduct;
+use App\Models\Order;
+use App\Models\OrderProduct;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder

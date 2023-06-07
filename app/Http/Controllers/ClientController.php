@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\{StoreClientRequest, UpdateClientRequest};
 use App\Http\Resources\ClientResource;
-use App\Models\Api\Client;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -42,7 +42,7 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Api\Client $client
+     * @param  \App\Models\Client $client
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
@@ -55,7 +55,7 @@ class ClientController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\Client\UpdateClientRequest $request
-     * @param  \App\Models\Api\Client $client
+     * @param  \App\Models\Client $client
      * @return \App\Http\Resources\ClientResource
      */
     public function update(UpdateClientRequest $request, $id)
@@ -68,7 +68,7 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Client $client
+     * @param  \App\Models\Client $client
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)

@@ -2,14 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\ProviderController;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Api\ClientController;
-use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceQuoteController;
-use App\Http\Controllers\Api\OrderProductController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\OrderProductController;
+use App\Http\Controllers\UserController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);

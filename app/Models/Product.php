@@ -1,17 +1,36 @@
 <?php
 
-namespace App\Models\Api;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductOther extends Model
+class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'code',
+        'provider_code',
+        'factory_code',
+        'equivalence',
+
         'description',
+        'model',
+        'engine',
+        'observation',
+
+        'min_stock',
+        'empty_stock',
+
+        'ship',
+        'module',
+        'side',
+        'column',
+        'row',
+
+        'verified',
+
         'provider_id',
         'brand_id',
     ];
