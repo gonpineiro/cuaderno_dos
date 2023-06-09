@@ -13,6 +13,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+        'price_quote_id',
         'type_id',
         'engine',
         'chasis',
@@ -27,7 +28,9 @@ class Order extends Model
         'user_id',
         'type_id',
         'client_id',
+        'price_quote_id',
         'updated_at',
+        'deleted_at',
         'pivot',
     ];
 

@@ -18,7 +18,7 @@ class PriceQuoteProductResource extends JsonResource
     {
         $array = parent::toArray($request);
 
-        $array['product'] =  new ProductResource($this->otherProduct);
+        $array['product'] =  new ProductResource($this->product);
 
         $array['state'] =  $this->state;
 

@@ -10,7 +10,6 @@ use App\Mail\MiCorreoMailable;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -39,40 +38,47 @@ class OrderController extends \App\Http\Controllers\Controller
      * @param  \App\Http\Requests\Order\StoreOrderRequest  $request
      * @return \App\Http\Resources\Order\OrderResource|\Illuminate\Http\JsonResponse
      */
-    public function store(StoreOrderRequest $request)
+    public static function store(StoreOrderRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $user = auth()->user();
-
-            $data = $request->all();
-            $data['user_id'] = $user->id;
-
-            $order = Order::create($data);
-
-            /* Intentamos guardar lss ordernes productos */
-            if (!$this->storeOrderProduct($request, $order->id)) {
-                DB::rollBack();
-                return sendResponse(null, 'No se pudieron guardar los productos de la orden');
-            }
+            $order = self::saveOrder($request);
 
             DB::commit();
 
             return sendResponse(new OrderResource($order));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
 
-    private function storeOrderProduct($request, $order_id)
+    public static function saveOrder(StoreOrderRequest $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->all();
+        $data['user_id'] = $user->id;
+
+        $order = Order::create($data);
+
+        /* Intentamos guardar lss ordernes productos */
+        if (!self::storeOrderProduct($request, $order->id)) {
+            DB::rollBack();
+            throw new \Exception('No se pudieron guardar los productos de la orden');
+        }
+
+        return $order;
+    }
+
+    private static function storeOrderProduct($request, $order_id)
     {
         $orders_products = $request->orders_products;
 
         /* if ($this->hayDuplicados($orders_products)) {
-            throw new Exception("Existen productos duplicados");
+            throw new \Exception("Existen productos duplicados");
         } */
 
         foreach ($orders_products as $order_product) {
@@ -80,7 +86,10 @@ class OrderController extends \App\Http\Controllers\Controller
             $order_product['order_id'] = $order_id;
             $order_product['state_id'] = $order_product['state']['id'];
 
-            if ($order_product['product']['is_product']) {
+            $haveProductId = isset($order_product['product_id']) && $order_product['product_id'];
+            $haveIsProduct = isset($order_product['product']['id']) && $order_product['product']['id'];
+
+            if ($haveProductId || $haveIsProduct) {
                 $order_product['product_id'] = $order_product['product']['id'];
             } else {
                 $order_product['other_id'] = $order_product['product']['id'];
@@ -88,7 +97,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
 
             if (!OrderProduct::create($order_product)) {
-                throw new Exception("No se pudo crear un detalle de la orden");
+                throw new \Exception("No se pudo crear un detalle de la orden");
             }
         }
         return true;
@@ -159,7 +168,7 @@ class OrderController extends \App\Http\Controllers\Controller
             DB::commit();
 
             return sendResponse(new OrderResource($order));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
@@ -186,7 +195,7 @@ class OrderController extends \App\Http\Controllers\Controller
             DB::commit();
 
             return sendResponse(new OrderResource($order));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
@@ -208,7 +217,7 @@ class OrderController extends \App\Http\Controllers\Controller
             $entregado = OrderProduct::where('order_id', $id)->where('state_id', 11)->exists();
 
             if ($entregado) {
-                throw new Exception("No se puede eliminar un pedido con un producto entregado");
+                throw new \Exception("No se puede eliminar un pedido con un producto entregado");
             }
 
             $order->delete();
@@ -217,7 +226,7 @@ class OrderController extends \App\Http\Controllers\Controller
             DB::commit();
 
             return sendResponse($id);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $id);

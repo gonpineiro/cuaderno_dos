@@ -6,31 +6,50 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PriceQuoteResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    protected $customParam;
+
+    public function __construct($resource, $customParam = null)
+    {
+        parent::__construct($resource);
+        $this->customParam = $customParam;
+    }
+
     public function toArray($request)
     {
         $array = parent::toArray($request);
 
-        /* Parametros del GET */
-        $data_type = $request->query('data_type');
-        /* Solicitamos todos los datos del objeto - Ideal si solo traemos elementos limitados */
-        if (!$data_type) {
-            $array['user'] = $this->user->toArray();
-            $array['client'] = $this->client->toArray();
+        switch ((string) $this->customParam) {
+            case 'complete':
+                return $this->complete($array);
+            default:
+                return $this->default($array);
+        }
+    }
 
-            $array['price_quotes_products'] = PriceQuoteProductResource::collection($this->detail);
+    private function complete($array)
+    {
+        $array['observation'] = $this->observation;
+        $array['user'] = $this->user;
+        $array['client'] = $this->client;
+
+        if ($this->order) {
+            $this->order->type;
+            $array['order'] = $this->order;
+            $array['order']['getGeneralState'] = $this->order->getGeneralState();
+        } else {
+            $array['order'] = null;
         }
 
-        if ($data_type && $data_type == 'table') {
-            unset($array['description']);
-            $array['user'] = $this->user->name;
-            $array['client'] = $this->client;
-        }
+        $array['price_quotes_products'] = PriceQuoteProductResource::collection($this->detail);
+
+        return $array;
+    }
+
+    private function default($array)
+    {
+        $array['user'] = $this->user->name;
+        $array['client'] = $this->client;
+        $array['state'] = $this->order ? $this->order->type->value : null;
 
         return $array;
     }

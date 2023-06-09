@@ -26,6 +26,7 @@ class PriceQuote extends Model
         'user_id',
         'client_id',
         'updated_at',
+        'observation',
         'pivot',
     ];
 
@@ -47,5 +48,10 @@ class PriceQuote extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }
