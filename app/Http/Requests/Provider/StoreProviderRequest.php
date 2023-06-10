@@ -27,7 +27,7 @@ class StoreProviderRequest extends FormRequest
     {
         return [
             'name' => 'required|max:25',
-            'email' => 'required|unique:providers|max:255',
+            'email' => 'required|email|unique:providers|max:255',
         ];
     }
 
@@ -38,8 +38,9 @@ class StoreProviderRequest extends FormRequest
             'name.max' => 'Nombre no debe superar el maximo de 25 caracteres',
 
             'email.required' => 'Email es requerido',
+            'email.email' => 'Correo electronico invalido',
             'email.unique' => 'Ya existe un proveedor con ese correo electronico',
-            'email.max' => 'Email no debe superar el maximo de 255 caracteres',
+            'email.max' => 'Correo electronico no debe superar el maximo de 255 caracteres',
         ];
     }
 }

@@ -47,7 +47,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             DB::commit();
 
-            return sendResponse(new OrderResource($order));
+            return sendResponse(new OrderResource($order, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -130,7 +130,7 @@ class OrderController extends \App\Http\Controllers\Controller
     public function show($id)
     {
         $order = Order::findOrFail($id);
-        return sendResponse(new OrderResource($order));
+        return sendResponse(new OrderResource($order, 'complete'));
     }
 
     /**
@@ -167,7 +167,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             DB::commit();
 
-            return sendResponse(new OrderResource($order));
+            return sendResponse(new OrderResource($order, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -194,7 +194,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
             DB::commit();
 
-            return sendResponse(new OrderResource($order));
+            return sendResponse(new OrderResource($order, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();
 

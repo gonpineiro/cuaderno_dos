@@ -20,10 +20,14 @@ class PriceQuoteResource extends JsonResource
 
         switch ((string) $this->customParam) {
             case 'complete':
-                return $this->complete($array);
+                $array = $this->complete($array);
+                break;
             default:
-                return $this->default($array);
+                $array = $this->default($array);
+                break;
         }
+
+        return $array;
     }
 
     private function complete($array)
@@ -35,12 +39,12 @@ class PriceQuoteResource extends JsonResource
         if ($this->order) {
             $this->order->type;
             $array['order'] = $this->order;
-            $array['order']['getGeneralState'] = $this->order->getGeneralState();
+            $array['order']['estado_general'] = $this->order->getGeneralState();
         } else {
             $array['order'] = null;
         }
 
-        $array['price_quotes_products'] = PriceQuoteProductResource::collection($this->detail);
+        $array['orders_products'] = PriceQuoteProductResource::collection($this->detail);
 
         return $array;
     }

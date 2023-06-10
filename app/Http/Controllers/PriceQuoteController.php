@@ -119,7 +119,7 @@ class PriceQuoteController extends Controller
             DB::commit();
 
             return sendResponse([
-                'pedido' => new OrderResource($order),
+                'pedido' => new OrderResource($order, 'complete'),
                 'cotizacion' => new PriceQuoteResource($cotizacion),
             ]);
         } catch (\Exception $e) {

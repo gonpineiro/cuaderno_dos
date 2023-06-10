@@ -21,7 +21,7 @@ class OrderProductController extends Controller
 
         if ($update) {
             $order = Order::findOrFail($request->order_id);
-            return sendResponse(new OrderResource($order));
+            return sendResponse(new OrderResource($order, 'complete'));
         }
         return sendResponse(null, 'Error a modificar el detalle');
     }

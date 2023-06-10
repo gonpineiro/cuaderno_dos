@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceQuoteController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CityController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
