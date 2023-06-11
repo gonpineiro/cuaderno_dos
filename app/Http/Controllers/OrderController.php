@@ -75,28 +75,28 @@ class OrderController extends \App\Http\Controllers\Controller
 
     private static function storeOrderProduct($request, $order_id)
     {
-        $orders_products = $request->orders_products;
+        $detail = $request->detail;
 
-        /* if ($this->hayDuplicados($orders_products)) {
+        /* if ($this->hayDuplicados($detail)) {
             throw new \Exception("Existen productos duplicados");
         } */
 
-        foreach ($orders_products as $order_product) {
+        foreach ($detail as $item) {
 
-            $order_product['order_id'] = $order_id;
-            $order_product['state_id'] = $order_product['state']['id'];
+            $item['order_id'] = $order_id;
+            $item['state_id'] = $item['state']['id'];
 
-            $haveProductId = isset($order_product['product_id']) && $order_product['product_id'];
-            $haveIsProduct = isset($order_product['product']['id']) && $order_product['product']['id'];
+            $haveProductId = isset($item['product_id']) && $item['product_id'];
+            $haveIsProduct = isset($item['product']['id']) && $item['product']['id'];
 
             if ($haveProductId || $haveIsProduct) {
-                $order_product['product_id'] = $order_product['product']['id'];
+                $item['product_id'] = $item['product']['id'];
             } else {
-                $order_product['other_id'] = $order_product['product']['id'];
+                $item['other_id'] = $item['product']['id'];
             }
 
 
-            if (!OrderProduct::create($order_product)) {
+            if (!OrderProduct::create($item)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");
             }
         }
@@ -180,13 +180,13 @@ class OrderController extends \App\Http\Controllers\Controller
         DB::beginTransaction();
 
         try {
-            $orders_products = OrderProduct::where('order_id', $id)->get();
+            $detail = OrderProduct::where('order_id', $id)->get();
 
-            foreach ($orders_products as $order_product) {
-                /* Verificamos que cada order_product no tenga el estado de entregado o cancelado */
-                if ($order_product->state_id != 11 && $order_product->state_id != 12) {
-                    $order_product->state_id = (int)$request->value;
-                    $order_product->save();
+            foreach ($detail as $item) {
+                /* Verificamos que cada item no tenga el estado de entregado o cancelado */
+                if ($item->state_id != 11 && $item->state_id != 12) {
+                    $item->state_id = (int)$request->value;
+                    $item->save();
                 }
             }
 
@@ -250,10 +250,10 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $order = Order::find($id);
         $order->client;
-        $orders_products = OrderProductResource::collection($order->detail);
+        $detail = OrderProductResource::collection($order->detail);
 
-        //return view('pdf.template', ['pedido' => $order, 'orders_products' => $orders_products]);
-        $pdf = Pdf::loadView('pdf.template', ['pedido' => $order, 'orders_products' => $orders_products]);
+        //return view('pdf.template', ['pedido' => $order, 'detail' => $detail]);
+        $pdf = Pdf::loadView('pdf.template', ['pedido' => $order, 'detail' => $detail]);
 
         return $pdf->download('informe.pdf');
     }

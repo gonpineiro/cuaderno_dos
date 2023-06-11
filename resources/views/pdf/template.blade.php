@@ -72,13 +72,13 @@
             </tr>
 
 
-            @foreach ($orders_products as $order_product)
+            @foreach ($detail as $item)
             <tr>
-                <td>{{$order_product->product->code}}</td>
+                <td>{{$item->product->code}}</td>
                 <td>{{'Descripción del producto'}}</td>
-                <td>{{$order_product->amount}}</td>
-                <td>{{$order_product->unit_price}}</td>
-                <td>{{$order_product->unit_price * $order_product->amount}}</td>
+                <td>{{$item->amount}}</td>
+                <td>{{$item->unit_price}}</td>
+                <td>{{$item->unit_price * $item->amount}}</td>
             </tr>
             @endforeach
         </table>

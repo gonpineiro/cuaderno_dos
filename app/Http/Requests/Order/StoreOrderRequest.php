@@ -28,7 +28,7 @@ class StoreOrderRequest extends FormRequest
         return [
             'client_id' => 'required',
             'type_id' => 'required',
-            'orders_products' => 'required',
+            'detail' => 'required',
 
             'engine' => 'required',
             'chasis' => 'required',
@@ -42,7 +42,7 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'client_id.required' => 'El Cliente es requerido',
-            'orders_products.required' => 'Productos es requerido',
+            'detail.required' => 'Productos es requerido',
 
             'engine.required' => 'Vehículo/Motor es requerido',
             'chasis.required' => 'Chasis es requerido',

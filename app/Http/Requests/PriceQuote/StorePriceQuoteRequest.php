@@ -25,7 +25,7 @@ class StorePriceQuoteRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
-            'orders_products' => 'required',
+            'detail' => 'required',
 
             'engine' => 'required',
             'chasis' => 'required',
@@ -39,7 +39,7 @@ class StorePriceQuoteRequest extends FormRequest
     {
         return [
             'client_id.required' => 'El Cliente es requerido',
-            'orders_products.required' => 'Productos es requerido',
+            'detail.required' => 'Productos es requerido',
 
             'engine.required' => 'Vehículo/Motor es requerido',
             'chasis.required' => 'Chasis es requerido',

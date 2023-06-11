@@ -58,24 +58,23 @@ class PriceQuoteController extends Controller
 
     private function storePriceQuoteProduct($request, $price_quote_id)
     {
-        $price_quotes_products = $request->orders_products;
+        $detail = $request->detail;
 
-        /* if ($this->hayDuplicados($price_quotes_products)) {
+        /* if ($this->hayDuplicados($detail)) {
             throw new Exception("Existen productos duplicados");
         } */
 
-        foreach ($price_quotes_products as $price_quote_product) {
+        foreach ($detail as $item) {
+            $item['price_quote_id'] = $price_quote_id;
+            $item['state_id'] = $item['state']['id'];
 
-            $price_quote_product['price_quote_id'] = $price_quote_id;
-            $price_quote_product['state_id'] = $price_quote_product['state']['id'];
-
-            if ($price_quote_product['product']['is_product']) {
-                $price_quote_product['product_id'] = $price_quote_product['product']['id'];
+            if ($item['product']['is_product']) {
+                $item['product_id'] = $item['product']['id'];
             } else {
-                $price_quote_product['other_id'] = $price_quote_product['product']['id'];
+                $item['other_id'] = $item['product']['id'];
             }
 
-            if (!PriceQuoteProduct::create($price_quote_product)) {
+            if (!PriceQuoteProduct::create($item)) {
                 throw new \Exception("No se pudo crear un detalle de la cotización");
             }
         }
@@ -99,13 +98,13 @@ class PriceQuoteController extends Controller
         DB::beginTransaction();
 
         try {
-            $cotizacion = PriceQuote::find($request->price_quote_id);
+            $priceQuote = PriceQuote::find($request->price_quote_id);
 
-            if (!$cotizacion) {
+            if (!$priceQuote) {
                 throw new \Exception('No existe la cotizacion');
             }
 
-            if ($cotizacion->order_id) {
+            if ($priceQuote->order_id) {
                 throw new \Exception('La cotización ya tiene un pedido asignado');
             }
 
@@ -113,18 +112,42 @@ class PriceQuoteController extends Controller
             $orderRequest->validate($orderRequest->rules());
             $order = OrderController::saveOrder($orderRequest);
 
-            $cotizacion->order_id = $order->id;
-            $cotizacion->save();
+            $priceQuote->order_id = $order->id;
+            $priceQuote->save();
 
             DB::commit();
 
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
-                'cotizacion' => new PriceQuoteResource($cotizacion),
+                'cotizacion' => new PriceQuoteResource($priceQuote),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $priceQuote = PriceQuote::findOrFail($id);
+
+            if ($priceQuote->order_id) {
+                throw new \Exception('No se puede borrar una cotización asignada');
+            }
+
+            $priceQuote->delete();
+            PriceQuoteProduct::where('price_quote_id', $id)->delete();
+
+            DB::commit();
+
+            return sendResponse($id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $id);
         }
     }
 }
