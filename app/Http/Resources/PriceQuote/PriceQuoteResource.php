@@ -32,10 +32,12 @@ class PriceQuoteResource extends JsonResource
 
     private function complete($array)
     {
-        $array['observation'] = $this->observation;
         $array['user'] = $this->user;
+
+        $this->client->city;
         $array['client'] = $this->client;
 
+        $array['observation'] = $this->observation;
         if ($this->order) {
             $this->order->type;
             $array['order'] = $this->order;

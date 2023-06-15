@@ -150,4 +150,20 @@ class PriceQuoteController extends Controller
             return sendResponse(null, $e->getMessage(), 300, $id);
         }
     }
+
+    public function update_price_quote_product(Request $request)
+    {
+        $item =
+            PriceQuoteProduct::where('price_quote_id', $request->price_quote_id)
+            ->where('product_id', $request->product_id)
+            ->where('other_id', $request->other_id)->first();
+
+        $update = $item->update($request->all());
+
+        if ($update) {
+            $priceQuote = PriceQuote::findOrFail($request->price_quote_id);
+            return sendResponse(new PriceQuoteResource($priceQuote, 'complete'));
+        }
+        return sendResponse(null, 'Error a modificar el detalle');
+    }
 }
