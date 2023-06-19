@@ -9,7 +9,7 @@ class ProductResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -17,9 +17,12 @@ class ProductResource extends JsonResource
         $array = parent::toArray($request);
         $array['provider'] = $this->provider ? $this->provider->name : null;
         $array['brand'] = $this->brand ? $this->brand->value : null;
+        $array['ubication'] = $this->ubication;
+        $array['state'] = $this->state;
+        $array['priceQuoteProduct'] = $this->priceQuoteProduct;
 
         if ($request->query('ordenes') == "true") {
-            $array['ordenes'] = $this->orders;
+            $array['ordenes'] = count($this->orders) > 0 ? $this->orders : null;
         }
 
         return $array;

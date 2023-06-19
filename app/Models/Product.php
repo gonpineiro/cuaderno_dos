@@ -40,7 +40,17 @@ class Product extends Model
         'provider_id',
         'brand_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'ship',
+        'module',
+        'side',
+        'column',
+        'row',
+    ];
+
+    protected $casts = [
+        'min_stock' => 'boolean',
+        'empty_stock' => 'boolean',
     ];
 
     public function provider()
@@ -53,9 +63,30 @@ class Product extends Model
         return $this->belongsToMany(Order::class);
     }
 
+    public function priceQuoteProduct()
+    {
+        return $this->hasMany(PriceQuoteProduct::class);
+    }
+
     public function brand()
     {
         return $this->belongsTo(Table::class);
     }
 
+    public function getUbicationAttribute()
+    {
+        if (!$this->ship || !$this->module || !$this->side || !$this->column || !$this->row) {
+            return null;
+        }
+        return $this->ship . $this->module . $this->side . $this->column . $this->row;
+    }
+
+    public function getStateAttribute()
+    {
+        if ($this->empty_stock) return 'empty_stock';
+
+        if ($this->min_stock) return 'min_stock';
+
+        if (!$this->min_stock && !$this->empty_stock) return 'ok';
+    }
 }
