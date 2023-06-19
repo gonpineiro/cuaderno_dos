@@ -19,7 +19,6 @@ class CreateOrderProductTable extends Migration
 
             /* Requieren que sea nulos porque o va ser uno o el otro, jamas ambos */
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('other_id')->nullable();
             $table->unsignedBigInteger('state_id');
 
             /* Detalle del pedido */
@@ -32,7 +31,6 @@ class CreateOrderProductTable extends Migration
             /* Relaciones */
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('other_id')->references('id')->on('product_others')->onDelete('cascade');
             $table->foreign('state_id')->references('id')->on('tables')->onDelete('cascade');
 
             /* $table->unique(['order_id', 'product_id']);

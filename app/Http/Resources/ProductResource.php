@@ -16,7 +16,7 @@ class ProductResource extends JsonResource
     {
         $array = parent::toArray($request);
         $array['provider'] = $this->provider ? $this->provider->name : null;
-        $array['brand'] = $this->brand->value;
+        $array['brand'] = $this->brand ? $this->brand->value : null;
 
         if ($request->query('ordenes') == "true") {
             $array['ordenes'] = $this->orders;

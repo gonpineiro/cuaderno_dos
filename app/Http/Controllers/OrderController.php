@@ -86,15 +86,7 @@ class OrderController extends \App\Http\Controllers\Controller
             $item['order_id'] = $order_id;
             $item['state_id'] = $item['state']['id'];
 
-            $haveProductId = isset($item['product_id']) && $item['product_id'];
-            $haveIsProduct = isset($item['product']['id']) && $item['product']['id'];
-
-            if ($haveProductId || $haveIsProduct) {
-                $item['product_id'] = $item['product']['id'];
-            } else {
-                $item['other_id'] = $item['product']['id'];
-            }
-
+            $item['product_id'] = $item['product']['id'];
 
             if (!OrderProduct::create($item)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");

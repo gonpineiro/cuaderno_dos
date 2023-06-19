@@ -18,9 +18,8 @@ class OrderSeeder extends Seeder
         /* Online */
         Order::factory()->times(5)->create(['type_id' => 6])->each(function ($order) {
 
-            /* Por cada orden asociamos los 10 primeros productos */
-            for ($i = 1; $i <= 3; $i++) {
-                $this->createOrderProduct($order, $i, 'product_id');
+            for ($i = 1; $i <= 10; $i++) {
+                $this->createOrderProduct($order, $i);
             }
         });
 
@@ -28,7 +27,7 @@ class OrderSeeder extends Seeder
         Order::factory()->times(3)->create(['type_id' => 7])->each(function ($order) {
 
             for ($i = 1; $i <= 10; $i++) {
-                $this->createOrderProduct($order, $i, 'other_id');
+                $this->createOrderProduct($order, $i);
             }
         });
 
@@ -36,21 +35,16 @@ class OrderSeeder extends Seeder
         Order::factory()->times(3)->create(['type_id' => 8])->each(function ($order) {
 
             for ($i = 1; $i <= 10; $i++) {
-
-                if (isEven($i)) {
-                    $this->createOrderProduct($order, $i, 'product_id');
-                } else {
-                    $this->createOrderProduct($order, $i, 'other_id');
-                }
+                $this->createOrderProduct($order, $i);
             }
         });
     }
 
-    private function createOrderProduct($order, $int, $order_type)
+    private function createOrderProduct($order, $int)
     {
         $orderProduct = [
             'order_id' => $order->id,
-            $order_type => $int,
+            'product_id' => $int,
             'state_id' => rand(9, 12),
 
             'amount' => rand(1, 6),

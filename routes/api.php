@@ -24,7 +24,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('proveedor', ProviderController::class);
     Route::resource('ciudad', CityController::class);
     Route::resource('cliente', ClientController::class);
-    Route::resource('producto', ProductController::class);
+    Route::resource('producto', ProductController::class)->except(['destroy']);
+    Route::post('producto/fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);
 
     Route::get('orden/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);

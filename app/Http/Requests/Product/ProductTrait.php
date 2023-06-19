@@ -9,13 +9,17 @@ trait ProductTrait
     /** Verifica que el id de la marca corresponda realmente a una marca en la tabla 'table' */
     private function authBrand()
     {
-        $table_id = $this->all()['brand_id'];
-        $table = Table::where('id', $table_id)->first();
+        try {
+            $table_id = $this->all()['brand_id'];
+            $table = Table::where('id', $table_id)->first();
 
-        if ($table->name == 'brand') {
-            return true;
+            if ($table->name == 'brand') {
+                return true;
+            }
+
+            return false;
+        } catch (\Throwable $th) {
+            return false;
         }
-
-        return false;
     }
 }

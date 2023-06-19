@@ -14,8 +14,7 @@ class OrderProductController extends Controller
     {
         $order_product =
             OrderProduct::where('order_id', $request->order_id)
-            ->where('product_id', $request->product_id)
-            ->where('other_id', $request->other_id)->first();
+            ->where('product_id', $request->product_id)->first();
 
         $update = $order_product->update($request->all());
 

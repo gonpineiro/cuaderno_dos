@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Http\Requests\TraitRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
 {
-    use ProductTrait;
+    use ProductTrait, TraitRequest;
 
     /**
      * Determine if the user is authorized to make this request.

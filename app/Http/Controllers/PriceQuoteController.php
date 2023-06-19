@@ -109,7 +109,7 @@ class PriceQuoteController extends Controller
             }
 
             $orderRequest = StoreOrderRequest::createFrom($request);
-            $orderRequest->validate($orderRequest->rules());
+            $$orderRequest->validate($orderRequest->rules());
             $order = OrderController::saveOrder($orderRequest);
 
             $priceQuote->order_id = $order->id;
@@ -155,8 +155,7 @@ class PriceQuoteController extends Controller
     {
         $item =
             PriceQuoteProduct::where('price_quote_id', $request->price_quote_id)
-            ->where('product_id', $request->product_id)
-            ->where('other_id', $request->other_id)->first();
+            ->where('product_id', $request->product_id)->first();
 
         $update = $item->update($request->all());
 

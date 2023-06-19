@@ -8,6 +8,7 @@ use App\Http\Requests\TraitRequest;
 class StoreOrderRequest extends FormRequest
 {
     use TraitRequest;
+
     /**
      * Determine if the user is authorized to make this request.
      *

@@ -15,7 +15,6 @@ class PriceQuoteProduct extends Model
         'price_quote_id',
         'state_id',
         'product_id',
-        'other_id',
         'amount',
         'unit_price',
         'quote',
@@ -35,10 +34,5 @@ class PriceQuoteProduct extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function otherProduct()
-    {
-        return $this->belongsTo(ProductOther::class, 'other_id');
     }
 }

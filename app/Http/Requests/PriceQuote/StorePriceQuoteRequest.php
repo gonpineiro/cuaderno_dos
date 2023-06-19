@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\PriceQuote;
 
+use App\Http\Requests\TraitRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePriceQuoteRequest extends FormRequest
 {
+    use TraitRequest;
+
     /**
      * Determine if the user is authorized to make this request.
      *
