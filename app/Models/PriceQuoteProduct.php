@@ -21,6 +21,10 @@ class PriceQuoteProduct extends Model
         'description'
     ];
 
+    protected $casts = [
+        'amount' => 'integer',
+    ];
+
     protected $dates = ['deleted_at'];
 
     protected $table = 'price_quote_product';

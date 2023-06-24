@@ -27,6 +27,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('u'),
         ]);
 
+        DB::table('users')->insert([
+            'name' => 'Allende',
+            'email' => 'allende@allende.com.ar',
+            'password' => Hash::make('admin'),
+        ]);
+
         $this->call([
             TableSeeder::class,
             CitySeeder::class,

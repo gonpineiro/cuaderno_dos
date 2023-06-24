@@ -19,7 +19,6 @@ class ProductResource extends JsonResource
         $array['brand'] = $this->brand ? $this->brand->value : null;
         $array['ubication'] = $this->ubication;
         $array['state'] = $this->state;
-        $array['priceQuoteProduct'] = $this->priceQuoteProduct;
 
         if ($request->query('ordenes') == "true") {
             $array['ordenes'] = count($this->orders) > 0 ? $this->orders : null;

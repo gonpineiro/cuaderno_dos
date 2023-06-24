@@ -18,7 +18,7 @@ class PriceQuoteSeeder extends Seeder
     {
 
         /* Online */
-        PriceQuote::factory()->times(10)->create()->each(function ($price_quote) {
+        PriceQuote::factory()->times(5)->create()->each(function ($price_quote) {
             $order = Order::find($price_quote->order_id);
             $order->price_quote_id = $price_quote->id;
             $order->save();

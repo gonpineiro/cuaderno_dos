@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\Request;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -16,18 +17,43 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse($products);
     }
 
-    public function toBuy()
+    public function toBuy(Request $request)
+    {
+        $model = $request->model;
+        $state_id = $request->state_id;
+
+        $products = Product::withCount([
+                "$model as count" => function ($query) use ($state_id) {
+                    $query->where('state_id', $state_id);
+                }
+            ])
+            ->withSum(["$model as sum_amount" => function ($query) use ($state_id) {
+                $query->where('state_id', $state_id);
+            }], 'amount')
+
+            /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
+            ->having('count', '>', 0)
+            ->orderBy('count', 'desc')
+            ->get();
+
+        return sendResponse(ProductResource::collection($products));
+    }
+
+    public function inPedidoOnline()
     {
         $products = Product::where('empty_stock', true)
             ->withCount([
-                'priceQuoteProduct' => function ($query) {
-                    $query->where('state_id', 13);
+                'orderProduct as count_order' => function ($query) {
+                    $query->where('state_id', 9);
                 }
             ])
+            ->withSum(['orderProduct as sum_amount' => function ($query) {
+                $query->where('state_id', 9);
+            }], 'amount')
 
             /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
-            ->having('price_quote_product_count', '>', 0)
-            ->orderBy('price_quote_product_count', 'desc')
+            ->having('count_order', '>', 0)
+            ->orderBy('count_order', 'desc')
             ->get();
 
         return sendResponse($products);
