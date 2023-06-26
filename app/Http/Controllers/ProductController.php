@@ -6,7 +6,12 @@ use App\Http\Requests\Product\StoreProductOutRequest;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Http\Resources\ProductResource;
+use App\Models\Order;
+use App\Models\PriceQuoteProduct;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 
 class ProductController extends \App\Http\Controllers\Controller
@@ -23,10 +28,10 @@ class ProductController extends \App\Http\Controllers\Controller
         $state_id = $request->state_id;
 
         $products = Product::withCount([
-                "$model as count" => function ($query) use ($state_id) {
-                    $query->where('state_id', $state_id);
-                }
-            ])
+            "$model as count" => function ($query) use ($state_id) {
+                $query->where('state_id', $state_id);
+            }
+        ])
             ->withSum(["$model as sum_amount" => function ($query) use ($state_id) {
                 $query->where('state_id', $state_id);
             }], 'amount')
@@ -37,6 +42,40 @@ class ProductController extends \App\Http\Controllers\Controller
             ->get();
 
         return sendResponse(ProductResource::collection($products));
+    }
+
+    public function cotizaciones(Request $request)
+    {
+        $code = $request->id;
+        $product = Product::where('code', $code)->first();
+
+        $pq = PriceQuoteProduct::where('product_id', $product->id)
+            ->where('state_id', 13)->with('price_quote')->get();
+
+
+        $priceQuotes = $pq->map(function ($item) {
+            return $item->price_quote;
+        });
+
+        $priceQuotes = PriceQuoteResource::collection($priceQuotes);
+        return sendResponse($priceQuotes);
+    }
+
+    public function pedidosOnline(Request $request)
+    {
+        $code = $request->id;
+        $product = Product::where('code', $code)->first();
+
+        $pq = OrderProduct::where('product_id', $product->id)
+            ->where('state_id', 9)->with('order')->get();
+
+
+        $orders = $pq->map(function ($item) {
+            return $item->order;
+        });
+
+        $orders = OrderResource::collection($orders);
+        return sendResponse($orders);
     }
 
     public function inPedidoOnline()
@@ -81,8 +120,8 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
-        return sendResponse($product);
+        $product = Product::where('code', $id)->first();
+        return sendResponse(new ProductResource($product));
     }
 
     public function update(UpdateProductRequest $request, $id)

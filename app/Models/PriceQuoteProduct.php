@@ -39,4 +39,8 @@ class PriceQuoteProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public function price_quote()
+    {
+        return $this->belongsTo(PriceQuote::class);
+    }
 }
