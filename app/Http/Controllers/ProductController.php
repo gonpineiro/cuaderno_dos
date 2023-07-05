@@ -112,7 +112,7 @@ class ProductController extends \App\Http\Controllers\Controller
     {
         try {
             $product = Product::create($request->all());
-            return sendResponse($product);
+            return sendResponse(new ProductResource($product));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());
         }
