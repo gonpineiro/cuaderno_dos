@@ -245,7 +245,7 @@ class OrderController extends \App\Http\Controllers\Controller
         $detail = OrderProductResource::collection($order->detail);
 
         //return view('pdf.template', ['pedido' => $order, 'detail' => $detail]);
-        $pdf = Pdf::loadView('pdf.template', ['pedido' => $order, 'detail' => $detail]);
+        $pdf = Pdf::loadView('pdf.pedido', ['pedido' => $order, 'detail' => $detail]);
 
         return $pdf->download('informe.pdf');
     }

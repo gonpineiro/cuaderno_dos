@@ -54,4 +54,15 @@ class PriceQuote extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function getTypePriceAttribute($value)
+    {
+        if ($value === 'lista') {
+            return 'Precio Lista';
+        } elseif ($value === 'contado') {
+            return 'Precio Contado';
+        }
+
+        return $value;
+    }
 }

@@ -44,7 +44,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('update_order_product', [OrderProductController::class, 'update']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 });
+
 Route::get('orden/pdf/{id}', [OrderController::class, 'getPdfPedido']);
+
+Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
 
 
 

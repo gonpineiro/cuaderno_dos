@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests\PriceQuote\StorePriceQuoteRequest;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Models\Order;
 use App\Models\PriceQuote;
 use App\Models\PriceQuoteProduct;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PriceQuoteController extends Controller
 {
@@ -164,5 +166,34 @@ class PriceQuoteController extends Controller
             return sendResponse(new PriceQuoteResource($priceQuote, 'complete'));
         }
         return sendResponse(null, 'Error a modificar el detalle');
+    }
+
+    public function getPdf(Request $request, $id)
+    {
+        $order = PriceQuote::find($id);
+        $order->client;
+        $detail = PriceQuoteProductResource::collection($order->detail);
+
+        if ($request->type == 'total' || $request->type == 'interno') {
+            $total = 0;
+            foreach ($detail as $item) {
+                $total += $item['amount'] * $item['unit_price'];
+            }
+        }
+
+        if ($request->type == 'sin_total') {
+            $total = null;
+        }
+
+        $vars = [
+            'cotizacion' => $order,
+            'detail' => $detail,
+            'total' => $total,
+            'type' => $request->type
+        ];
+
+        $pdf = Pdf::loadView('pdf.cotizaciones.detalle', $vars);
+
+        return $pdf->download('informe.pdf');
     }
 }

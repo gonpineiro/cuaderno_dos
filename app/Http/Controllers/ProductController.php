@@ -46,36 +46,44 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function cotizaciones(Request $request)
     {
-        $code = $request->id;
-        $product = Product::where('code', $code)->first();
+        try {
+            $code = $request->id;
+            $product = Product::where('code', $code)->first();
 
-        $pq = PriceQuoteProduct::where('product_id', $product->id)
-            ->where('state_id', 13)->with('price_quote')->get();
+            $pq = PriceQuoteProduct::where('product_id', $product->id)
+                ->where('state_id', 13)->with('price_quote')->get();
 
 
-        $priceQuotes = $pq->map(function ($item) {
-            return $item->price_quote;
-        });
+            $priceQuotes = $pq->map(function ($item) {
+                return $item->price_quote;
+            });
 
-        $priceQuotes = PriceQuoteResource::collection($priceQuotes);
-        return sendResponse($priceQuotes);
+            $priceQuotes = PriceQuoteResource::collection($priceQuotes);
+            return sendResponse($priceQuotes);
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 300);
+        }
     }
 
     public function pedidosOnline(Request $request)
     {
-        $code = $request->id;
-        $product = Product::where('code', $code)->first();
+        try {
+            $code = $request->id;
+            $product = Product::where('code', $code)->first();
 
-        $pq = OrderProduct::where('product_id', $product->id)
-            ->where('state_id', 9)->with('order')->get();
+            $pq = OrderProduct::where('product_id', $product->id)
+                ->where('state_id', 9)->with('order')->get();
 
 
-        $orders = $pq->map(function ($item) {
-            return $item->order;
-        });
+            $orders = $pq->map(function ($item) {
+                return $item->order;
+            });
 
-        $orders = OrderResource::collection($orders);
-        return sendResponse($orders);
+            $orders = OrderResource::collection($orders);
+            return sendResponse($orders);
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 300);
+        }
     }
 
     public function inPedidoOnline()
