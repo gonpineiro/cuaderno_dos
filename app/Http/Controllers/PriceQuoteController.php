@@ -18,10 +18,39 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PriceQuoteController extends Controller
 {
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $priceQuote = PriceQuoteResource::collection(PriceQuote::all());
-        return sendResponse($priceQuote);
+
+        if ($request->type === 'pendiente') {
+            $priceQuote = PriceQuote::with('order')->where('order_id', null)->get();
+        } else if ($request->type === 'online') {
+
+            $priceQuote = PriceQuote::with('order')
+                ->whereHas('order', function ($query) {
+                    $query->where('type_id', 6);
+                })
+                ->whereNotNull('order_id')
+                ->get();
+                
+        } else if ($request->type === 'pedido') {
+            $priceQuote = PriceQuote::with('order')
+                ->whereHas('order', function ($query) {
+                    $query->where('type_id', 7);
+                })
+                ->whereNotNull('order_id')
+                ->get();
+        } else if ($request->type === 'siniestro') {
+            $priceQuote = PriceQuote::with('order')
+                ->whereHas('order', function ($query) {
+                    $query->where('type_id', 8);
+                })
+                ->whereNotNull('order_id')
+                ->get();
+        } else {
+            $priceQuote = PriceQuote::all();
+        }
+
+        return sendResponse(PriceQuoteResource::collection($priceQuote));
     }
 
     /**

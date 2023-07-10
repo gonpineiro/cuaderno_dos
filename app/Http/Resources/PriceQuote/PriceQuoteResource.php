@@ -54,9 +54,35 @@ class PriceQuoteResource extends JsonResource
     private function default($array)
     {
         $array['user'] = $this->user->name;
-        $array['client'] = $this->client;
-        $array['state'] = $this->order ? $this->order->type->value : null;
+        $array['client']['name'] = $this->client->name;
+        $array['client']['phone'] = $this->client->phone;
+        $array['state'] = $this->formatState($this->order);
 
         return $array;
+    }
+
+    private function formatState($order)
+    {
+        if ($order) {
+            $type = $order->type->toArray();
+
+            unset($type['id']);
+            unset($type["background_color"]);
+            unset($type["color"]);
+
+            if ($type['value'] === 'online') {
+                $type['string'] = 'Pedido Online';
+            } else if ($type['value'] === 'pedido') {
+                $type['string'] =  'Pedido Cliente';
+            } else if ($type['value'] === 'siniestro') {
+                $type['string'] =  'Siniestro';
+            }
+        } else {
+            $type = [];
+            $type['value'] = 'pendiente';
+            $type['string'] = 'pendiente';
+        }
+
+        return $type;
     }
 }

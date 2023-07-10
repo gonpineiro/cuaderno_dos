@@ -65,4 +65,14 @@ class PriceQuote extends Model
 
         return $value;
     }
+    public function getStateAttribute($value)
+    {
+        if ($value === 'online') {
+            return 'Pedido Online';
+        } elseif ($value === 'contado') {
+            return 'Precio Contado';
+        }
+
+        return $value;
+    }
 }

@@ -17,8 +17,22 @@ class PriceQuoteSeeder extends Seeder
     public function run()
     {
 
-        /* Online */
-        PriceQuote::factory()->times(5)->create()->each(function ($price_quote) {
+        PriceQuote::factory()->times(5)->create(['order_id' => null])->each(function ($price_quote) {
+            $generatedValues = [];
+
+            $cantidadProductos = rand(1, 10);
+            for ($i = 1; $i <= $cantidadProductos; $i++) {
+                do {
+                    $valor = rand(1, 15);
+                } while (in_array($valor, $generatedValues));
+
+                $generatedValues[] = $valor;
+
+                $this->createOrderProduct($price_quote, $valor, 'product_id');
+            }
+        });
+
+        PriceQuote::factory()->times(7)->create()->each(function ($price_quote) {
             $order = Order::find($price_quote->order_id);
             $order->price_quote_id = $price_quote->id;
             $order->save();
