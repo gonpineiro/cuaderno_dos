@@ -23,11 +23,7 @@ class OrderController extends \App\Http\Controllers\Controller
      */
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        if ($type = $request->query('type')) {
-            $order =  OrderResource::collection(Order::where('type_id', $type)->get());
-        } else {
-            $order = OrderResource::collection(Order::all());
-        }
+        $order = OrderResource::collection(Order::all());
 
         return sendResponse($order);
     }
