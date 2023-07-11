@@ -22,23 +22,49 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse($products);
     }
 
-    public function toBuy(Request $request)
+    public function relation(Request $request)
     {
         $model = $request->model;
         $state_id = $request->state_id;
 
         $products = Product::withCount([
+            /* Cantidad de padres (cotizacion o pedidos) */
             "$model as count" => function ($query) use ($state_id) {
                 $query->where('state_id', $state_id);
             }
         ])
+            /* Suma total de la cantidad de productos en todos los padres (cotizacion o pedidos) */
             ->withSum(["$model as sum_amount" => function ($query) use ($state_id) {
                 $query->where('state_id', $state_id);
             }], 'amount')
 
             /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
             ->having('count', '>', 0)
-            ->orderBy('count', 'desc')
+            ->orderBy('sum_amount', 'desc')
+            ->get();
+
+        return sendResponse(ProductResource::collection($products));
+    }
+
+    public function relationEmptyStock(Request $request)
+    {
+        $model = $request->model;
+        $state_id = $request->state_id;
+
+        $products = Product::where('min_stock', true)->withCount([
+            /* Cantidad de padres (cotizacion o pedidos) */
+            "$model as count" => function ($query) use ($state_id) {
+                $query->where('state_id', $state_id);
+            }
+        ])
+            /* Suma total de la cantidad de productos en todos los padres (cotizacion o pedidos) */
+            ->withSum(["$model as sum_amount" => function ($query) use ($state_id) {
+                $query->where('state_id', $state_id);
+            }], 'amount')
+
+            /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
+            ->having('count', '>', 0)
+            ->orderBy('sum_amount', 'desc')
             ->get();
 
         return sendResponse(ProductResource::collection($products));
@@ -86,7 +112,7 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function inPedidoOnline()
+    /* public function inPedidoOnline()
     {
         $products = Product::where('empty_stock', true)
             ->withCount([
@@ -98,13 +124,12 @@ class ProductController extends \App\Http\Controllers\Controller
                 $query->where('state_id', 9);
             }], 'amount')
 
-            /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
             ->having('count_order', '>', 0)
             ->orderBy('count_order', 'desc')
             ->get();
 
         return sendResponse($products);
-    }
+    } */
 
     public function store(StoreProductRequest $request)
     {
