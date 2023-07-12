@@ -27,9 +27,16 @@ class StoreClientRequest extends FormRequest
      */
     public function rules()
     {
+        if ($this->input('is_insurance')) {
+            return [
+                'name' => 'required|max:35',
+                'dni' => 'max:11|min:11|unique:clients',
+            ];
+        }
+
         return [
-            'dni' => 'required|max:8|min:8|unique:clients',
             'name' => 'required|max:35',
+            'dni' => 'required|max:8|min:8|unique:clients',
             'email' => 'required|email|max:100|unique:clients',
             'city_id' => 'required',
         ];
@@ -37,6 +44,16 @@ class StoreClientRequest extends FormRequest
 
     public function messages(): array
     {
+        if ($this->input('is_insurance')) {
+            return [
+                'dni.max' => 'Formato del CUIT es invalido',
+                'dni.min' => 'Formato del CUIT es invalido',
+                'dni.unique' => 'CUIT ya se encuentra registrado',
+
+                'name.required' => 'Nombre es requerido',
+                'name.max' => 'Nombre no debe superar los 35 caracteres',
+            ];
+        }
         return [
             'dni.required' => 'Documento es requerido',
             'dni.max' => 'Formato del documento es invalido',

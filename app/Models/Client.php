@@ -18,6 +18,7 @@ class Client extends Model
         'city_id',
         'adress',
         'cuit',
+        'is_insurance',
         'is_company',
     ];
 

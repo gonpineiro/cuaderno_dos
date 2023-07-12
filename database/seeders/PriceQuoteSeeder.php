@@ -57,7 +57,7 @@ class PriceQuoteSeeder extends Seeder
         $price_quote = [
             'price_quote_id' => $price_quote->id,
             $price_quote_type => $int,
-            'state_id' => rand(13, 14),
+            'state_id' => rand(17, 18),
 
             'amount' => rand(1, 6),
             'unit_price' => rand(500, 80000),

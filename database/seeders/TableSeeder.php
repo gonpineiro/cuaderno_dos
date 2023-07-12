@@ -25,7 +25,7 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'online']);
 
         /* 7 | Productos no existentes */
-        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'pedido']);
+        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'cliente']);
 
         /* 8 | Productos existentes | no existentes  */
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'siniestro']);
@@ -36,7 +36,13 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'order_state', 'value' => 'entregado', 'background_color' => '#198754', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_state', 'value' => 'cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
 
-        /* 13 - 14 */
+        /* 13 - 16 */
+        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'entregado', 'background_color' => '#ffc107', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'recibido', 'background_color' => '#198754', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
+
+        /* 17 - 18 */
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'background_color' => '#198754', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'background_color' => '#6c757d', 'color' => 'black']);
     }

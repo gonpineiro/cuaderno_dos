@@ -19,10 +19,11 @@ class CreateClientsTable extends Migration
             $table->string('name', 35);
             $table->string('email', 100)->unique()->nullable();
             $table->string('phone', 30)->nullable();
-            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('adress')->nullable();
             $table->string('cuit')->nullable();
             $table->boolean('is_company')->default(0);
+            $table->boolean('is_insurance')->default(0);
 
             $table->timestamps();
             $table->softDeletes();

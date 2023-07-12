@@ -77,8 +77,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $product = Product::where('code', $code)->first();
 
             $pq = PriceQuoteProduct::where('product_id', $product->id)
-                ->where('state_id', 13)->with('price_quote')->get();
-
+                ->where('state_id', 17)->with('price_quote')->get();
 
             $priceQuotes = $pq->map(function ($item) {
                 return $item->price_quote;

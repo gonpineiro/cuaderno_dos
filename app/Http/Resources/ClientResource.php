@@ -26,7 +26,7 @@ class ClientResource extends JsonResource
 
         if ($data_type && $data_type == 'table') {
             $array['city'] = $this->city;
-            $array['province'] = $this->city->province;
+            $array['province'] = $this->city ? $this->city->province : null;
         }
 
         return $array;
