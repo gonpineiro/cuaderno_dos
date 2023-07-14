@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Requests\Order\StoreOnlineOrderRequest;
+use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests\PriceQuote\StorePriceQuoteRequest;
@@ -31,7 +32,6 @@ class PriceQuoteController extends Controller
                 })
                 ->whereNotNull('order_id')
                 ->get();
-                
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
                 ->whereHas('order', function ($query) {
@@ -139,9 +139,27 @@ class PriceQuoteController extends Controller
                 throw new \Exception('La cotización ya tiene un pedido asignado');
             }
 
-            $orderRequest = StoreOrderRequest::createFrom($request);
-            $$orderRequest->validate($orderRequest->rules());
-            $order = OrderController::saveOrder($orderRequest);
+            /** El typo_pedido que tendra el pedido */
+            $type_order = Table::find($request->type_id);
+
+            if ($type_order->name !== 'order_type') {
+                throw new \Exception('Enviando información erronea');
+            }
+
+            if ($type_order->value === 'online') {
+                $orderRequest = StoreOnlineOrderRequest::createFrom($request);
+                $all = $orderRequest->all();
+                $orderRequest->validate($orderRequest->rules());
+                $order = OrderController::saveOnlineOrder($orderRequest);
+            } else if ($type_order->value === 'cliente') {
+                $orderRequest = StoreOnlineOrderRequest::createFrom($request);
+                $orderRequest->validate($orderRequest->rules());
+                $order = OrderController::saveOnlineOrder($orderRequest);
+            } else if ($type_order->value === 'siniestro') {
+                $orderRequest = StoreSiniestroOrderRequest::createFrom($request);
+                $orderRequest->validate($orderRequest->rules());
+                $order = OrderController::saveSiniestroOrder($orderRequest);
+            }
 
             $priceQuote->order_id = $order->id;
             $priceQuote->save();

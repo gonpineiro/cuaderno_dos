@@ -5,7 +5,7 @@ namespace App\Http\Requests\Order;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\TraitRequest;
 
-class StoreOrderRequest extends FormRequest
+class StoreSiniestroOrderRequest extends FormRequest
 {
     use TraitRequest;
 
@@ -33,8 +33,8 @@ class StoreOrderRequest extends FormRequest
 
             'engine' => 'required',
             'chasis' => 'required',
-            'payment_method' => 'required',
-            'invoice_number' => 'required',
+            'remito' => 'required',
+            'workshop' => 'required',
         ];
     }
 
@@ -47,8 +47,8 @@ class StoreOrderRequest extends FormRequest
 
             'engine.required' => 'Vehículo/Motor es requerido',
             'chasis.required' => 'Chasis es requerido',
-            'payment_method.required' => 'Forma de pago es requerido',
-            'invoice_number.required' => 'Número de factura es requerido',
+            'remito.required' => 'Remito es requerido',
+            'workshop.required' => 'Taller es requerido',
         ];
     }
 }

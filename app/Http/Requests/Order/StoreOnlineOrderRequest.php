@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\PriceQuote;
+namespace App\Http\Requests\Order;
 
-use App\Http\Requests\TraitRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\TraitRequest;
 
-class StorePriceQuoteRequest extends FormRequest
+class StoreOnlineOrderRequest extends FormRequest
 {
     use TraitRequest;
 
@@ -28,12 +28,14 @@ class StorePriceQuoteRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
+            'type_id' => 'required',
             'detail' => 'required',
 
             'engine' => 'required',
-            /* 'chasis' => 'required', */
-            'type_price' => 'required',
-            'information_source' => 'required',
+            'chasis' => 'required',
+            'payment_method' => 'required',
+            'estimated_date' => 'required',
+            /* 'invoice_number' => 'required', */
         ];
     }
 
@@ -45,9 +47,10 @@ class StorePriceQuoteRequest extends FormRequest
             'detail.required' => 'Productos es requerido',
 
             'engine.required' => 'Vehículo/Motor es requerido',
-            /* 'chasis.required' => 'Chasis es requerido', */
-            'type_price.required' => 'Tipo precio requerido',
-            'information_source.required' => 'Medio de consulta es requerido',
+            'chasis.required' => 'Chasis es requerido',
+            'payment_method.required' => 'Forma de pago es requerido',
+            'estimated_date.required' => 'Fecha estimada es requerida',
+            /* 'invoice_number.required' => 'Número de factura es requerido', */
         ];
     }
 }

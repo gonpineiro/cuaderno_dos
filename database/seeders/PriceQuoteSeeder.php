@@ -17,48 +17,50 @@ class PriceQuoteSeeder extends Seeder
     public function run()
     {
 
+        /* Sin asignar a un pedido */
         PriceQuote::factory()->times(5)->create(['order_id' => null])->each(function ($price_quote) {
             $generatedValues = [];
 
-            $cantidadProductos = rand(1, 10);
+            $cantidadProductos = rand(1, 5);
             for ($i = 1; $i <= $cantidadProductos; $i++) {
                 do {
-                    $valor = rand(1, 15);
+                    $valor = rand(1, 50);
                 } while (in_array($valor, $generatedValues));
 
                 $generatedValues[] = $valor;
 
-                $this->createOrderProduct($price_quote, $valor, 'product_id');
+                $this->createOrderProduct($price_quote, $valor);
             }
         });
 
-        PriceQuote::factory()->times(7)->create()->each(function ($price_quote) {
+        /* Asignando a un pedido */
+       /*  PriceQuote::factory()->times(7)->create()->each(function ($price_quote) {
             $order = Order::find($price_quote->order_id);
             $order->price_quote_id = $price_quote->id;
             $order->save();
 
             $generatedValues = [];
 
-            $cantidadProductos = rand(1, 10);
+            $cantidadProductos = rand(1, 5);
             for ($i = 1; $i <= $cantidadProductos; $i++) {
                 do {
-                    $valor = rand(1, 15);
+                    $valor = rand(1, 50);
                 } while (in_array($valor, $generatedValues));
 
                 $generatedValues[] = $valor;
 
-                $this->createOrderProduct($price_quote, $valor, 'product_id');
+                $this->createOrderProduct($price_quote, $valor);
             }
-        });
+        }); */
     }
 
-    private function createOrderProduct($price_quote, $int, $price_quote_type)
+    private function createOrderProduct($price_quote, $int)
     {
         $price_quote = [
             'price_quote_id' => $price_quote->id,
-            $price_quote_type => $int,
             'state_id' => rand(17, 18),
 
+            'product_id' => $int,
             'amount' => rand(1, 6),
             'unit_price' => rand(500, 80000),
             'description' => "Detalle: $price_quote->id",

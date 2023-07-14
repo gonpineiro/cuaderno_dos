@@ -16,15 +16,33 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'user_id' =>  $this->faker->randomElement(User::all())['id'],
-            'type_id' =>  $this->faker->randomElement(Table::where('name', 'order_type')->get())['id'],
-            'client_id' =>  $this->faker->randomElement(Client::all())['id'],
+        $typeId = $this->faker->randomElement(Table::where('name', 'order_type')->get())['id'];
 
+        $paymentMethod = null;
+        $invoiceNumber = null;
+        $remito = null;
+        $workshop = null;
+
+        if ($typeId === 6) {
+            $paymentMethod = $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']);
+            $invoiceNumber = $this->faker->numberBetween(10100, 10900);
+        }
+
+        if ($typeId === 8) {
+            $remito = $this->faker->numberBetween(10100, 10900);
+            $workshop = $this->faker->text(5);
+        }
+
+        return [
+            'user_id' => $this->faker->randomElement(User::all())['id'],
+            'type_id' => $typeId,
+            'client_id' => $this->faker->randomElement(Client::all())['id'],
             'engine' => $this->faker->bothify('????######'),
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
-            'payment_method' => $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']),
-            'invoice_number' => $this->faker->numberBetween(10100, 10900),
+            'payment_method' => $paymentMethod,
+            'invoice_number' => $invoiceNumber,
+            'remito' => $remito,
+            'workshop' => $workshop,
             'observation' => $this->faker->text(200),
         ];
     }

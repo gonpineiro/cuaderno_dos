@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Order\StoreOrderRequest;
-use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Http\Requests\Order\StoreOnlineOrderRequest;
+use App\Http\Requests\Order\StoreSiniestroOrderRequest;
+use App\Http\Requests\Order\UpdateOnlineOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Order\OrderProductResource;
 use App\Mail\MiCorreoMailable;
@@ -31,15 +32,15 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Order\StoreOrderRequest  $request
+     * @param  \App\Http\Requests\Order\StoreOnlineOrderRequest  $request
      * @return \App\Http\Resources\Order\OrderResource|\Illuminate\Http\JsonResponse
      */
-    public static function store(StoreOrderRequest $request)
+    public static function store(StoreOnlineOrderRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            $order = self::saveOrder($request);
+            $order = self::saveOnlineOrder($request);
 
             DB::commit();
 
@@ -51,7 +52,25 @@ class OrderController extends \App\Http\Controllers\Controller
         }
     }
 
-    public static function saveOrder(StoreOrderRequest $request)
+    public static function saveOnlineOrder(StoreOnlineOrderRequest $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->all();
+        $data['user_id'] = $user->id;
+
+        $order = Order::create($data);
+
+        /* Intentamos guardar lss ordernes productos */
+        if (!self::storeOrderProduct($request, $order->id)) {
+            DB::rollBack();
+            throw new \Exception('No se pudieron guardar los productos de la orden');
+        }
+
+        return $order;
+    }
+
+    public static function saveSiniestroOrder(StoreSiniestroOrderRequest $request)
     {
         $user = auth()->user();
 
@@ -124,11 +143,11 @@ class OrderController extends \App\Http\Controllers\Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Order\UpdateOrderRequest $request
+     * @param  \App\Http\Requests\Order\UpdateOnlineOrderRequest $request
      * @param  \App\Models\Order $order
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateOrderRequest $request, $id)
+    public function update(UpdateOnlineOrderRequest $request, $id)
     {
         DB::beginTransaction();
 

@@ -20,7 +20,8 @@ class CreatePriceQuotesTable extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
 
             $table->string('engine');
-            $table->string('chasis');
+            $table->string('chasis')->nullable();
+
             $table->string('information_source');
             $table->string('type_price');
             $table->string('observation')->nullable();

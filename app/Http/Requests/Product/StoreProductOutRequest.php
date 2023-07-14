@@ -28,6 +28,8 @@ class StoreProductOutRequest extends FormRequest
     {
         return [
             'code' => 'required|max:25|unique:products',
+
+            'provider_id' => 'required',
             'description' => 'required|max:500',
         ];
     }
@@ -41,6 +43,9 @@ class StoreProductOutRequest extends FormRequest
 
             'description.required' => 'description es requerido',
             'description.max' => 'description no debe superar el maximo de 500 caracteres',
+
+            'provider_id.required' => 'provider_id es requerido',
+            'provider_id.integer' => 'provider_id debe ser un entero',
         ];
     }
 }

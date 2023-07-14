@@ -16,26 +16,18 @@ class OrderSeeder extends Seeder
     public function run()
     {
         /* Online */
-        Order::factory()->times(10)->create(['type_id' => 6])->each(function ($order) {
+        Order::factory()->times(10)->create()->each(function ($order) {
+            $generatedValues = [];
 
-            for ($i = 1; $i <= 10; $i++) {
-                $this->createOrderProduct($order, $i);
-            }
-        });
+            $cantidadProductos = rand(1, 10);
+            for ($i = 1; $i <= $cantidadProductos; $i++) {
+                do {
+                    $valor = rand(1, 15);
+                } while (in_array($valor, $generatedValues));
 
-        /* Pedido */
-        Order::factory()->times(10)->create(['type_id' => 7])->each(function ($order) {
+                $generatedValues[] = $valor;
 
-            for ($i = 1; $i <= 10; $i++) {
-                $this->createOrderProduct($order, $i);
-            }
-        });
-
-        /* siniestro */
-        Order::factory()->times(10)->create(['type_id' => 8])->each(function ($order) {
-
-            for ($i = 1; $i <= 10; $i++) {
-                $this->createOrderProduct($order, $i);
+                $this->createOrderProduct($order, $valor);
             }
         });
     }

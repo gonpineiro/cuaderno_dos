@@ -19,6 +19,10 @@ class Order extends Model
         'chasis',
         'payment_method',
         'invoice_number',
+        'remito',
+        'workshop',
+        'deposit',
+        'estimated_date',
         'observation'
     ];
 

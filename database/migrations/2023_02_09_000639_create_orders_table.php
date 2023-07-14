@@ -21,9 +21,14 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('price_quote_id')->nullable();
 
             $table->string('engine');
-            $table->string('chasis');
-            $table->string('payment_method');
-            $table->string('invoice_number');
+            $table->string('chasis')->nullable();
+
+            $table->string('payment_method')->nullable();
+            $table->string('invoice_number')->nullable();
+            $table->string('remito')->nullable();
+            $table->string('workshop')->nullable();
+            $table->float('deposit')->default(0);
+            $table->date('estimated_date')->nullable();
             $table->string('observation')->nullable();
 
             $table->timestamps();
