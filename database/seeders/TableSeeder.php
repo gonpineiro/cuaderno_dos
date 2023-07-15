@@ -22,7 +22,7 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'brand', 'value' => 'ALGO']);
 
         /* 6 | Productos existentes  */
-        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'online']);
+        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'pedido']);
 
         /* 7 | Productos no existentes */
         DB::table('tables')->insert(['name' => 'order_type_DELETE', 'value' => 'cliente']);

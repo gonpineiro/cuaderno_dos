@@ -24,18 +24,10 @@ class PriceQuoteController extends Controller
 
         if ($request->type === 'pendiente') {
             $priceQuote = PriceQuote::with('order')->where('order_id', null)->get();
-        } else if ($request->type === 'online') {
-
-            $priceQuote = PriceQuote::with('order')
-                ->whereHas('order', function ($query) {
-                    $query->where('type_id', 6);
-                })
-                ->whereNotNull('order_id')
-                ->get();
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
                 ->whereHas('order', function ($query) {
-                    $query->where('type_id', 7);
+                    $query->where('type_id', 6);
                 })
                 ->whereNotNull('order_id')
                 ->get();
@@ -124,58 +116,6 @@ class PriceQuoteController extends Controller
         return sendResponse(new PriceQuoteResource($priceQuote, 'complete'));
     }
 
-    public function asignar(Request $request)
-    {
-        DB::beginTransaction();
-
-        try {
-            $priceQuote = PriceQuote::find($request->price_quote_id);
-
-            if (!$priceQuote) {
-                throw new \Exception('No existe la cotizacion');
-            }
-
-            if ($priceQuote->order_id) {
-                throw new \Exception('La cotización ya tiene un pedido asignado');
-            }
-
-            /** El typo_pedido que tendra el pedido */
-            $type_order = Table::find($request->type_id);
-
-            if ($type_order->name !== 'order_type') {
-                throw new \Exception('Enviando información erronea');
-            }
-
-            $all = $request->all();
-            if ($type_order->value === 'online') {
-                $orderRequest = StoreOnlineOrderRequest::createFrom($request);
-                $orderRequest->validate($orderRequest->rules());
-                $order = OrderController::saveOnlineOrder($orderRequest);
-            } else if ($type_order->value === 'cliente') {
-                $orderRequest = StoreOnlineOrderRequest::createFrom($request);
-                $orderRequest->validate($orderRequest->rules());
-                $order = OrderController::saveOnlineOrder($orderRequest);
-            } else if ($type_order->value === 'siniestro') {
-                $orderRequest = StoreSiniestroOrderRequest::createFrom($request);
-                $orderRequest->validate($orderRequest->rules());
-                $order = OrderController::saveSiniestroOrder($orderRequest);
-            }
-
-            $priceQuote->order_id = $order->id;
-            $priceQuote->save();
-
-            DB::commit();
-
-            return sendResponse([
-                'pedido' => new OrderResource($order, 'complete'),
-                'cotizacion' => new PriceQuoteResource($priceQuote),
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
-        }
-    }
-
     public function asignarSiniestro(StoreSiniestroOrderRequest $request)
     {
         DB::beginTransaction();
@@ -233,7 +173,7 @@ class PriceQuoteController extends Controller
             /** El typo_pedido que tendra el pedido */
             $type_order = Table::find($request->type_id);
 
-            if ($type_order->name !== 'order_type' && $type_order->value !== 'online') {
+            if ($type_order->name !== 'order_type' && $type_order->value !== 'pedido') {
                 throw new \Exception('Enviando información erronea al servidor');
             }
 

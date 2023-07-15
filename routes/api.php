@@ -31,14 +31,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
     Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
-    Route::get('producto/{id}/pedidos_online', [ProductController::class, 'pedidosOnline']);
+    Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);
 
     Route::get('orden/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
     Route::resource('orden', OrderController::class);
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
-    Route::post('cotizacion/asignar/online', [PriceQuoteController::class, 'asignarPedido']);
+    Route::post('cotizacion/asignar/pedido', [PriceQuoteController::class, 'asignarPedido']);
     Route::resource('cotizacion', PriceQuoteController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);

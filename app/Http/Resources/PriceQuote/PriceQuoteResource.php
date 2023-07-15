@@ -73,7 +73,7 @@ class PriceQuoteResource extends JsonResource
             if ($type['value'] === 'online') {
                 $type['string'] = 'Pedido Online';
             } else if ($type['value'] === 'pedido') {
-                $type['string'] =  'Pedido Cliente';
+                $type['string'] =  'Pedido';
             } else if ($type['value'] === 'siniestro') {
                 $type['string'] =  'Siniestro';
             }

@@ -90,7 +90,7 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function pedidosOnline(Request $request)
+    public function pedidos(Request $request)
     {
         try {
             $code = $request->id;
