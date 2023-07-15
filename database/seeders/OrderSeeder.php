@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
 {
+    use CommonTrait;
     /**
      * Run the database seeds.
      *
@@ -16,10 +17,10 @@ class OrderSeeder extends Seeder
     public function run()
     {
         /* Online */
-        Order::factory()->times(10)->create()->each(function ($order) {
+        Order::factory()->times(100)->create()->each(function ($order) {
             $generatedValues = [];
 
-            $cantidadProductos = rand(1, 10);
+            $cantidadProductos = rand(1, 5);
             for ($i = 1; $i <= $cantidadProductos; $i++) {
                 do {
                     $valor = rand(1, 15);
@@ -27,22 +28,9 @@ class OrderSeeder extends Seeder
 
                 $generatedValues[] = $valor;
 
-                $this->createOrderProduct($order, $valor);
+                $product_detail =  $this->createProduct($order->id, 'order_id', rand(9, 12), $valor);
+                OrderProduct::create($product_detail);
             }
         });
-    }
-
-    private function createOrderProduct($order, $int)
-    {
-        $orderProduct = [
-            'order_id' => $order->id,
-            'product_id' => $int,
-            'state_id' => rand(9, 12),
-
-            'amount' => rand(1, 6),
-            'unit_price' => rand(500, 80000),
-            'description' => "Detalle: $order->id",
-        ];
-        OrderProduct::create($orderProduct);
     }
 }

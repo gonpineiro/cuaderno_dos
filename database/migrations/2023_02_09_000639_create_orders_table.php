@@ -27,7 +27,7 @@ class CreateOrdersTable extends Migration
             $table->string('invoice_number')->nullable();
             $table->string('remito')->nullable();
             $table->string('workshop')->nullable();
-            $table->float('deposit')->default(0);
+            $table->float('deposit')->nullable();
             $table->date('estimated_date')->nullable();
             $table->string('observation')->nullable();
 

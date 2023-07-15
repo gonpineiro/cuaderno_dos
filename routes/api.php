@@ -37,7 +37,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
     Route::resource('orden', OrderController::class);
 
-    Route::post('cotizacion/asignar', [PriceQuoteController::class, 'asignar']);
+    Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
+    Route::post('cotizacion/asignar/online', [PriceQuoteController::class, 'asignarPedido']);
     Route::resource('cotizacion', PriceQuoteController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
