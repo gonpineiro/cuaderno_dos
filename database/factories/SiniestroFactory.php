@@ -7,7 +7,7 @@ use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class OrderFactory extends Factory
+class SiniestroFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,16 +16,16 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        $typeId = Table::where('name', 'order_type')->where('value', 'pedido')->first()['id'];
+        $typeId = Table::where('name', 'order_type')->where('value', 'siniestro')->first()['id'];
 
         return [
             'user_id' => $this->faker->randomElement(User::all())['id'],
             'type_id' => $typeId,
-            'client_id' => $this->faker->randomElement(Client::where('is_insurance', false)->get())['id'],
+            'client_id' => $this->faker->randomElement(Client::where('is_insurance', true)->get())['id'],
             'engine' => $this->faker->bothify('????######'),
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
-            'payment_method' => $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']),
-            'invoice_number' => $this->faker->numberBetween(10100, 10900),
+            'remito' => $this->faker->numberBetween(10100, 10900),
+            'workshop' => $this->faker->text(5),
             'observation' => $this->faker->text(200),
         ];
     }

@@ -33,9 +33,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
     Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);
 
-    Route::get('orden/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
-    Route::post('orden/cambiar-estado/{id}', [OrderController::class, 'updateState']);
-    Route::resource('orden', OrderController::class);
+    Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
+    Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStatePedido']);
+    Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
+    Route::get('pedido', [OrderController::class, 'indexPedidos']);
+    Route::get('pedido/{id}', [OrderController::class, 'showPedido']);
+
+    Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
+    Route::get('siniestro/{id}', [OrderController::class, 'showSiniestro']);
+    Route::post('siniestro/cambiar-estado/{id}', [OrderController::class, 'updateStateSiniestro']);
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
     Route::post('cotizacion/asignar/pedido', [PriceQuoteController::class, 'asignarPedido']);
@@ -44,10 +50,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 
     Route::post('update_order_product', [OrderProductController::class, 'update']);
+    Route::post('update_siniestro_product', [OrderProductController::class, 'update']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 });
 
-Route::get('orden/pdf/{id}', [OrderController::class, 'getPdfPedido']);
+Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
 
 Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
 

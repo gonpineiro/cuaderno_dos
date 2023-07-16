@@ -26,7 +26,7 @@ class PriceQuoteFactory extends Factory
             'type_price' => $this->faker->randomElement(['contado', 'lista']),
             'observation' => $this->faker->text(200),
 
-            'order_id' =>  $this->faker->unique()->randomElement(Order::all())['id'],
+            /* 'order_id' =>  $this->faker->unique()->randomElement(Order::all())['id'], */
         ];
     }
 }

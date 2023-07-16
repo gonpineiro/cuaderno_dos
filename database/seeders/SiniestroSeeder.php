@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Siniestro;
 use Illuminate\Database\Seeder;
 
-class OrderSeeder extends Seeder
+class SiniestroSeeder extends Seeder
 {
     use CommonTrait;
     /**
@@ -16,8 +16,8 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        /* Online */
-        Order::factory()->times(10)->create()->each(function ($order) {
+
+        Siniestro::factory()->times(10)->create()->each(function ($order) {
             $generatedValues = [];
 
             $cantidadProductos = rand(1, 5);
@@ -28,7 +28,7 @@ class OrderSeeder extends Seeder
 
                 $generatedValues[] = $valor;
 
-                $product_detail =  $this->createProduct($order->id, 'order_id', rand(9, 12), $valor);
+                $product_detail =  $this->createProduct($order->id, 'order_id', rand(13, 16), $valor);
                 OrderProduct::create($product_detail);
             }
         });

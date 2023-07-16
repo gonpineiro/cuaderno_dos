@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
-use App\Http\Requests\Order\UpdateOnlineOrderRequest;
+use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Order\OrderProductResource;
 use App\Mail\MiCorreoMailable;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Siniestro;
+use App\Models\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,14 +19,17 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+
+    public function indexPedidos(): \Illuminate\Http\JsonResponse
     {
-        $order = OrderResource::collection(Order::all());
+        $order = OrderResource::collection(Order::where('type_id', 6)->get());
+
+        return sendResponse($order);
+    }
+
+    public function indexSiniestros(): \Illuminate\Http\JsonResponse
+    {
+        $order = OrderResource::collection(Siniestro::where('type_id', 8)->get());
 
         return sendResponse($order);
     }
@@ -128,26 +133,25 @@ class OrderController extends \App\Http\Controllers\Controller
         return false;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
+    public function showPedido($id)
     {
         $order = Order::findOrFail($id);
+        return sendResponse(new OrderResource($order, 'complete'));
+    }
+    public function showSiniestro($id)
+    {
+        $order = Siniestro::findOrFail($id);
         return sendResponse(new OrderResource($order, 'complete'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Order\UpdateOnlineOrderRequest $request
+     * @param  UpdateOrderRequest $request
      * @param  \App\Models\Order $order
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateOnlineOrderRequest $request, $id)
+    public function update(UpdateOrderRequest $request, $id)
     {
         DB::beginTransaction();
 
@@ -182,22 +186,53 @@ class OrderController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function updateState(Request $request, $id)
+    public function updateStatePedido(Request $request, $id)
     {
         DB::beginTransaction();
 
         try {
             $detail = OrderProduct::where('order_id', $id)->get();
 
+            $entregado = Table::where('name', 'order_state')->where('value', 'entregado');
+            $cacelado = Table::where('name', 'order_state')->where('value', 'cancelado');
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado o cancelado */
-                if ($item->state_id != 11 && $item->state_id != 12) {
+                if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
                     $item->state_id = (int)$request->value;
                     $item->save();
                 }
             }
 
             $order = Order::find($id);
+
+            DB::commit();
+
+            return sendResponse(new OrderResource($order, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function updateStateSiniestro(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $detail = OrderProduct::where('order_id', $id)->get();
+
+            $entregado = Table::where('name', 'order_siniestro_state')->where('value', 'entregado')->first();
+            $cacelado = Table::where('name', 'order_siniestro_state')->where('value', 'cancelado')->first();
+            foreach ($detail as $item) {
+                /* Verificamos que cada item no tenga el estado de entregado o cancelado */
+                if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
+                    $item->state_id = (int)$request->value;
+                    $item->save();
+                }
+            }
+
+            $order = Siniestro::find($id);
 
             DB::commit();
 
