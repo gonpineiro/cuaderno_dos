@@ -30,7 +30,7 @@ class StoreClientRequest extends FormRequest
         if ($this->input('is_insurance')) {
             return [
                 'name' => 'required|max:35',
-                'dni' => 'max:11|min:11|unique:clients',
+                'cuit' => 'required|max:11|min:11|unique:clients',
             ];
         }
 
@@ -46,9 +46,9 @@ class StoreClientRequest extends FormRequest
     {
         if ($this->input('is_insurance')) {
             return [
-                'dni.max' => 'Formato del CUIT es invalido',
-                'dni.min' => 'Formato del CUIT es invalido',
-                'dni.unique' => 'CUIT ya se encuentra registrado',
+                'cuit.max' => 'Formato del CUIT es invalido',
+                'cuit.min' => 'Formato del CUIT es invalido',
+                'cuit.unique' => 'CUIT ya se encuentra registrado',
 
                 'name.required' => 'Nombre es requerido',
                 'name.max' => 'Nombre no debe superar los 35 caracteres',

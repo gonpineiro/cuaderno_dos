@@ -82,7 +82,7 @@ class OrderController extends \App\Http\Controllers\Controller
         $data = $request->all();
         $data['user_id'] = $user->id;
 
-        $order = Order::create($data);
+        $order = Siniestro::create($data);
 
         /* Intentamos guardar lss ordernes productos */
         if (!self::storeOrderProduct($request, $order->id)) {
@@ -193,8 +193,8 @@ class OrderController extends \App\Http\Controllers\Controller
         try {
             $detail = OrderProduct::where('order_id', $id)->get();
 
-            $entregado = Table::where('name', 'order_state')->where('value', 'entregado');
-            $cacelado = Table::where('name', 'order_state')->where('value', 'cancelado');
+            $entregado = Table::where('name', 'order_state')->where('value', 'entregado')->first();
+            $cacelado = Table::where('name', 'order_state')->where('value', 'cancelado')->first();
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado o cancelado */
                 if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
@@ -280,7 +280,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
         // Enviar el correo electrónico
         $correo = new MiCorreoMailable();
-        Mail::to('destinatario@example.com')->send($correo);
+        Mail::to('gon.pineiro@gmail.com')->send($correo);
 
         // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
 

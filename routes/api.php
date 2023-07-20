@@ -49,7 +49,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 
-    Route::post('update_order_product', [OrderProductController::class, 'update']);
+    Route::post('update_pedido_product', [OrderProductController::class, 'update']);
     Route::post('update_siniestro_product', [OrderProductController::class, 'update']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 });
