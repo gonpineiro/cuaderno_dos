@@ -23,13 +23,14 @@ class PriceQuoteController extends Controller
     {
 
         if ($request->type === 'pendiente') {
-            $priceQuote = PriceQuote::with('order')->where('order_id', null)->get();
+            $priceQuote = PriceQuote::with('order')->where('order_id', null)->orderByDesc('created_at')->get();
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
                 ->whereHas('order', function ($query) {
                     $query->where('type_id', 6);
                 })
                 ->whereNotNull('order_id')
+                ->orderByDesc('created_at')
                 ->get();
         } else if ($request->type === 'siniestro') {
             $priceQuote = PriceQuote::with('order')
@@ -37,9 +38,10 @@ class PriceQuoteController extends Controller
                     $query->where('type_id', 8);
                 })
                 ->whereNotNull('order_id')
+                ->orderByDesc('created_at')
                 ->get();
         } else {
-            $priceQuote = PriceQuote::all();
+            $priceQuote = PriceQuote::orderByDesc('created_at')->get();
         }
 
         return sendResponse(PriceQuoteResource::collection($priceQuote));

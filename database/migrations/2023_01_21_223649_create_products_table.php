@@ -26,7 +26,7 @@ class CreateProductsTable extends Migration
             $table->string('observation')->nullable();
 
             $table->boolean('min_stock')->default(0);
-            $table->boolean('empty_stock')->default(1);
+            $table->boolean('empty_stock')->default(0);
 
             $table->string('ship')->nullable();
             $table->string('module')->nullable();

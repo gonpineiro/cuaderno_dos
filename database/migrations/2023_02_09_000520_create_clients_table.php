@@ -17,6 +17,7 @@ class CreateClientsTable extends Migration
             $table->id();
             $table->string('dni', 8)->unique()->nullable();
             $table->string('name', 35);
+            $table->string('lastname', 35)->nullable();
             $table->string('email', 100)->unique()->nullable();
             $table->string('phone', 30)->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
@@ -24,6 +25,7 @@ class CreateClientsTable extends Migration
             $table->string('cuit')->nullable();
             $table->boolean('is_company')->default(0);
             $table->boolean('is_insurance')->default(0);
+            $table->string('observation')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

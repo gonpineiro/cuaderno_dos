@@ -37,15 +37,15 @@ class StoreProductOutRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'code.required' => 'code es requerido',
-            'code.max' => 'code no debe superar el maximo de 25 caracteres',
-            'code.unique' => 'code ya se encuentra registrado',
+            'code.required' => 'Código es requerido',
+            'code.max' => 'Código no debe superar el maximo de 25 caracteres',
+            'code.unique' => 'Código ya se encuentra registrado',
 
-            'description.required' => 'description es requerido',
-            'description.max' => 'description no debe superar el maximo de 500 caracteres',
+            'description.required' => 'Description es requerido',
+            'description.max' => 'Description no debe superar el maximo de 500 caracteres',
 
-            'provider_id.required' => 'provider_id es requerido',
-            'provider_id.integer' => 'provider_id debe ser un entero',
+            'provider_id.required' => 'Proveedor es requerido',
+            'provider_id.integer' => 'Proveedor debe ser un entero',
         ];
     }
 }

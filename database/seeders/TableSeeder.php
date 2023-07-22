@@ -45,5 +45,7 @@ class TableSeeder extends Seeder
         /* 17 - 18 */
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'background_color' => '#198754', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'background_color' => '#6c757d', 'color' => 'black']);
+
+        DB::table('tables')->insert(['name' => 'config', 'value' => 'product.ship', 'description' => '1']);
     }
 }

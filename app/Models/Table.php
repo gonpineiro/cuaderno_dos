@@ -11,7 +11,6 @@ class Table extends Model
 
     protected $hidden = [
         'enable',
-        'description',
         'created_at',
         'updated_at',
     ];

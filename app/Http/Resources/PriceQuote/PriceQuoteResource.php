@@ -81,6 +81,15 @@ class PriceQuoteResource extends JsonResource
             $type = [];
             $type['value'] = 'pendiente';
             $type['string'] = 'pendiente';
+
+            $fechaActual = \Carbon\Carbon::now();
+            $diferenciaDias = $this->created_at->diffInDays($fechaActual);
+
+            if ($diferenciaDias >= 7) {
+                $type['className'] = 'vencido';
+            } else {
+                $type['className'] = '';
+            }
         }
 
         return $type;

@@ -22,6 +22,7 @@ class ClientFactory extends Factory
                 'name' => $this->faker->company(),
                 'cuit' => $this->faker->unique()->numberBetween(10000000001, 30000000009),
                 'is_insurance' => $is_insurance,
+                'observation' => $this->faker->text(),
             ];
         } else if ($is_company) {
             return [
@@ -32,15 +33,18 @@ class ClientFactory extends Factory
                 'adress' => $this->faker->address(),
                 'cuit' => $this->faker->unique()->numberBetween(10000000001, 30000000009),
                 'is_company' => $is_company,
+                'observation' => $this->faker->text(),
             ];
         } else {
             return [
                 'dni' => $this->faker->unique()->numberBetween(20000000, 48000000),
                 'name' => $this->faker->name(),
+                'lastname' => $this->faker->lastName(),
                 'phone' => $this->faker->unique()->phoneNumber(),
                 'email' => $this->faker->email(),
                 'city_id' =>  $this->faker->randomElement(City::all())['id'],
                 'adress' => $this->faker->address(),
+                'observation' => $this->faker->text(),
             ];
         }
     }

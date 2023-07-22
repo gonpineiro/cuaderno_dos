@@ -16,7 +16,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->authBrand();
+        return true;
     }
 
     /**
@@ -37,8 +37,8 @@ class StoreProductRequest extends FormRequest
             'engine' => 'required|max:25',
             'observation' => 'required|max:500',
 
-            'min_stock' => 'required|boolean',
-            'empty_stock' => 'required|boolean',
+            'min_stock' => 'boolean',
+            'empty_stock' => 'boolean',
 
             'ship' => 'required|max:5',
             'module' => 'required|max:5',
@@ -54,27 +54,27 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'code.required' => 'code es requerido',
-            'code.max' => 'code no debe superar el maximo de 25 caracteres',
-            'code.unique' => 'code ya se encuentra registrado',
+            'code.required' => 'Código es requerido',
+            'code.max' => 'Código no debe superar el maximo de 25 caracteres',
+            'code.unique' => 'Código ya se encuentra registrado',
 
-            'factory_code.required' => 'factory_code es requerido',
-            'factory_code.max' => 'factory_code no debe superar el maximo de 25 caracteres',
+            'factory_code.required' => 'Código de fabrica es requerido',
+            'factory_code.max' => 'Código de fabrica no debe superar el maximo de 25 caracteres',
 
-            'equivalence.required' => 'equivalence es requerido',
-            'equivalence.max' => 'equivalence no debe superar el maximo de 25 caracteres',
+            'equivalence.required' => 'Equivalencia es requerido',
+            'equivalence.max' => 'Equivalencia no debe superar el maximo de 25 caracteres',
 
-            'description.required' => 'description es requerido',
-            'description.max' => 'description no debe superar el maximo de 500 caracteres',
+            'description.required' => 'Description es requerido',
+            'description.max' => 'Description no debe superar el maximo de 500 caracteres',
 
-            'model.required' => 'model es requerido',
-            'model.max' => 'model no debe superar el maximo de 25 caracteres',
+            'model.required' => 'Modelo es requerido',
+            'model.max' => 'Modelo no debe superar el maximo de 25 caracteres',
 
-            'engine.required' => 'engine es requerido',
-            'engine.max' => 'engine no debe superar el maximo de 25 caracteres',
+            'engine.required' => 'Motor es requerido',
+            'engine.max' => 'Motor no debe superar el maximo de 25 caracteres',
 
-            'observation.required' => 'observation es requerido',
-            'observation.max' => 'observation no debe superar el maximo de 500 caracteres',
+            'observation.required' => 'Observación es requerido',
+            'observation.max' => 'Observación no debe superar el maximo de 500 caracteres',
 
             'min_stock.required' => 'min_stock es requerido',
             'min_stock.boolean' => 'min_stock debe ser un booleano',
@@ -82,26 +82,26 @@ class StoreProductRequest extends FormRequest
             'empty_stock.required' => 'empty_stock es requerido',
             'empty_stock.boolean' => 'empty_stock debe ser un booleano',
 
-            'ship.required' => 'ship es requerido',
-            'ship.max' => 'ship no debe superar el maximo de 5 caracteres',
+            'ship.required' => 'Nave es requerido',
+            'ship.max' => 'Nave no debe superar el maximo de 5 caracteres',
 
-            'module.required' => 'module es requerido',
-            'module.max' => 'module no debe superar el maximo de 5 caracteres',
+            'module.required' => 'Modulo es requerido',
+            'module.max' => 'Modulo no debe superar el maximo de 5 caracteres',
 
-            'side.required' => 'side es requerido',
-            'side.max' => 'side no debe superar el maximo de 5 caracteres',
+            'side.required' => 'Lado es requerido',
+            'side.max' => 'Lado no debe superar el maximo de 5 caracteres',
 
-            'column.required' => 'column es requerido',
-            'column.max' => 'column no debe superar el maximo de 5 caracteres',
+            'column.required' => 'Columna es requerido',
+            'column.max' => 'Columna no debe superar el maximo de 5 caracteres',
 
-            'row.required' => 'row es requerido',
-            'row.max' => 'row no debe superar el maximo de 5 caracteres',
+            'row.required' => 'Fila es requerido',
+            'row.max' => 'Fila no debe superar el maximo de 5 caracteres',
 
-            'provider_id.required' => 'provider_id es requerido',
-            'provider_id.integer' => 'provider_id debe ser un entero',
+            'provider_id.required' => 'Proveedor es requerido',
+            'provider_id.integer' => 'Proveedor debe ser un entero',
 
-            'brand_id.required' => 'brand_id es requerido',
-            'brand_id.integer' => 'brand_id debe ser un entero',
+            'brand_id.required' => 'Marca es requerido',
+            'brand_id.integer' => 'Marca debe ser un entero',
         ];
     }
 }

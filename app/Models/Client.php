@@ -13,6 +13,7 @@ class Client extends Model
     protected $fillable = [
         'dni',
         'name',
+        'lastname',
         'phone',
         'email',
         'city_id',
@@ -20,11 +21,11 @@ class Client extends Model
         'cuit',
         'is_insurance',
         'is_company',
+        'observation',
     ];
 
     protected $hidden = [
         'city_id',
-        'created_at',
         'updated_at',
         'deleted_at',
     ];

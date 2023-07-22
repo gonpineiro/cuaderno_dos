@@ -79,10 +79,21 @@ class Product extends Model
 
     public function getUbicationAttribute()
     {
-        if (!$this->ship || !$this->module || !$this->side || !$this->column || !$this->row) {
+        if (
+            !$this->ship ||
+            !$this->module ||
+            !$this->side ||
+            !$this->column ||
+            !$this->row
+        ) {
             return null;
         }
-        return $this->ship . $this->module . $this->side . $this->column . $this->row;
+
+        // Formatear los valores a dos dígitos con ceros a la izquierda
+        $column = sprintf('%02d', $this->column);
+        $row = sprintf('%02d', $this->row);
+
+        return $this->ship . $this->module . $this->side . $column . $row;
     }
 
     public function getStateAttribute()

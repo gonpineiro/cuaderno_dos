@@ -22,7 +22,19 @@ class OrderController extends \App\Http\Controllers\Controller
 
     public function indexPedidos(): \Illuminate\Http\JsonResponse
     {
-        $order = OrderResource::collection(Order::where('type_id', 6)->get());
+        $pedidos = Order::where('type_id', 6)
+            ->orderByDesc('created_at')
+            ->groupBy(function ($pedido) {
+                return $pedido->getGeneralState();
+            })
+            ->get();
+        $order = OrderResource::collection($pedidos);
+
+        $pedidosOrdenados = collect();
+
+        foreach ($pedidos as $estado => $detallePedidos) {
+            $pedidosOrdenados = $pedidosOrdenados->merge($detallePedidos->sortBy('created_at'));
+        }
 
         return sendResponse($order);
     }
