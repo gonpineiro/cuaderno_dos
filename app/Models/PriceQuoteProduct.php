@@ -21,6 +21,12 @@ class PriceQuoteProduct extends Model
         'description'
     ];
 
+    protected $hidden = [
+        'price_quote_id',
+        'state_id',
+        'product_id',
+    ];
+
     protected $casts = [
         'amount' => 'integer',
     ];

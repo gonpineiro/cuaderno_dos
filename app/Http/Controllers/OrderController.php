@@ -19,14 +19,11 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
-
     public function indexPedidos(): \Illuminate\Http\JsonResponse
     {
-        $pedidos = Order::where('type_id', 6)
+        /* $pedidos = Order::where('type_id', 6)
             ->orderByDesc('created_at')
-            ->groupBy(function ($pedido) {
-                return $pedido->getGeneralState();
-            })
+
             ->get();
         $order = OrderResource::collection($pedidos);
 
@@ -35,6 +32,10 @@ class OrderController extends \App\Http\Controllers\Controller
         foreach ($pedidos as $estado => $detallePedidos) {
             $pedidosOrdenados = $pedidosOrdenados->merge($detallePedidos->sortBy('created_at'));
         }
+
+        return sendResponse($order); */
+
+        $order = OrderResource::collection(Order::where('type_id', 6)->get());
 
         return sendResponse($order);
     }
@@ -205,8 +206,8 @@ class OrderController extends \App\Http\Controllers\Controller
         try {
             $detail = OrderProduct::where('order_id', $id)->get();
 
-            $entregado = Table::where('name', 'order_state')->where('value', 'entregado')->first();
-            $cacelado = Table::where('name', 'order_state')->where('value', 'cancelado')->first();
+            $entregado = Table::where('name', 'order_online_state')->where('value', 'entregado')->first();
+            $cacelado = Table::where('name', 'order_online_state')->where('value', 'cancelado')->first();
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado o cancelado */
                 if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {

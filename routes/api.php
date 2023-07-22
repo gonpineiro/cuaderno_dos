@@ -45,6 +45,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
     Route::post('cotizacion/asignar/pedido', [PriceQuoteController::class, 'asignarPedido']);
+    Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarPedido']);
     Route::resource('cotizacion', PriceQuoteController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);

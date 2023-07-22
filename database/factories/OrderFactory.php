@@ -16,7 +16,7 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        $typeId = Table::where('name', 'order_type')->where('value', 'pedido')->first()['id'];
+        $typeId = Table::where('name', 'order_type')->where('value', 'online')->first()['id'];
 
         return [
             'user_id' => $this->faker->randomElement(User::all())['id'],

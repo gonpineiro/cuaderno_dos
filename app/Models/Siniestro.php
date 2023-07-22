@@ -66,12 +66,12 @@ class Siniestro extends Order
     public function getPercentages()
     {
 
-        $array['pendiente'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'pendiente';
+        $array['incompleto'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'incompleto';
         });
 
-        $array['retirar'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
+        $array['completo'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'completo';
         });
 
         $array['entregado'] = $this->detail->sum(function ($a) {
@@ -88,10 +88,10 @@ class Siniestro extends Order
             $array[$key] = ($value * 100) / $count;
         }
 
-        if ($array['pendiente'] > 0) {
-            $array['estado_general'] = 'pendiente';
-        } else if ($array['retirar'] > 0) {
-            $array['estado_general'] = 'retirar';
+        if ($array['incompleto'] > 0) {
+            $array['estado_general'] = 'incompleto';
+        } else if ($array['completo'] > 0) {
+            $array['estado_general'] = 'completo';
         } else if ($array['entregado'] > 0) {
             $array['estado_general'] = 'entregado';
         } else if ($array['cancelado'] > 0) {

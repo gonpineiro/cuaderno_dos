@@ -34,6 +34,8 @@ class PriceQuoteResource extends JsonResource
     {
         $array['user'] = $this->user;
 
+        $array['to_asign'] = $this->to_asign;
+
         $this->client->city;
         $array['client'] = $this->client;
 
