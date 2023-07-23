@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\StoreClienteOrderRequest;
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use Illuminate\Support\Facades\DB;
@@ -157,7 +158,7 @@ class PriceQuoteController extends Controller
         }
     }
 
-    public function asignarPedido(StoreOnlineOrderRequest $request)
+    public function asignarOnline(StoreOnlineOrderRequest $request)
     {
         DB::beginTransaction();
 
@@ -175,11 +176,50 @@ class PriceQuoteController extends Controller
             /** El typo_pedido que tendra el pedido */
             $type_order = Table::find($request->type_id);
 
-            if ($type_order->name !== 'order_type' && $type_order->value !== 'pedido') {
+            if ($type_order->name !== 'order_type' && $type_order->value !== 'online') {
                 throw new \Exception('Enviando información erronea al servidor');
             }
 
             $order = OrderController::saveOnlineOrder($request);
+
+            $priceQuote->order_id = $order->id;
+            $priceQuote->save();
+
+            DB::commit();
+
+            return sendResponse([
+                'pedido' => new OrderResource($order, 'complete'),
+                'cotizacion' => new PriceQuoteResource($priceQuote),
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function asignarCliente(StoreClienteOrderRequest $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $priceQuote = PriceQuote::find($request->price_quote_id);
+
+            if (!$priceQuote) {
+                throw new \Exception('No existe la cotizacion');
+            }
+
+            if ($priceQuote->order_id) {
+                throw new \Exception('La cotización ya tiene un pedido/siniestro asignado');
+            }
+
+            /** El typo_pedido que tendra el pedido */
+            $type_order = Table::find($request->type_id);
+
+            if ($type_order->name !== 'order_type' && $type_order->value !== 'cliente') {
+                throw new \Exception('Enviando información erronea al servidor');
+            }
+
+            $order = OrderController::saveClienteOrder($request);
 
             $priceQuote->order_id = $order->id;
             $priceQuote->save();

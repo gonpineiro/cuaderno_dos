@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Order extends Model
+class PedidoCliente extends Order
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'orders';
 
     protected $fillable = [
         'user_id',
@@ -19,9 +20,6 @@ class Order extends Model
         'chasis',
         'payment_method',
         'invoice_number',
-        'remito',
-        'workshop',
-        'deposit',
         'estimated_date',
         'observation'
     ];
@@ -33,33 +31,13 @@ class Order extends Model
         'type_id',
         'client_id',
         'price_quote_id',
+        'remito',
+        'workshop',
+        'deposit',
         'updated_at',
         'deleted_at',
         'pivot',
     ];
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class);
-    }
-    public function detail()
-    {
-        return $this->hasMany(OrderProduct::class, 'order_id');
-    }
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\User::class);
-    }
-    public function type()
-    {
-        return $this->belongsTo(Table::class);
-    }
 
     public function getPercentages()
     {
@@ -68,16 +46,16 @@ class Order extends Model
             return  $a->state->value == 'pendiente';
         });
 
-        $array['retirar'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
+        $array['recibido'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'recibido';
+        });
+
+        $array['avisado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'avisado';
         });
 
         $array['entregado'] = $this->detail->sum(function ($a) {
             return  $a->state->value == 'entregado';
-        });
-
-        $array['cancelado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
         });
 
         $count = count($this->detail);
@@ -88,12 +66,12 @@ class Order extends Model
 
         if ($array['pendiente'] > 0) {
             $array['estado_general'] = 'pendiente';
-        } else if ($array['retirar'] > 0) {
-            $array['estado_general'] = 'retirar';
+        } else if ($array['recibido'] > 0) {
+            $array['estado_general'] = 'recibido';
+        } else if ($array['avisado'] > 0) {
+            $array['estado_general'] = 'avisado';
         } else if ($array['entregado'] > 0) {
             $array['estado_general'] = 'entregado';
-        } else if ($array['cancelado'] > 0) {
-            $array['estado_general'] = 'cancelado';
         }
 
         return $array;
@@ -106,28 +84,28 @@ class Order extends Model
             return  $a->state->value == 'pendiente';
         });
 
-        $aRetirar = $detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
+        $recibido = $detail->sum(function ($a) {
+            return  $a->state->value == 'recibido';
+        });
+
+        $avisado = $detail->sum(function ($a) {
+            return  $a->state->value == 'avisado';
         });
 
         $entregado = $detail->sum(function ($a) {
             return  $a->state->value == 'entregado';
         });
 
-        $cancelado = $detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
-        });
-
         $estadoGeneral = '';
 
         if ($pendiente > 0) {
             $estadoGeneral = 'pendiente';
-        } else if ($aRetirar > 0) {
-            $estadoGeneral = 'retirar';
+        } else if ($recibido > 0) {
+            $estadoGeneral = 'recibido';
+        } else if ($avisado > 0) {
+            $estadoGeneral = 'avisado';
         } else if ($entregado > 0) {
             $estadoGeneral = 'entregado';
-        } else if ($cancelado > 0) {
-            $estadoGeneral = 'cancelado';
         }
 
         return $estadoGeneral;

@@ -34,19 +34,27 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);
 
     Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
-    Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStatePedido']);
+    Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStateCliente']);
     Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
-    Route::get('pedido', [OrderController::class, 'indexPedidos']);
-    Route::get('pedido/{id}', [OrderController::class, 'showPedido']);
 
+    /* Clientes */
+    Route::get('pedido', [OrderController::class, 'indexPedidosCliente']);
+    Route::get('pedido/{id}', [OrderController::class, 'showPedidoCliente']);
+
+    /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
     Route::get('siniestro/{id}', [OrderController::class, 'showSiniestro']);
     Route::post('siniestro/cambiar-estado/{id}', [OrderController::class, 'updateStateSiniestro']);
 
-    Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
-    Route::post('cotizacion/asignar/pedido', [PriceQuoteController::class, 'asignarPedido']);
-    Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarPedido']);
+    /* Pedidos Online */
+    Route::get('online', [OrderController::class, 'indexOnlines']);
+    Route::get('online/{id}', [OrderController::class, 'showPedidoOnline']);
+    Route::post('online/cambiar-estado/{id}', [OrderController::class, 'updateStateOnline']);
+
     Route::resource('cotizacion', PriceQuoteController::class);
+    Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
+    Route::post('cotizacion/asignar/online', [PriceQuoteController::class, 'asignarOnline']);
+    Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 

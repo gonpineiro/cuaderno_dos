@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\StoreClienteOrderRequest;
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
@@ -10,6 +11,8 @@ use App\Http\Resources\Order\OrderProductResource;
 use App\Mail\MiCorreoMailable;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\PedidoCliente;
+use App\Models\PedidoOnline;
 use App\Models\Siniestro;
 use App\Models\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -19,7 +22,15 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
-    public function indexPedidos(): \Illuminate\Http\JsonResponse
+    public function indexOnlines(): \Illuminate\Http\JsonResponse
+    {
+
+        $order = OrderResource::collection(PedidoOnline::where('type_id', 6)->get());
+
+        return sendResponse($order);
+    }
+
+    public function indexPedidosCliente(): \Illuminate\Http\JsonResponse
     {
         /* $pedidos = Order::where('type_id', 6)
             ->orderByDesc('created_at')
@@ -35,7 +46,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
         return sendResponse($order); */
 
-        $order = OrderResource::collection(Order::where('type_id', 6)->get());
+        $order = OrderResource::collection(PedidoCliente::where('type_id', 7)->get());
 
         return sendResponse($order);
     }
@@ -47,29 +58,6 @@ class OrderController extends \App\Http\Controllers\Controller
         return sendResponse($order);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Order\StoreOnlineOrderRequest  $request
-     * @return \App\Http\Resources\Order\OrderResource|\Illuminate\Http\JsonResponse
-     */
-    public static function store(StoreOnlineOrderRequest $request)
-    {
-        DB::beginTransaction();
-
-        try {
-            $order = self::saveOnlineOrder($request);
-
-            DB::commit();
-
-            return sendResponse(new OrderResource($order, 'complete'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
-        }
-    }
-
     public static function saveOnlineOrder(StoreOnlineOrderRequest $request)
     {
         $user = auth()->user();
@@ -77,7 +65,25 @@ class OrderController extends \App\Http\Controllers\Controller
         $data = $request->all();
         $data['user_id'] = $user->id;
 
-        $order = Order::create($data);
+        $order = PedidoOnline::create($data);
+
+        /* Intentamos guardar lss ordernes productos */
+        if (!self::storeOrderProduct($request, $order->id)) {
+            DB::rollBack();
+            throw new \Exception('No se pudieron guardar los productos de la orden');
+        }
+
+        return $order;
+    }
+
+    public static function saveClienteOrder(StoreClienteOrderRequest $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->all();
+        $data['user_id'] = $user->id;
+
+        $order = PedidoCliente::create($data);
 
         /* Intentamos guardar lss ordernes productos */
         if (!self::storeOrderProduct($request, $order->id)) {
@@ -146,24 +152,24 @@ class OrderController extends \App\Http\Controllers\Controller
         return false;
     }
 
-    public function showPedido($id)
+    public function showPedidoCliente($id)
     {
-        $order = Order::findOrFail($id);
+        $order = PedidoCliente::findOrFail($id);
         return sendResponse(new OrderResource($order, 'complete'));
     }
+
+    public function showPedidoOnline($id)
+    {
+        $order = PedidoOnline::findOrFail($id);
+        return sendResponse(new OrderResource($order, 'complete'));
+    }
+
     public function showSiniestro($id)
     {
         $order = Siniestro::findOrFail($id);
         return sendResponse(new OrderResource($order, 'complete'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  UpdateOrderRequest $request
-     * @param  \App\Models\Order $order
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(UpdateOrderRequest $request, $id)
     {
         DB::beginTransaction();
@@ -199,7 +205,35 @@ class OrderController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function updateStatePedido(Request $request, $id)
+    public function updateStateCliente(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $detail = OrderProduct::where('order_id', $id)->get();
+
+            $entregado = Table::where('name', 'order_cliente_state')->where('value', 'entregado')->first();
+            foreach ($detail as $item) {
+                /* Verificamos que cada item no tenga el estado de entregado */
+                if ($item->state_id != $entregado->id) {
+                    $item->state_id = (int)$request->value;
+                    $item->save();
+                }
+            }
+
+            $order = Order::find($id);
+
+            DB::commit();
+
+            return sendResponse(new OrderResource($order, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function updateStateOnline(Request $request, $id)
     {
         DB::beginTransaction();
 
@@ -216,7 +250,7 @@ class OrderController extends \App\Http\Controllers\Controller
                 }
             }
 
-            $order = Order::find($id);
+            $order = PedidoOnline::find($id);
 
             DB::commit();
 
@@ -257,12 +291,6 @@ class OrderController extends \App\Http\Controllers\Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         DB::beginTransaction();

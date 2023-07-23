@@ -38,9 +38,9 @@ class TableSeeder extends Seeder
 
         /* 13 - 16 */
         DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'retirar', 'background_color' => '#ffc107', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'recibido', 'background_color' => '#ffc107', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'avisado', 'background_color' => '#0d6efd', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'entregado', 'background_color' => '#198754', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
 
         /* 17 - 20 */
         DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'incompleto', 'background_color' => '#dc3545', 'color' => 'white']);

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Siniestro extends Order
+class PedidoOnline extends Order
 {
     use HasFactory, SoftDeletes;
 
@@ -18,9 +18,8 @@ class Siniestro extends Order
         'type_id',
         'engine',
         'chasis',
-        'remito',
-        'workshop',
-        'estimated_date',
+        'payment_method',
+        'invoice_number',
         'observation'
     ];
 
@@ -31,9 +30,10 @@ class Siniestro extends Order
         'type_id',
         'client_id',
         'price_quote_id',
-        'payment_method',
-        'invoice_number',
+        'remito',
+        'workshop',
         'deposit',
+        'estimated_date',
         'updated_at',
         'deleted_at',
         'pivot',
@@ -42,12 +42,12 @@ class Siniestro extends Order
     public function getPercentages()
     {
 
-        $array['incompleto'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'incompleto';
+        $array['pendiente'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
         });
 
-        $array['completo'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'completo';
+        $array['retirar'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'retirar';
         });
 
         $array['entregado'] = $this->detail->sum(function ($a) {
@@ -64,10 +64,10 @@ class Siniestro extends Order
             $array[$key] = ($value * 100) / $count;
         }
 
-        if ($array['incompleto'] > 0) {
-            $array['estado_general'] = 'incompleto';
-        } else if ($array['completo'] > 0) {
-            $array['estado_general'] = 'completo';
+        if ($array['pendiente'] > 0) {
+            $array['estado_general'] = 'pendiente';
+        } else if ($array['retirar'] > 0) {
+            $array['estado_general'] = 'retirar';
         } else if ($array['entregado'] > 0) {
             $array['estado_general'] = 'entregado';
         } else if ($array['cancelado'] > 0) {
@@ -80,12 +80,12 @@ class Siniestro extends Order
     public function getGeneralState()
     {
         $detail = $this->detail;
-        $incompleto = $detail->sum(function ($a) {
-            return  $a->state->value == 'incompleto';
+        $pendiente = $detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
         });
 
-        $completo = $detail->sum(function ($a) {
-            return  $a->state->value == 'completo';
+        $aRetirar = $detail->sum(function ($a) {
+            return  $a->state->value == 'retirar';
         });
 
         $entregado = $detail->sum(function ($a) {
@@ -98,10 +98,10 @@ class Siniestro extends Order
 
         $estadoGeneral = '';
 
-        if ($incompleto > 0) {
-            $estadoGeneral = 'incompleto';
-        } else if ($completo > 0) {
-            $estadoGeneral = 'completo';
+        if ($pendiente > 0) {
+            $estadoGeneral = 'pendiente';
+        } else if ($aRetirar > 0) {
+            $estadoGeneral = 'retirar';
         } else if ($entregado > 0) {
             $estadoGeneral = 'entregado';
         } else if ($cancelado > 0) {

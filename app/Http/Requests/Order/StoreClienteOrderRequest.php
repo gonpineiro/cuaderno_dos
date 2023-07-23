@@ -5,7 +5,7 @@ namespace App\Http\Requests\Order;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\TraitRequest;
 
-class StoreOnlineOrderRequest extends FormRequest
+class StoreClienteOrderRequest extends FormRequest
 {
     use TraitRequest;
 
@@ -33,9 +33,9 @@ class StoreOnlineOrderRequest extends FormRequest
 
             'engine' => 'required',
             'chasis' => 'required',
-            /* 'payment_method' => 'required',
+            'payment_method' => 'required',
             'deposit' => 'required',
-            'estimated_date' => 'required', */
+            'estimated_date' => 'required',
             /* 'invoice_number' => 'required', */
         ];
     }
@@ -49,9 +49,9 @@ class StoreOnlineOrderRequest extends FormRequest
 
             'engine.required' => 'Vehículo/Motor es requerido',
             'chasis.required' => 'Chasis es requerido',
-            /* 'payment_method.required' => 'Forma de pago es requerido',
+            'payment_method.required' => 'Forma de pago es requerido',
             'deposit.required' => 'Seña es requerido',
-            'estimated_date.required' => 'Fecha estimada es requerida', */
+            'estimated_date.required' => 'Fecha estimada es requerida',
             /* 'invoice_number.required' => 'Número de factura es requerido', */
         ];
     }

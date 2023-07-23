@@ -28,7 +28,7 @@ class SiniestroSeeder extends Seeder
 
                 $generatedValues[] = $valor;
 
-                $product_detail =  $this->createProduct($order->id, 'order_id', rand(13, 16), $valor);
+                $product_detail =  $this->createProduct($order->id, 'order_id', rand(17, 20), $valor);
                 OrderProduct::create($product_detail);
             }
         });
