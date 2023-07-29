@@ -49,6 +49,7 @@ class PriceQuoteResource extends JsonResource
         }
 
         $array['detail'] = PriceQuoteProductResource::collection($this->detail);
+        $array['state'] = $this->formatState($this->order);
 
         return $array;
     }

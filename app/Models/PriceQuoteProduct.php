@@ -22,7 +22,6 @@ class PriceQuoteProduct extends Model
     ];
 
     protected $hidden = [
-        'price_quote_id',
         'state_id',
         'product_id',
     ];

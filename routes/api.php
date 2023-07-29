@@ -30,8 +30,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('producto/fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
-    Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
     Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);
+    Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
 
     Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
     Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStateCliente']);

@@ -40,8 +40,8 @@ class DatabaseSeeder extends Seeder
             ClientSeeder::class,
             ProductSeeder::class,
             PriceQuoteSeeder::class,
-            OrderSeeder::class,
-            SiniestroSeeder::class,
+            /* OrderSeeder::class, */
+            /* SiniestroSeeder::class, */
         ]);
     }
 }
