@@ -11,6 +11,10 @@
     <h1>Título del Correo</h1>
     <p>Hola,</p>
     <p>Este es el contenido del correo.</p>
+    <div class="container">
+        @yield('content')
+    </div>
+
 </body>
 
 </html>

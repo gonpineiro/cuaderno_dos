@@ -96,9 +96,9 @@ class ProductController extends \App\Http\Controllers\Controller
             $code = $request->id;
             $model = $request->model;
 
-            if ($model == 'pedidos_cliente') {
+            if ($model == 'pedidos_online') {
                 $state_id = 9;
-            } else if ($model == 'pedidos_online') {
+            } else if ($model == 'pedidos_cliente') {
                 $state_id = 13;
             } else if ($model == 'pedidos_siniestro') {
                 $state_id = 17;

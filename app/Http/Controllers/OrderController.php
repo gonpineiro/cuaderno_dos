@@ -8,7 +8,7 @@ use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Order\OrderProductResource;
-use App\Mail\MiCorreoMailable;
+use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
@@ -32,23 +32,25 @@ class OrderController extends \App\Http\Controllers\Controller
 
     public function indexPedidosCliente(): \Illuminate\Http\JsonResponse
     {
-        /* $pedidos = Order::where('type_id', 6)
-            ->orderByDesc('created_at')
+        $pedidos = PedidoCliente::where('type_id', 7)->get();
 
-            ->get();
-        $order = OrderResource::collection($pedidos);
+        $pedidos = $pedidos->sortBy(function ($order) {
+            return [
+                'pendiente' => 1,
+                'recibido' => 2,
+                'entregado' => 3,
+                'cancelado' => 4,
+            ][$order->getGeneralState()];
+        });
 
-        $pedidosOrdenados = collect();
+        // Ordenar los pedidos dentro de cada grupo por estimated_date
+        /*    $pedidos = $pedidos->groupBy('estado_general')->map(function ($group) {
+            return $group->sortBy('estimated_date');
+        })->collapse(); */
 
-        foreach ($pedidos as $estado => $detallePedidos) {
-            $pedidosOrdenados = $pedidosOrdenados->merge($detallePedidos->sortBy('created_at'));
-        }
+        $pedidos = OrderResource::collection($pedidos);
 
-        return sendResponse($order); */
-
-        $order = OrderResource::collection(PedidoCliente::where('type_id', 7)->get());
-
-        return sendResponse($order);
+        return sendResponse($pedidos);
     }
 
     public function indexSiniestros(): \Illuminate\Http\JsonResponse
@@ -320,13 +322,12 @@ class OrderController extends \App\Http\Controllers\Controller
     {
 
         // Enviar el correo electrónico
-        $correo = new MiCorreoMailable();
-        Mail::to('gon.pineiro@gmail.com')->send($correo);
+        $correo = new CrearPedidoClienteEmail();;
 
         // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
 
         // Redireccionar a una página de éxito, por ejemplo
-        return redirect()->route('correo.enviado');
+        return sendResponse(Mail::to('gon.pineiro@gmail.com')->send($correo));
     }
 
     public function getPdfPedido($id)

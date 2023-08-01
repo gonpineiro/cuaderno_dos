@@ -20,6 +20,7 @@ class ProductFactory extends Factory
         if ($in_catalogue = $this->faker->boolean()) {
             return [
                 'code' => $code,
+                'provider_code' => $this->faker->randomNumber(5, true),
                 'factory_code' => $this->faker->randomNumber(5, true),
                 'equivalence' => $this->faker->randomNumber(5, true),
 
