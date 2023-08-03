@@ -303,4 +303,39 @@ class PriceQuoteController extends Controller
 
         return $pdf->download('informe.pdf');
     }
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $data = $request->all();
+
+            $order = PriceQuote::findOrFail($id);
+
+            $order->fill($data)->save();
+
+            /* CORREGIR; NO HAY QUE BORRAR; HAY QUE ACTUALIZAR */
+            PriceQuoteProduct::where('price_quote_id', $id)->delete();
+
+            /* Intentamos guardar lss ordernes productos */
+            if (!$this->storePriceQuoteProduct($request, $order->id)) {
+                DB::rollBack();
+
+                return response()->json([
+                    'data' => null,
+                    'message' => null,
+                    'error' => 'No se pudieron guardar los productos de la cotizacion'
+                ]);
+            }
+
+            DB::commit();
+
+            return sendResponse(new PriceQuoteResource($order, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
 }
