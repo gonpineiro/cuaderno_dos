@@ -74,24 +74,26 @@ class PriceQuoteResource extends JsonResource
             unset($type["color"]);
 
             if ($type['value'] === 'online') {
-                $type['string'] = 'Pedido Online';
-            } else if ($type['value'] === 'pedido') {
-                $type['string'] =  'Pedido';
+                $type['string'] = 'PEDIDO';
+                $type['className'] = 'pedido';
+            } else if ($type['value'] === 'cliente') {
+                $type['string'] = 'PEDIDO';
+                $type['className'] = 'pedido';
             } else if ($type['value'] === 'siniestro') {
-                $type['string'] =  'Siniestro';
+                $type['string'] =  'PEDIDO SINIESTRO';
+                $type['className'] = 'siniestro';
             }
         } else {
             $type = [];
             $type['value'] = 'pendiente';
-            $type['string'] = 'pendiente';
+            $type['string'] = 'PENDIENTE';
+            $type['className'] = '';
 
             $fechaActual = \Carbon\Carbon::now();
             $diferenciaDias = $this->created_at->diffInDays($fechaActual);
 
             if ($diferenciaDias >= 7) {
                 $type['className'] = 'vencido';
-            } else {
-                $type['className'] = '';
             }
         }
 

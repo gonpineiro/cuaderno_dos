@@ -113,7 +113,11 @@
 
     <table class="table-productos">
         <tr>
+            @if ($type === 'interno')
+            <td>Código</td>
+            @else
             <th style="width: 50%">Descripción</th>
+            @endif
             <th>Cant.</th>
             <th>Precio U.</th>
             <th>Total</th>
@@ -122,7 +126,12 @@
 
         @foreach ($detail as $item)
         <tr>
+            @if ($type === 'interno')
+            <td>{{$item->product->code}}</td>
+            @else
             <td>{{$item->description}}</td>
+            @endif
+
             <td>{{$item->amount}}</td>
             <td>$ {{ number_format($item->unit_price, 2, ',', '.') }}</td>
             <td>$ {{ number_format($item->unit_price * $item->amount, 2, ',', '.') }}</td>

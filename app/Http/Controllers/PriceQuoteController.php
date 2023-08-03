@@ -24,7 +24,7 @@ class PriceQuoteController extends Controller
     {
 
         if ($request->type === 'pendiente') {
-            $priceQuote = PriceQuote::with('order')->where('order_id', null)->orderByDesc('created_at')->get();
+            $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->get();
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
                 ->whereHas('order', function ($query) {

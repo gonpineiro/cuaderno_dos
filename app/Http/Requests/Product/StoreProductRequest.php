@@ -34,7 +34,7 @@ class StoreProductRequest extends FormRequest
 
             'description' => 'required|max:500',
             'model' => 'required|max:25',
-            'engine' => 'required|max:25',
+            'engine' => 'required|max:200',
             'observation' => 'required|max:500',
 
             'min_stock' => 'boolean',
@@ -71,7 +71,7 @@ class StoreProductRequest extends FormRequest
             'model.max' => 'Modelo no debe superar el maximo de 25 caracteres',
 
             'engine.required' => 'Motor es requerido',
-            'engine.max' => 'Motor no debe superar el maximo de 25 caracteres',
+            'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
 
             'observation.required' => 'Observación es requerido',
             'observation.max' => 'Observación no debe superar el maximo de 500 caracteres',

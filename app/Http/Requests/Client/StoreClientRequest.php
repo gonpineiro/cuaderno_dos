@@ -35,7 +35,9 @@ class StoreClientRequest extends FormRequest
         }
 
         return [
+            'lastname' => 'required|max:35',
             'name' => 'required|max:35',
+            'phone' => 'required|max:35',
             'dni' => 'required|max:8|min:8|unique:clients',
             'email' => 'required|email|max:100|unique:clients',
             'city_id' => 'required',
@@ -60,8 +62,14 @@ class StoreClientRequest extends FormRequest
             'dni.min' => 'Formato del documento es invalido',
             'dni.unique' => 'Documento ya se encuentra registrado',
 
+            'lastname.required' => 'Apellido es requerido',
+            'lastname.max' => 'Apellido no debe superar los 35 caracteres',
+
             'name.required' => 'Nombre es requerido',
             'name.max' => 'Nombre no debe superar los 35 caracteres',
+
+            'phone.required' => 'Teléfono es requerido',
+            'phone.max' => 'Teléfono no debe superar los 40 caracteres',
 
             'email.required' => 'Correo electronico es requerido',
             'email.max' => 'Correo electronico no debe superar los 100 caracteres',

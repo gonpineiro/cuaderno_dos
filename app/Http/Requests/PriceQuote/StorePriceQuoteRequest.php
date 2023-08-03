@@ -29,8 +29,7 @@ class StorePriceQuoteRequest extends FormRequest
         return [
             'client_id' => 'required',
             'detail' => 'required',
-
-            'engine' => 'required',
+            'engine' => 'required|max:200',
             /* 'chasis' => 'required', */
             'type_price' => 'required',
             'information_source' => 'required',
@@ -45,6 +44,7 @@ class StorePriceQuoteRequest extends FormRequest
             'detail.required' => 'Productos es requerido',
 
             'engine.required' => 'Vehículo/Motor es requerido',
+            'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
             /* 'chasis.required' => 'Chasis es requerido', */
             'type_price.required' => 'Tipo precio requerido',
             'information_source.required' => 'Medio de consulta es requerido',
