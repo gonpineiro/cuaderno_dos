@@ -56,12 +56,18 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\User::class);
     }
+
     public function type()
     {
-        return $this->belongsTo(Table::class);
+        return $this->belongsTo(Table::class, 'type_id');
     }
 
-    public function getPercentages()
+    public function payment_method()
+    {
+        return $this->belongsTo(Table::class, 'payment_method_id');
+    }
+
+    /* public function getPercentages()
     {
 
         $array['pendiente'] = $this->detail->sum(function ($a) {
@@ -131,5 +137,5 @@ class Order extends Model
         }
 
         return $estadoGeneral;
-    }
+    } */
 }

@@ -94,11 +94,7 @@ class PriceQuoteController extends Controller
             $item['price_quote_id'] = $price_quote_id;
             $item['state_id'] = $item['state']['id'];
 
-            if ($item['product']['is_product']) {
-                $item['product_id'] = $item['product']['id'];
-            } else {
-                $item['other_id'] = $item['product']['id'];
-            }
+            $item['product_id'] = $item['product']['id'];
 
             if (!PriceQuoteProduct::create($item)) {
                 throw new \Exception("No se pudo crear un detalle de la cotización");

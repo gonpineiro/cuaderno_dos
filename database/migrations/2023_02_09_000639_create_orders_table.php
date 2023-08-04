@@ -23,7 +23,8 @@ class CreateOrdersTable extends Migration
             $table->string('engine');
             $table->string('chasis')->nullable();
 
-            $table->string('payment_method')->nullable();
+            $table->unsignedBigInteger('payment_method_id')->nullable();
+
             $table->string('invoice_number')->nullable();
             $table->float('deposit')->nullable();
             $table->date('estimated_date')->nullable();
@@ -38,6 +39,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('tables')->onDelete('cascade');
+            $table->foreign('payment_method_id')->references('id')->on('tables')->onDelete('cascade');
         });
     }
 

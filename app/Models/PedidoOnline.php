@@ -18,7 +18,7 @@ class PedidoOnline extends Order
         'type_id',
         'engine',
         'chasis',
-        'payment_method',
+        'payment_method_id',
         'invoice_number',
         'observation'
     ];
@@ -34,6 +34,7 @@ class PedidoOnline extends Order
         'workshop',
         'deposit',
         'estimated_date',
+        'payment_method_id',
         'updated_at',
         'deleted_at',
         'pivot',

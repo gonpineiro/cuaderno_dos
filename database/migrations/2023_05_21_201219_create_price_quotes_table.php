@@ -22,8 +22,8 @@ class CreatePriceQuotesTable extends Migration
             $table->string('engine');
             $table->string('chasis')->nullable();
 
-            $table->string('information_source');
-            $table->string('type_price');
+            $table->unsignedBigInteger('information_source_id');
+            $table->unsignedBigInteger('type_price_id');
             $table->string('observation')->nullable();
 
             $table->timestamps();
@@ -33,6 +33,8 @@ class CreatePriceQuotesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('information_source_id')->references('id')->on('tables');
+            $table->foreign('type_price_id')->references('id')->on('tables');
         });
 
         Schema::table('orders', function (Blueprint $table) {

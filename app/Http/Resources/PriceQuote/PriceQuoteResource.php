@@ -32,6 +32,8 @@ class PriceQuoteResource extends JsonResource
 
     private function complete($array)
     {
+        $array['type_price'] = $this->type_price;
+        $array['information_source'] = $this->information_source;
         $array['user'] = $this->user;
 
         $array['to_asign'] = $this->to_asign;

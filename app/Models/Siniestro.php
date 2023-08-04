@@ -20,7 +20,6 @@ class Siniestro extends Order
         'chasis',
         'remito',
         'workshop',
-        'estimated_date',
         'observation'
     ];
 
@@ -33,6 +32,7 @@ class Siniestro extends Order
         'price_quote_id',
         'payment_method',
         'invoice_number',
+        'estimated_date',
         'deposit',
         'updated_at',
         'deleted_at',

@@ -19,8 +19,7 @@ class PedidoCliente extends Order
         'engine',
         'chasis',
         'deposit',
-        'payment_method',
-        'invoice_number',
+        'payment_method_id',
         'estimated_date',
         'observation'
     ];
@@ -35,6 +34,7 @@ class PedidoCliente extends Order
         'remito',
         'workshop',
         'updated_at',
+        'invoice_number',
         'deleted_at',
         'pivot',
     ];

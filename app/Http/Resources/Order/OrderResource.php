@@ -38,6 +38,8 @@ class OrderResource extends JsonResource
         $this->client->city;
         $array['client'] = $this->client;
 
+        $this->payment_method && $array['payment_method'] = $this->payment_method;
+
         $array['type'] = $this->type->toArray();
         $array['percentages'] = $this->getPercentages();
 

@@ -24,7 +24,7 @@ class OrderFactory extends Factory
             'client_id' => $this->faker->randomElement(Client::where('is_insurance', false)->get())['id'],
             'engine' => $this->faker->bothify('????######'),
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
-            'payment_method' => $this->faker->randomElement(['Pago en mostrador', 'Pagado online', 'Cuenta corriente']),
+            'payment_method_id' => $this->faker->randomElement(Table::where('name', 'payment_method')->get())['id'],
             'invoice_number' => $this->faker->numberBetween(10100, 10900),
             'observation' => $this->faker->text(200),
         ];

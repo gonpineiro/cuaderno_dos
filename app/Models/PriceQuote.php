@@ -15,8 +15,8 @@ class PriceQuote extends Model
         'client_id',
         'engine',
         'chasis',
-        'information_source',
-        'type_price',
+        'information_source_id',
+        'type_price_id',
         'observation'
     ];
 
@@ -26,7 +26,8 @@ class PriceQuote extends Model
         'user_id',
         'client_id',
         'updated_at',
-        'observation',
+        'information_source_id',
+        'type_price_id',
         'pivot',
     ];
 
@@ -55,16 +56,16 @@ class PriceQuote extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function getTypePriceAttribute($value)
+    public function type_price()
     {
-        if ($value === 'lista') {
-            return 'Precio Lista';
-        } elseif ($value === 'contado') {
-            return 'Precio Contado';
-        }
-
-        return $value;
+        return $this->belongsTo(Table::class, 'type_price_id');
     }
+
+    public function information_source()
+    {
+        return $this->belongsTo(Table::class, 'information_source_id');
+    }
+
     public function getStateAttribute($value)
     {
         if ($value === 'online') {

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Client;
-use App\Models\Order;
+use App\Models\Table;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -28,8 +28,8 @@ class PriceQuoteFactory extends Factory
 
             'engine' => $this->faker->bothify('????######'),
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
-            'information_source' => $this->faker->randomElement(['WhatsApp Clientes', 'WhatsApp Mecanicos', 'Facebook', 'Mail', 'Google', 'Pagina Web']),
-            'type_price' => $this->faker->randomElement(['contado', 'lista']),
+            'information_source_id' => $this->faker->randomElement(Table::where('name', 'information_source')->get())['id'],
+            'type_price_id' => $this->faker->randomElement(Table::where('name', 'type_price')->get())['id'],
             'observation' => $this->faker->text(200),
             'created_at' => $this->faker->randomElement($dates),
 
