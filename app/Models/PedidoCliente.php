@@ -16,11 +16,14 @@ class PedidoCliente extends Order
         'client_id',
         'price_quote_id',
         'type_id',
+
         'engine',
         'chasis',
+
         'deposit',
         'payment_method_id',
         'estimated_date',
+
         'observation'
     ];
 
@@ -31,6 +34,7 @@ class PedidoCliente extends Order
         'type_id',
         'client_id',
         'price_quote_id',
+        'payment_method_id',
         'remito',
         'workshop',
         'updated_at',

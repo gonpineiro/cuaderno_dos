@@ -16,10 +16,13 @@ class Siniestro extends Order
         'client_id',
         'price_quote_id',
         'type_id',
+
         'engine',
         'chasis',
+
         'remito',
         'workshop',
+
         'observation'
     ];
 
@@ -30,7 +33,7 @@ class Siniestro extends Order
         'type_id',
         'client_id',
         'price_quote_id',
-        'payment_method',
+        'payment_method_id',
         'invoice_number',
         'estimated_date',
         'deposit',

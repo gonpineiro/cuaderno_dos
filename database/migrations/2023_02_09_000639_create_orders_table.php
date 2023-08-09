@@ -23,11 +23,21 @@ class CreateOrdersTable extends Migration
             $table->string('engine');
             $table->string('chasis')->nullable();
 
+            /** Pedido Online - Envios */
             $table->unsignedBigInteger('payment_method_id')->nullable();
-
             $table->string('invoice_number')->nullable();
+
+            /* Envios */
+            $table->string('transport')->nullable();
+            $table->string('nro_guia')->nullable();
+            $table->string('bultos')->nullable();
+            $table->string('send_adress')->nullable();
+
+            /* Pedidos cliente */
             $table->float('deposit')->nullable();
             $table->date('estimated_date')->nullable();
+
+            /* Siniestro */
             $table->string('remito')->nullable();
             $table->string('workshop')->nullable();
             $table->string('observation')->nullable();

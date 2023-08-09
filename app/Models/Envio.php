@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PedidoOnline extends Order
+class Envio extends Order
 {
     use HasFactory, SoftDeletes;
 
@@ -22,6 +22,10 @@ class PedidoOnline extends Order
 
         'payment_method_id',
         'invoice_number',
+        'transport',
+        'nro_guia',
+        'bultos',
+        'send_adress',
 
         'observation'
     ];
@@ -32,12 +36,12 @@ class PedidoOnline extends Order
         'user_id',
         'type_id',
         'client_id',
+        'payment_method_id',
         'price_quote_id',
+        'estimated_date',
+        'deposit',
         'remito',
         'workshop',
-        'deposit',
-        'estimated_date',
-        'payment_method_id',
         'updated_at',
         'deleted_at',
         'pivot',
@@ -50,12 +54,16 @@ class PedidoOnline extends Order
             return  $a->state->value == 'pendiente';
         });
 
-        $array['retirar'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
+        $array['listo_enviar'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'listo_enviar';
         });
 
-        $array['entregado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
+        $array['despachado'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'despachado';
+        });
+
+        $array['contrareemboldo'] = $this->detail->sum(function ($a) {
+            return  $a->state->value == 'contrareemboldo';
         });
 
         $array['cancelado'] = $this->detail->sum(function ($a) {
@@ -70,10 +78,12 @@ class PedidoOnline extends Order
 
         if ($array['pendiente'] > 0) {
             $array['estado_general'] = 'pendiente';
-        } else if ($array['retirar'] > 0) {
-            $array['estado_general'] = 'retirar';
-        } else if ($array['entregado'] > 0) {
-            $array['estado_general'] = 'entregado';
+        } else if ($array['listo_enviar'] > 0) {
+            $array['estado_general'] = 'listo_enviar';
+        } else if ($array['despachado'] > 0) {
+            $array['estado_general'] = 'despachado';
+        } else if ($array['contrareemboldo'] > 0) {
+            $array['estado_general'] = 'contrareemboldo';
         } else if ($array['cancelado'] > 0) {
             $array['estado_general'] = 'cancelado';
         }
@@ -88,12 +98,16 @@ class PedidoOnline extends Order
             return  $a->state->value == 'pendiente';
         });
 
-        $aRetirar = $detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
+        $listo_enviar = $detail->sum(function ($a) {
+            return  $a->state->value == 'listo_enviar';
         });
 
-        $entregado = $detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
+        $despachado = $detail->sum(function ($a) {
+            return  $a->state->value == 'despachado';
+        });
+
+        $contrareemboldo = $detail->sum(function ($a) {
+            return  $a->state->value == 'contrareemboldo';
         });
 
         $cancelado = $detail->sum(function ($a) {
@@ -104,10 +118,12 @@ class PedidoOnline extends Order
 
         if ($pendiente > 0) {
             $estadoGeneral = 'pendiente';
-        } else if ($aRetirar > 0) {
-            $estadoGeneral = 'retirar';
-        } else if ($entregado > 0) {
-            $estadoGeneral = 'entregado';
+        } else if ($listo_enviar > 0) {
+            $estadoGeneral = 'listo_enviar';
+        } else if ($despachado > 0) {
+            $estadoGeneral = 'despachado';
+        } else if ($contrareemboldo > 0) {
+            $estadoGeneral = 'contrareemboldo';
         } else if ($cancelado > 0) {
             $estadoGeneral = 'cancelado';
         }
