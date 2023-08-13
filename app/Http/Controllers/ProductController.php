@@ -77,7 +77,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $product = Product::where('code', $code)->first();
 
             $pq = PriceQuoteProduct::where('product_id', $product->id)
-                ->where('state_id', 21)->with('price_quote')->get();
+                ->where('state_id', 27)->with('price_quote')->get();
 
             $priceQuotes = $pq->map(function ($item) {
                 return $item->price_quote;
@@ -97,9 +97,9 @@ class ProductController extends \App\Http\Controllers\Controller
             $model = $request->model;
 
             if ($model == 'pedidos_online') {
-                $state_id = 9;
+                $state_id = 10;
             } else if ($model == 'pedidos_cliente') {
-                $state_id = 13;
+                $state_id = 14;
             } else if ($model == 'pedidos_siniestro') {
                 $state_id = 17;
             } else if ($model == 'cotizaciones') {
@@ -110,8 +110,8 @@ class ProductController extends \App\Http\Controllers\Controller
             $pq = OrderProduct::where('product_id', $product->id)
                 ->where('state_id', $state_id)->with('order')->get();
 
-
             $orders = $pq->map(function ($item) {
+                $o = $item->order;
                 return $item->order;
             });
 

@@ -18,7 +18,7 @@ class PriceQuoteSeeder extends Seeder
     public function run()
     {
         /* Sin asignar a un pedido */
-        PriceQuote::factory()->times(10)->create(['order_id' => null])->each(function ($price_quote) {
+        PriceQuote::factory()->times(100)->create(['order_id' => null])->each(function ($price_quote) {
 
             $generatedValues = [];
             $cantidadProductos = rand(2, 10);
