@@ -25,6 +25,7 @@ class CreateClientsTable extends Migration
             $table->string('cuit')->nullable();
             $table->boolean('is_company')->default(0);
             $table->boolean('is_insurance')->default(0);
+            $table->boolean('is_generic')->default(0);
             $table->string('observation')->nullable();
 
             $table->timestamps();

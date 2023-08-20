@@ -45,7 +45,7 @@ class PriceQuoteResource extends JsonResource
         if ($this->order) {
             $this->order->type;
             $array['order'] = $this->order;
-            $array['order']['estado_general'] = $this->order->getGeneralState();
+            $array['order']['estado_general'] = $this->order->getGeneralState;
         } else {
             $array['order'] = null;
         }

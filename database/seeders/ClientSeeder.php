@@ -14,6 +14,16 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
+        $generic = [
+            'dni' => '99999999',
+            'name' => 'Allende',
+            'lastname' => 'Repuestos',
+            'email' => 'allende@allende.com.ar',
+            'is_company' => false,
+            'is_insurance' => false,
+            'is_generic' => true,
+        ];
+        Client::factory()->create($generic);
         Client::factory()->count(50)->create();
     }
 }
