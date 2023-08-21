@@ -98,6 +98,8 @@ class Product extends Model
 
     public function getStateAttribute()
     {
+        if ($this->is_special) return 'is_special';
+
         if ($this->empty_stock) return 'empty_stock';
 
         if ($this->min_stock) return 'min_stock';

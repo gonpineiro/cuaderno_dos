@@ -35,6 +35,7 @@ class CreateProductsTable extends Migration
             $table->string('row')->nullable();
 
             $table->boolean('in_catalogue')->default(0);
+            $table->boolean('is_special')->default(0);
             $table->boolean('verified')->default(0);
 
             $table->unsignedBigInteger('provider_id')->nullable();

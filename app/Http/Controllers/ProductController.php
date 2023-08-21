@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Product\StoreProductOutRequest;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\StoreProductSpecialRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
@@ -152,6 +153,16 @@ class ProductController extends \App\Http\Controllers\Controller
     }
 
     public function storeOutCatalogue(StoreProductOutRequest $request)
+    {
+        try {
+            $product = Product::create($request->all());
+            return sendResponse(new ProductResource($product));
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage());
+        }
+    }
+
+    public function storeIsSpecial(StoreProductSpecialRequest $request)
     {
         try {
             $product = Product::create($request->all());

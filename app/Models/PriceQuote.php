@@ -80,17 +80,11 @@ class PriceQuote extends Model
     public function getToAsignAttribute()
     {
         if ($this->client->is_insurance) {
-            return [Table::where('name', 'order_type')->where('value', 'siniestro')->first()];
-        } else if ($this->products->contains('empty_stock', true)) {
-            return [
-                Table::where('name', 'order_type')->where('value', 'cliente')->first(),
-                Table::where('name', 'order_type')->where('value', 'envio')->first()
-            ];
+            return Table::where('name', 'order_type')->where('value', 'siniestro')->first();
+        } else if ($this->products->contains('is_special', true)) {
+            return Table::where('name', 'order_type')->where('value', 'cliente')->first();
         } else {
-            return [
-                Table::where('name', 'order_type')->where('value', 'online')->first(),
-                Table::where('name', 'order_type')->where('value', 'envio')->first()
-            ];
+            return Table::where('name', 'order_type')->where('value', 'online')->first();
         }
     }
 }

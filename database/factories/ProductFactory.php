@@ -43,7 +43,13 @@ class ProductFactory extends Factory
                 'provider_id' => $this->faker->randomElement(Provider::all())['id'],
                 'brand_id' => $this->faker->randomElement(Table::where('name', 'brand')->get())['id'],
             ];
-        } else {
+        } else if ($is_special = $this->faker->boolean()) {
+            return [
+                'code' => $code,
+                'description' => $this->faker->text(200),
+                'is_special' => $is_special,
+            ];
+        } else {    
             return [
                 'code' => $code,
                 'description' => $this->faker->text(200),
