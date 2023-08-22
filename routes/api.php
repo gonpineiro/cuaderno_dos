@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceQuoteController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
 
 Route::post('login', [ApiController::class, 'login']);
@@ -52,8 +53,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('online/{id}', [OrderController::class, 'showPedidoOnline']);
     Route::post('online/cambiar-estado/{id}', [OrderController::class, 'updateStateOnline']);
 
-    /* Pedidos Online */
+    /* Envios */
+    Route::resource('envio', ShipmentController::class);
     Route::get('envio', [OrderController::class, 'indexEnvios']);
+    Route::get('store', [OrderController::class, 'indexEnvios']);
     Route::get('envio/{id}', [OrderController::class, 'showPedidoOnline']);
     Route::post('envio/cambiar-estado/{id}', [OrderController::class, 'updateStateEnvio']);
 

@@ -2,26 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Envio extends Order
+class Shipment extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    protected $table = 'orders';
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
+        'order_id',
         'client_id',
-        'price_quote_id',
-        'type_id',
 
-        'engine',
-        'chasis',
-
-        'payment_method_id',
-        'invoice_number',
         'transport',
         'nro_guia',
         'bultos',
@@ -34,18 +26,32 @@ class Envio extends Order
 
     protected $hidden = [
         'user_id',
-        'type_id',
+        'order_id',
         'client_id',
-        'payment_method_id',
-        'price_quote_id',
-        'estimated_date',
-        'deposit',
-        'remito',
-        'workshop',
         'updated_at',
         'deleted_at',
         'pivot',
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
+
+    public function detail()
+    {
+        return $this->hasMany(ShipmentProduct::class, 'shipment_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 
     public function getPercentages()
     {

@@ -5,28 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderProduct extends Model
+class ShipmentProduct extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'order_id',
+        'shipment_id',
         'state_id',
         'product_id',
+
         'amount',
         'unit_price',
-        'description'
-    ];
-
-    protected $hidden = [
-        'order_id',
-        'state_id',
-        'product_id',
     ];
 
     protected $dates = ['deleted_at'];
 
-    protected $table = 'order_product';
+    protected $table = 'shipment_product';
 
     public $timestamps = false;
 
@@ -39,8 +33,8 @@ class OrderProduct extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function order()
+    public function shipment()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Shipment::class);
     }
 }

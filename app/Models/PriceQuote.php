@@ -35,6 +35,7 @@ class PriceQuote extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
     public function detail()
     {
         $productos = $this->hasMany(PriceQuoteProduct::class);
