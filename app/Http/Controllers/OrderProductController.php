@@ -43,21 +43,6 @@ class OrderProductController extends Controller
         return sendResponse(null, 'Error a modificar el detalle');
     }
 
-    public function updateEnvio(Request $request)
-    {
-        $order_product =
-            OrderProduct::where('order_id', $request->order_id)
-            ->where('product_id', $request->product_id)->first();
-
-        $update = $order_product->update($request->all());
-
-        if ($update) {
-            $order = Envio::findOrFail($request->order_id);
-            return sendResponse(new OrderResource($order, 'complete'));
-        }
-        return sendResponse(null, 'Error a modificar el detalle');
-    }
-
     public function updateSiniestro(Request $request)
     {
         $order_product =

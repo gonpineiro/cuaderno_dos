@@ -43,6 +43,9 @@ class OrderResource extends JsonResource
         $array['type'] = $this->type->toArray();
         $array['percentages'] = $this->getPercentages();
 
+        $array['price_quote'] = $this->price_quote;
+        $array['shipment'] = $this->shipment;
+
         $array['detail'] = OrderProductResource::collection($this->detail);
 
         return $array;

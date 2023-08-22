@@ -62,13 +62,6 @@ class OrderController extends \App\Http\Controllers\Controller
         return sendResponse($order);
     }
 
-    public function indexEnvios(): \Illuminate\Http\JsonResponse
-    {
-        $order = OrderResource::collection(Envio::where('type_id', 9)->get());
-
-        return sendResponse($order);
-    }
-
     public static function saveOnlineOrder(StoreOnlineOrderRequest $request)
     {
         $user = auth()->user();
@@ -100,24 +93,6 @@ class OrderController extends \App\Http\Controllers\Controller
         if (!self::storeOrderProduct($request, $order->id)) {
             DB::rollBack();
             throw new \Exception('No se pudieron guardar los productos del pedido cliente');
-        }
-
-        return $order;
-    }
-
-    public static function saveEnvioOrder(StoreEnvioOrderRequest $request)
-    {
-        $user = auth()->user();
-
-        $data = $request->all();
-        $data['user_id'] = $user->id;
-
-        $order = Envio::create($data);
-
-        /* Intentamos guardar lss ordernes productos */
-        if (!self::storeOrderProduct($request, $order->id)) {
-            DB::rollBack();
-            throw new \Exception('No se pudieron guardar los productos del envio');
         }
 
         return $order;
@@ -280,35 +255,6 @@ class OrderController extends \App\Http\Controllers\Controller
             }
 
             $order = PedidoOnline::find($id);
-
-            DB::commit();
-
-            return sendResponse(new OrderResource($order, 'complete'));
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
-        }
-    }
-
-    public function updateStateEnvio(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        try {
-            $detail = OrderProduct::where('order_id', $id)->get();
-
-            /* $entregado = Table::where('name', 'order_envio_state')->where('value', 'entregado')->first(); */
-            $cacelado = Table::where('name', 'order_envio_state')->where('value', 'cancelado')->first();
-            foreach ($detail as $item) {
-                /* Verificamos que cada item no tenga el estado de entregado o cancelado */
-                if (/* $item->state_id != $entregado->id &&  */$item->state_id != $cacelado->id) {
-                    $item->state_id = (int)$request->value;
-                    $item->save();
-                }
-            }
-
-            $order = Envio::find($id);
 
             DB::commit();
 

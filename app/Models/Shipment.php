@@ -15,6 +15,7 @@ class Shipment extends Model
         'client_id',
 
         'transport',
+        'invoice_number',
         'nro_guia',
         'bultos',
         'send_adress',
@@ -51,6 +52,20 @@ class Shipment extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+    public function price_quote()
+    {
+        return $this->belongsTo(PriceQuote::class, 'order_id', 'order_id');
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
     public function getPercentages()

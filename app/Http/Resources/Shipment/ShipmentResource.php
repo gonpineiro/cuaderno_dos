@@ -40,6 +40,12 @@ class ShipmentResource extends JsonResource
 
         $this->payment_method && $array['payment_method'] = $this->payment_method;
 
+        $this->order->type;
+        $array['order'] = $this->order;
+
+        $array['price_quote'] = $this->price_quote;
+
+        $array['detail'] = ShipmentProductResource::collection($this->detail);
         $array['percentages'] = $this->getPercentages();
 
         return $array;
@@ -50,7 +56,6 @@ class ShipmentResource extends JsonResource
         unset($array['description']);
         $array['user'] = $this->user->name;
         $array['client'] = $this->client;
-        $array['type'] = $this->type->value;
 
         return $array;
     }

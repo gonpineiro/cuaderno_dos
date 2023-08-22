@@ -28,6 +28,7 @@ class ShipmentProduct extends Model
     {
         return $this->belongsTo(Table::class);
     }
+
     public function product()
     {
         return $this->belongsTo(Product::class);

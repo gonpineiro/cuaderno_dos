@@ -36,17 +36,19 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
 
     Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
-    Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStateCliente']);
     Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
 
     /* Clientes */
     Route::get('pedido', [OrderController::class, 'indexPedidosCliente']);
     Route::get('pedido/{id}', [OrderController::class, 'showPedidoCliente']);
+    Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStateCliente']);
+    Route::post('update_pedido_product', [OrderProductController::class, 'updateCliente']);
 
     /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
     Route::get('siniestro/{id}', [OrderController::class, 'showSiniestro']);
     Route::post('siniestro/cambiar-estado/{id}', [OrderController::class, 'updateStateSiniestro']);
+    Route::post('update_siniestro_product', [OrderProductController::class, 'updateSiniestro']);
 
     /* Pedidos Online */
     Route::get('online', [OrderController::class, 'indexOnlines']);
@@ -55,10 +57,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Envios */
     Route::resource('envio', ShipmentController::class);
-    Route::get('envio', [OrderController::class, 'indexEnvios']);
-    Route::get('store', [OrderController::class, 'indexEnvios']);
-    Route::get('envio/{id}', [OrderController::class, 'showPedidoOnline']);
-    Route::post('envio/cambiar-estado/{id}', [OrderController::class, 'updateStateEnvio']);
+    Route::post('envio/cambiar-estado/{id}', [ShipmentController::class, 'updateState']);
+    Route::post('update_envio_product', [ShipmentController::class, 'updateEnvio']);
 
     /* Cotizaciones */
     Route::resource('cotizacion', PriceQuoteController::class);
@@ -69,10 +69,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
-
-    Route::post('update_pedido_product', [OrderProductController::class, 'updateCliente']);
-    Route::post('update_siniestro_product', [OrderProductController::class, 'updateSiniestro']);
-    Route::post('update_envio_product', [OrderProductController::class, 'updateEnvio']);
 });
 
 Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);

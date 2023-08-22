@@ -12,10 +12,18 @@ use App\Models\Shipment;
 use App\Models\ShipmentProduct;
 use App\Models\Siniestro;
 use App\Models\Table;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ShipmentController extends Controller
 {
+    public function index(): \Illuminate\Http\JsonResponse
+    {
+        $shipment = Shipment::all();
+
+        return sendResponse(ShipmentResource::collection($shipment));
+    }
+
     public function store(StoreShipmentRequest $request)
     {
         DB::beginTransaction();
@@ -25,6 +33,11 @@ class ShipmentController extends Controller
 
             $data = $request->all();
             $data['user_id'] = $user->id;
+
+            $order = Order::find($request->order_id);
+            if ($order->shipment_id) {
+                throw new \Exception('El pedido ya tiene un envío asigando');
+            }
 
             $shipment = Shipment::create($data);
 
@@ -81,6 +94,49 @@ class ShipmentController extends Controller
             }
         }
         return true;
+    }
+
+    public function updateState(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $detail = ShipmentProduct::where('shipment_id', $id)->get();
+
+            $cacelado = Table::where('name', 'order_envio_state')->where('value', 'cancelado')->first();
+            foreach ($detail as $item) {
+                /* Verificamos que cada item no tenga el estado de entregado */
+                if ($item->state_id != $cacelado->id) {
+                    $item->state_id = (int)$request->value;
+                    $item->save();
+                }
+            }
+
+            $shipment = Shipment::find($id);
+
+            DB::commit();
+
+            return sendResponse(new ShipmentResource($shipment, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function updateEnvio(Request $request)
+    {
+        $shipment_product =
+            ShipmentProduct::where('shipment_id', $request->shipment_id)
+            ->where('product_id', $request->product_id)->first();
+
+        $update = $shipment_product->update($request->all());
+
+        if ($update) {
+            $shipment = Shipment::findOrFail($request->shipment_id);
+            return sendResponse(new ShipmentResource($shipment, 'complete'));
+        }
+        return sendResponse(null, 'Error a modificar el detalle');
     }
 
     public function show($id)

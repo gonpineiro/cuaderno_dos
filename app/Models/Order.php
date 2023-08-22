@@ -68,6 +68,16 @@ class Order extends Model
         return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class);
+    }
+
+    public function price_quote()
+    {
+        return $this->belongsTo(PriceQuote::class);
+    }
+
     /* public function getPercentages()
     {
 

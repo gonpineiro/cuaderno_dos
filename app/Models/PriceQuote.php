@@ -57,6 +57,11 @@ class PriceQuote extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class, 'order_id', 'order_id');
+    }
+
     public function type_price()
     {
         return $this->belongsTo(Table::class, 'type_price_id');

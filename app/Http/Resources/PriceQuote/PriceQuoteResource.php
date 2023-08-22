@@ -43,6 +43,7 @@ class PriceQuoteResource extends JsonResource
 
         $array['observation'] = $this->observation;
         if ($this->order) {
+
             $this->order->type;
             $array['order'] = $this->order;
             $array['order']['estado_general'] = $this->order->getGeneralState;
@@ -50,8 +51,10 @@ class PriceQuoteResource extends JsonResource
             $array['order'] = null;
         }
 
-        $array['detail'] = PriceQuoteProductResource::collection($this->detail);
+        $array['shipment'] = $this->shipment;
+
         $array['state'] = $this->formatState($this->order);
+        $array['detail'] = PriceQuoteProductResource::collection($this->detail);
 
         return $array;
     }
