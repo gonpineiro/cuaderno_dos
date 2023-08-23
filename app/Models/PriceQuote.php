@@ -72,15 +72,54 @@ class PriceQuote extends Model
         return $this->belongsTo(Table::class, 'information_source_id');
     }
 
-    public function getStateAttribute($value)
+    public function getStateAttribute()
     {
-        if ($value === 'online') {
-            return 'Pedido Online';
-        } elseif ($value === 'contado') {
-            return 'Precio Contado';
+        $order = $this->order;
+
+        if ($this->shipment) {
+            return [
+                'value' => 'envio',
+                'string' => 'ENVÍO',
+                'className' => 'primary',
+                'url' =>  "/pedidos-envio/$order->id",
+            ];
         }
 
-        return $value;
+        if ($order) {
+            $type = $order->type->toArray();
+            unset($type['id']);
+            unset($type["background_color"]);
+            unset($type["color"]);
+
+            if ($type['value'] === 'online') {
+                $type['string'] = 'PEDIDO';
+                $type['className'] = 'success';
+                $type['url'] = "/pedidos-online/$order->id";
+            } else if ($type['value'] === 'cliente') {
+                $type['string'] = 'PEDIDO';
+                $type['className'] = 'success';
+                $type['url'] = "/pedidos-cliente/$order->id";
+            } else if ($type['value'] === 'siniestro') {
+                $type['string'] =  'PEDIDO SINIESTRO';
+                $type['className'] = 'success';
+                $type['url'] = "/pedidos-siniestro/$order->id";
+            }
+        } else {
+            $type = [];
+            $type['value'] = 'pendiente';
+            $type['string'] = 'PENDIENTE';
+            $type['className'] = 'danger';
+            $type['url'] = null;
+
+            $fechaActual = \Carbon\Carbon::now();
+            $diferenciaDias = $this->created_at->diffInDays($fechaActual);
+
+            if ($diferenciaDias >= 7) {
+                $type['className'] = 'badge-vencido';
+            }
+        }
+
+        return $type;
     }
 
     public function getToAsignAttribute()

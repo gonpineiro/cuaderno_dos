@@ -220,7 +220,7 @@ class OrderController extends \App\Http\Controllers\Controller
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado */
                 if ($item->state_id != $entregado->id) {
-                    $item->state_id = (int)$request->value;
+                    $item->state_id = (int)$request->id;
                     $item->save();
                 }
             }
@@ -249,7 +249,7 @@ class OrderController extends \App\Http\Controllers\Controller
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado o cancelado */
                 if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
-                    $item->state_id = (int)$request->value;
+                    $item->state_id = (int)$request->id;
                     $item->save();
                 }
             }
@@ -278,7 +278,7 @@ class OrderController extends \App\Http\Controllers\Controller
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado o cancelado */
                 if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
-                    $item->state_id = (int)$request->value;
+                    $item->state_id = (int)$request->id;
                     $item->save();
                 }
             }

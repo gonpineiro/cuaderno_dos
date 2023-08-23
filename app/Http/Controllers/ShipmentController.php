@@ -64,7 +64,7 @@ class ShipmentController extends Controller
 
             return sendResponse([
                 'envio' => new ShipmentResource($shipment, 'complete'),
-                'pedido' => new OrderResource($order),
+                'pedido' => new OrderResource($order, 'complete'),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -107,7 +107,7 @@ class ShipmentController extends Controller
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado */
                 if ($item->state_id != $cacelado->id) {
-                    $item->state_id = (int)$request->value;
+                    $item->state_id = (int)$request->id;
                     $item->save();
                 }
             }

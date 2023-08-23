@@ -53,7 +53,7 @@ class PriceQuoteResource extends JsonResource
 
         $array['shipment'] = $this->shipment;
 
-        $array['state'] = $this->formatState($this->order);
+        $array['state'] = $this->state;
         $array['detail'] = PriceQuoteProductResource::collection($this->detail);
 
         return $array;
@@ -64,7 +64,7 @@ class PriceQuoteResource extends JsonResource
         $array['user'] = $this->user->name;
         $array['client']['name'] = $this->client->name;
         $array['client']['phone'] = $this->client->phone;
-        $array['state'] = $this->formatState($this->order);
+        $array['state'] = $this->state;
 
         return $array;
     }
