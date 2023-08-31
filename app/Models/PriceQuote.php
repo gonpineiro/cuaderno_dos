@@ -116,6 +116,8 @@ class PriceQuote extends Model
 
             if ($diferenciaDias >= 7) {
                 $type['className'] = 'badge-vencido';
+                $type['value'] = 'vencido';
+                $type['string'] = 'VENCIDO';
             }
         }
 
