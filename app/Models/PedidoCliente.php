@@ -112,6 +112,8 @@ class PedidoCliente extends Order
             $estadoGeneral = 'entregado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_cliente_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 }

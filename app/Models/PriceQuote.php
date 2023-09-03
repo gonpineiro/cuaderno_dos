@@ -94,11 +94,11 @@ class PriceQuote extends Model
             if ($type['value'] === 'online') {
                 $type['string'] = 'PEDIDO';
                 $type['className'] = 'success';
-                $type['url'] = "/pedidos-online/$order->id";
+                $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'cliente') {
                 $type['string'] = 'PEDIDO';
                 $type['className'] = 'success';
-                $type['url'] = "/pedidos-cliente/$order->id";
+                $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
                 $type['string'] =  'PEDIDO SINIESTRO';
                 $type['className'] = 'success';

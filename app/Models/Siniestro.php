@@ -111,6 +111,8 @@ class Siniestro extends Order
             $estadoGeneral = 'cancelado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_siniestro_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 }

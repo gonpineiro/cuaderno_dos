@@ -175,7 +175,9 @@ class Order extends Model
             $estadoGeneral = 'cancelado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_online_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 
     private function clienteState()
@@ -209,7 +211,9 @@ class Order extends Model
             $estadoGeneral = 'entregado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_cliente_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 
     private function siniestroState()

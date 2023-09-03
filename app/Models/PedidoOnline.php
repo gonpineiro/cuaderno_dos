@@ -112,6 +112,8 @@ class PedidoOnline extends Order
             $estadoGeneral = 'cancelado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_online_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 }
