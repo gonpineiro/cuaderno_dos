@@ -61,8 +61,6 @@ trait TraitPedidosCliente
         return sendResponse(new OrderResource($order, 'complete'));
     }
 
-
-
     public function updateStateCliente(Request $request, $id)
     {
         DB::beginTransaction();

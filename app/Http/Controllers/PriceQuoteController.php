@@ -235,6 +235,7 @@ class PriceQuoteController extends Controller
 
     public function asignarEnvio(StoreEnvioOrderRequest $request)
     {
+        /* NO SE USA MSA */
         DB::beginTransaction();
 
         try {

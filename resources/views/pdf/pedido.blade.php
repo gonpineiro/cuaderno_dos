@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                     <td>Forma de pago:</td>
-                    <td>{{$pedido->payment_method}}</td>
+                    <td>{{$pedido->payment_method->description}}</td>
                 </tr>
                 <tr>
                     <td>Vehículo:</td>

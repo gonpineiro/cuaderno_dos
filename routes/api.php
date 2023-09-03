@@ -39,10 +39,16 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
 
     /* Clientes */
-    Route::get('pedido', [OrderController::class, 'indexPedidosCliente']);
+    /* Route::get('pedido', [OrderController::class, 'indexPedidosCliente']);
     Route::get('pedido/{id}', [OrderController::class, 'showPedidoCliente']);
     Route::post('pedido/cambiar-estado/{id}', [OrderController::class, 'updateStateCliente']);
-    Route::post('update_pedido_product', [OrderProductController::class, 'updateCliente']);
+    Route::post('update_pedido_product', [OrderProductController::class, 'updateCliente']); */
+
+    /* Clientes */
+    Route::get('pedidos', [OrderController::class, 'index']);
+    Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
+    Route::post('pedidos/cambiar-estado/{id}', [OrderController::class, 'updateState']);
+    Route::post('update_pedido_product', [OrderProductController::class, 'updatePedido']);
 
     /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);

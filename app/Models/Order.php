@@ -15,14 +15,24 @@ class Order extends Model
         'client_id',
         'price_quote_id',
         'type_id',
+
+        /* Generales */
         'engine',
         'chasis',
-        'payment_method',
+
+        /* Pedido online */
+        'payment_method_id',
         'invoice_number',
+
+        /* Pedidos Cliente */
+        'deposit',
+        'payment_method_id',
+        'estimated_date',
+
+        /* Siniestro */
         'remito',
         'workshop',
-        'deposit',
-        'estimated_date',
+
         'observation'
     ];
 
@@ -33,6 +43,7 @@ class Order extends Model
         'type_id',
         'client_id',
         'price_quote_id',
+        'payment_method_id',
         'updated_at',
         'deleted_at',
         'pivot',
@@ -114,9 +125,26 @@ class Order extends Model
         }
 
         return $array;
-    }
+    } */
 
     public function getGeneralState()
+    {
+        $type = $this->type->value;
+
+        if ($type == 'online') {
+            return $this->onlineState();
+        }
+
+        if ($type == 'cliente') {
+            return $this->clienteState();
+        }
+
+        if ($type == 'siniestro') {
+            return $this->siniestroState();
+        }
+    }
+
+    private function onlineState()
     {
         $detail = $this->detail;
         $pendiente = $detail->sum(function ($a) {
@@ -148,5 +176,73 @@ class Order extends Model
         }
 
         return $estadoGeneral;
-    } */
+    }
+
+    private function clienteState()
+    {
+        $detail = $this->detail;
+        $pendiente = $detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
+        });
+
+        $recibido = $detail->sum(function ($a) {
+            return  $a->state->value == 'recibido';
+        });
+
+        $avisado = $detail->sum(function ($a) {
+            return  $a->state->value == 'avisado';
+        });
+
+        $entregado = $detail->sum(function ($a) {
+            return  $a->state->value == 'entregado';
+        });
+
+        $estadoGeneral = '';
+
+        if ($pendiente > 0) {
+            $estadoGeneral = 'pendiente';
+        } else if ($recibido > 0) {
+            $estadoGeneral = 'recibido';
+        } else if ($avisado > 0) {
+            $estadoGeneral = 'avisado';
+        } else if ($entregado > 0) {
+            $estadoGeneral = 'entregado';
+        }
+
+        return $estadoGeneral;
+    }
+
+    private function siniestroState()
+    {
+        $detail = $this->detail;
+        $incompleto = $detail->sum(function ($a) {
+            return  $a->state->value == 'incompleto';
+        });
+
+        $completo = $detail->sum(function ($a) {
+            return  $a->state->value == 'completo';
+        });
+
+        $entregado = $detail->sum(function ($a) {
+            return  $a->state->value == 'entregado';
+        });
+
+        $cancelado = $detail->sum(function ($a) {
+            return  $a->state->value == 'cancelado';
+        });
+
+        $estadoGeneral = '';
+
+        if ($incompleto > 0) {
+            $estadoGeneral = 'incompleto';
+        } else if ($completo > 0) {
+            $estadoGeneral = 'completo';
+        } else if ($entregado > 0) {
+            $estadoGeneral = 'entregado';
+        } else if ($cancelado > 0) {
+            $estadoGeneral = 'cancelado';
+        }
+
+        return $estadoGeneral;
+    }
 }

@@ -41,7 +41,7 @@ class OrderResource extends JsonResource
         $this->payment_method && $array['payment_method'] = $this->payment_method;
 
         $array['type'] = $this->type->toArray();
-        $array['percentages'] = $this->getPercentages();
+        //$array['percentages'] = $this->getPercentages();
 
         $array['price_quote'] = $this->price_quote;
         $array['shipment'] = $this->shipment;
@@ -54,9 +54,11 @@ class OrderResource extends JsonResource
     private function default($array)
     {
         unset($array['description']);
+        unset($array['detail']);
         $array['user'] = $this->user->name;
         $array['client'] = $this->client;
         $array['type'] = $this->type->value;
+        $this->payment_method && $array['payment_method'] = $this->payment_method->description;
 
         return $array;
     }

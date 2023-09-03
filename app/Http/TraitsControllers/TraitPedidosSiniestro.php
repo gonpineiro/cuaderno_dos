@@ -12,7 +12,7 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-trait TraitPedidosCliente
+trait TraitPedidosSiniestro
 {
     public function indexSiniestros(): \Illuminate\Http\JsonResponse
     {

@@ -13,6 +13,21 @@ use Illuminate\Http\Request;
 
 class OrderProductController extends Controller
 {
+    public function updatePedido(Request $request)
+    {
+        $order_product =
+            OrderProduct::where('order_id', $request->order_id)
+            ->where('product_id', $request->product_id)->first();
+
+        $update = $order_product->update($request->all());
+
+        if ($update) {
+            $order = Order::findOrFail($request->order_id);
+            return sendResponse(new OrderResource($order, 'complete'));
+        }
+        return sendResponse(null, 'Error a modificar el detalle');
+    }
+
     public function updateOnline(Request $request)
     {
         $order_product =

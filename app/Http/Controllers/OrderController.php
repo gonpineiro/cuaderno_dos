@@ -2,29 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Order\StoreClienteOrderRequest;
-use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Order\OrderProductResource;
+use App\Http\TraitsControllers\TraitPedidos;
+use App\Http\TraitsControllers\TraitPedidosSiniestro;
 use App\Http\TraitsControllers\TraitPedidosCliente;
 use App\Http\TraitsControllers\TraitPedidosOnline;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\PedidoCliente;
-use App\Models\PedidoOnline;
-use App\Models\Siniestro;
-use App\Models\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
 
-    use TraitPedidosOnline, TraitPedidosCliente;
+    use TraitPedidosOnline, TraitPedidosCliente, TraitPedidos, TraitPedidosSiniestro;
 
     private static function storeOrderProduct($request, $order_id)
     {
