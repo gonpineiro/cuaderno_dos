@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class OrderProductController extends Controller
 {
-    public function updatePedido(Request $request)
+    public function updatePedidoProduct(Request $request)
     {
         $order_product =
             OrderProduct::where('order_id', $request->order_id)

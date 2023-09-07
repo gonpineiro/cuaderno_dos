@@ -53,8 +53,6 @@ trait TraitPedidosCliente
         return $order;
     }
 
-
-
     public function showPedidoCliente($id)
     {
         $order = PedidoCliente::findOrFail($id);

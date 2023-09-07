@@ -2,11 +2,13 @@
 
 namespace App\Http\TraitsControllers;
 
-use App\Http\Requests\Order\StoreClienteOrderRequest;
+use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
+use App\Models\PedidoOnline;
+use App\Models\Siniestro;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +78,7 @@ trait TraitPedidos
             if ($type === 'cliente') {
 
                 $entregado = Table::where('name', 'order_cliente_state')->where('value', 'entregado')->first();
+                $entregado = Table::where('name', 'order_cliente_state')->where('value', 'cancelado')->first();
 
                 foreach ($detail as $item) {
                     /* Verificamos que cada item no tenga el estado de entregado */
@@ -108,5 +111,21 @@ trait TraitPedidos
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
+    }
+
+    public function updatePedido(UpdateOrderRequest $request, int $id)
+    {
+        $type = Table::find($request->type_id);
+
+        if ($type->value == 'cliente') {
+            $pedido = PedidoCliente::findOrFail($id);
+        } else if ($type->value == 'online') {
+            $pedido = PedidoOnline::findOrFail($id);
+        } else if ($type->value == 'siniestro') {
+            $pedido = Siniestro::findOrFail($id);
+        }
+
+        $pedido->fill($request->all())->save();
+        return sendResponse(new OrderResource($pedido, 'complete'));
     }
 }

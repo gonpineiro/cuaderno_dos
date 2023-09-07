@@ -25,29 +25,30 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'siniestro', 'description' => 'Pedido Siniestro']);
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'envio', 'description' => 'Envío']);
 
-        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'pendiente', 'description' => 'Pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'retirar', 'description' => 'Retirar', 'background_color' => '#ffc107', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'pendiente', 'description' => 'Incompleto', 'background_color' => '#dc3545', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'retirar', 'description' => 'Para retiro o para envio', 'background_color' => '#0d6efd', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'entregado', 'description' => 'Entregado', 'background_color' => '#198754', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'pendiente', 'description' => 'Pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'recibido', 'description' => 'Recibido', 'background_color' => '#ffc107', 'color' => 'black']);
-        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'avisado', 'description' => 'Avisado', 'background_color' => '#0d6efd', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'incompleto', 'description' => 'Incompleto', 'background_color' => '#ffc107', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'retirar', 'description' => 'Para retiro o para envio', 'background_color' => '#0d6efd', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'entregado', 'description' => 'Entregado', 'background_color' => '#198754', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'order_cliente_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'incompleto', 'description' => 'Incompleto', 'background_color' => '#dc3545', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'entregado', 'description' => 'Entregado', 'background_color' => '#198754', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'completo', 'description' => 'Completo', 'background_color' => '#ffc107', 'color' => 'black']);
-        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_siniestro_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'pendiente', 'description' => 'Pendiente a preparar', 'background_color' => '#dc3545', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'listo_enviar', 'description' => 'Listo para enviar', 'background_color' => '#0d6efd', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'despachado', 'description' => 'Despachado', 'background_color' => '#ffc107', 'color' => 'black']);
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'contrareemboldo', 'description' => 'Contrareemboso pago', 'background_color' => '#ffc107', 'color' => 'black']);
-        DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'description' => 'Cotizar', 'background_color' => '#198754', 'color' => 'white']);
-        DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'description' => 'No Cotizar', 'background_color' => '#6c757d', 'color' => 'black']);
+        DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'description' => 'No Cotizar', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'config', 'value' => 'product.ship', 'description' => '1']);
 

@@ -187,12 +187,16 @@ class Order extends Model
             return  $a->state->value == 'pendiente';
         });
 
-        $recibido = $detail->sum(function ($a) {
-            return  $a->state->value == 'recibido';
+        $incompleto = $detail->sum(function ($a) {
+            return  $a->state->value == 'incompleto';
         });
 
-        $avisado = $detail->sum(function ($a) {
-            return  $a->state->value == 'avisado';
+        $retirar = $detail->sum(function ($a) {
+            return  $a->state->value == 'retirar';
+        });
+
+        $cancelado = $detail->sum(function ($a) {
+            return  $a->state->value == 'cancelado';
         });
 
         $entregado = $detail->sum(function ($a) {
@@ -203,12 +207,14 @@ class Order extends Model
 
         if ($pendiente > 0) {
             $estadoGeneral = 'pendiente';
-        } else if ($recibido > 0) {
-            $estadoGeneral = 'recibido';
-        } else if ($avisado > 0) {
-            $estadoGeneral = 'avisado';
+        } else if ($incompleto > 0) {
+            $estadoGeneral = 'incompleto';
+        } else if ($retirar > 0) {
+            $estadoGeneral = 'retirar';
         } else if ($entregado > 0) {
             $estadoGeneral = 'entregado';
+        } else if ($cancelado > 0) {
+            $estadoGeneral = 'cancelado';
         }
 
         $estado = Table::where('name', 'order_cliente_state')->where('value', $estadoGeneral)->first();

@@ -30,7 +30,7 @@ class PriceQuoteSeeder extends Seeder
 
                 $generatedValues[] = $valor;
 
-                $product_detail =  $this->createProduct($price_quote->id, 'price_quote_id', rand(27, 28), $valor);
+                $product_detail =  $this->createProduct($price_quote->id, 'price_quote_id', rand(28, 29), $valor);
                 PriceQuoteProduct::create($product_detail);
             }
         });

@@ -47,8 +47,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Clientes */
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
+    Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
     Route::post('pedidos/cambiar-estado/{id}', [OrderController::class, 'updateState']);
-    Route::post('update_pedido_product', [OrderProductController::class, 'updatePedido']);
+    Route::post('update_pedido_product', [OrderProductController::class, 'updatePedidoProduct']);
 
     /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
