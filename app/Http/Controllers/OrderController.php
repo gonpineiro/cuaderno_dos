@@ -21,27 +21,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
     use TraitPedidosOnline, TraitPedidosCliente, TraitPedidos, TraitPedidosSiniestro;
 
-    private static function storeOrderProduct($request, $order_id)
-    {
-        $detail = $request->detail;
-
-        /* if ($this->hayDuplicados($detail)) {
-            throw new \Exception("Existen productos duplicados");
-        } */
-
-        foreach ($detail as $item) {
-
-            $item['order_id'] = $order_id;
-            $item['state_id'] = $item['state']['id'];
-
-            $item['product_id'] = $item['product']['id'];
-
-            if (!OrderProduct::create($item)) {
-                throw new \Exception("No se pudo crear un detalle de la orden");
-            }
-        }
-        return true;
-    }
 
     private function hayDuplicados($productos)
     {
@@ -66,28 +45,41 @@ class OrderController extends \App\Http\Controllers\Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->all();
-
             $order = Order::findOrFail($id);
 
-            $order->fill($data)->save();
+            $detail = $request->detail;
 
-            /* CORREGIR; NO HAY QUE BORRAR; HAY QUE ACTUALIZAR */
-            OrderProduct::where('order_id', $id)->delete();
+            // Obtén los IDs de producto de detail
+            $productIdsInDetail = array_map(function ($item) {
+                return $item['product']['id'];
+            }, $detail);
 
-            /* Intentamos guardar lss ordernes productos */
-            if (!$this->storeOrderProduct($request, $order->id)) {
-                DB::rollBack();
+            // Elimina los registros OrderProduct que no están en $productIdsInDetail
+            OrderProduct::where('order_id', $id)
+                ->whereNotIn('product_id', $productIdsInDetail)
+                ->delete();
 
-                return response()->json([
-                    'data' => null,
-                    'message' => null,
-                    'error' => 'No se pudieron guardar los productos de la orden'
-                ]);
+            // Actualiza o agrega registros OrderProduct según detail
+            foreach ($detail as $item) {
+                $orderProductData = [
+                    'order_id' => $order->id,
+                    'product_id' => $item['product']['id'],
+                    'amount' => $item['amount'],
+                    'unit_price' => $item['unit_price'],
+                    'description' => $item['description'],
+                    'state_id' => $item['state']['id'],
+                ];
+
+                OrderProduct::updateOrInsert(
+                    [
+                        'order_id' => $order->id,
+                        'product_id' => $item['product']['id'],
+                    ],
+                    $orderProductData
+                );
             }
 
             DB::commit();
-
             return sendResponse(new OrderResource($order, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();

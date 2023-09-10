@@ -9,6 +9,7 @@ use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests\PriceQuote\StorePriceQuoteRequest;
+use App\Http\Requests\PriceQuote\UpdatePriceQuoteRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
@@ -233,46 +234,6 @@ class PriceQuoteController extends Controller
         }
     }
 
-    public function asignarEnvio(StoreEnvioOrderRequest $request)
-    {
-        /* NO SE USA MSA */
-        DB::beginTransaction();
-
-        try {
-            $priceQuote = PriceQuote::find($request->price_quote_id);
-
-            if (!$priceQuote) {
-                throw new \Exception('No existe la cotizacion');
-            }
-
-            if ($priceQuote->order_id) {
-                throw new \Exception('La cotización ya tiene un pedido/siniestro asignado');
-            }
-
-            /** El typo_pedido que tendra el pedido */
-            $type_order = Table::find($request->type_id);
-
-            if ($type_order->name !== 'order_type' || $type_order->value !== 'envio') {
-                throw new \Exception('Enviando información erronea al servidor');
-            }
-
-            $order = OrderController::saveEnvioOrder($request);
-
-            $priceQuote->order_id = $order->id;
-            $priceQuote->save();
-
-            DB::commit();
-
-            return sendResponse([
-                'pedido' => new OrderResource($order, 'complete'),
-                'cotizacion' => new PriceQuoteResource($priceQuote),
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
-        }
-    }
-
     public function destroy($id)
     {
         DB::beginTransaction();
@@ -281,7 +242,7 @@ class PriceQuoteController extends Controller
             $priceQuote = PriceQuote::findOrFail($id);
 
             if ($priceQuote->order_id) {
-                throw new \Exception('No se puede borrar una cotización asignada');
+                throw new \Exception('Existe un pedido generado desde esta cotización');
             }
 
             $priceQuote->delete();
@@ -299,6 +260,13 @@ class PriceQuoteController extends Controller
 
     public function update_price_quote_product(Request $request)
     {
+
+        $price_quote = PriceQuote::findOrFail($request->price_quote_id);
+
+        if ($price_quote->order) {
+            return sendResponse(null, 'Existe un pedido generado desde esta cotización');
+        }
+
         $item =
             PriceQuoteProduct::where('price_quote_id', $request->price_quote_id)
             ->where('product_id', $request->product_id)->first();
@@ -346,33 +314,63 @@ class PriceQuoteController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->all();
+            $price_quote = PriceQuote::findOrFail($id);
 
-            $order = PriceQuote::findOrFail($id);
+            if ($price_quote->order) {
+                return sendResponse(null, 'Existe un pedido generado desde esta cotización');
+            }
 
-            $order->fill($data)->save();
+            $detail = $request->detail;
 
-            /* CORREGIR; NO HAY QUE BORRAR; HAY QUE ACTUALIZAR */
-            PriceQuoteProduct::where('price_quote_id', $id)->delete();
+            // Obtén los IDs de producto de detail
+            $productIdsInDetail = array_map(function ($item) {
+                return $item['product']['id'];
+            }, $detail);
 
-            /* Intentamos guardar lss ordernes productos */
-            if (!$this->storePriceQuoteProduct($request, $order->id)) {
-                DB::rollBack();
+            // Elimina los registros OrderProduct que no están en $productIdsInDetail
+            PriceQuoteProduct::where('price_quote_id', $id)
+                ->whereNotIn('product_id', $productIdsInDetail)
+                ->delete();
 
-                return response()->json([
-                    'data' => null,
-                    'message' => null,
-                    'error' => 'No se pudieron guardar los productos de la cotizacion'
-                ]);
+            // Actualiza o agrega registros OrderProduct según detail
+            foreach ($detail as $item) {
+                $price_quoteProductData = [
+                    'price_quote_id' => $price_quote->id,
+                    'product_id' => $item['product']['id'],
+                    'amount' => $item['amount'],
+                    'unit_price' => $item['unit_price'],
+                    'description' => $item['description'],
+                    'state_id' => $item['state']['id'],
+                ];
+
+                PriceQuoteProduct::updateOrInsert(
+                    [
+                        'price_quote_id' => $price_quote->id,
+                        'product_id' => $item['product']['id'],
+                    ],
+                    $price_quoteProductData
+                );
             }
 
             DB::commit();
-
-            return sendResponse(new PriceQuoteResource($order, 'complete'));
+            return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
+    }
+
+    public function updateCotizacion(UpdatePriceQuoteRequest $request, int $id)
+    {
+        $price_quote = PriceQuote::findOrFail($id);
+
+        if ($price_quote->order) {
+            return sendResponse(null, 'Existe un pedido generado desde esta cotización');
+        }
+
+        $price_quote->fill($request->all())->save();
+
+        return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
     }
 }

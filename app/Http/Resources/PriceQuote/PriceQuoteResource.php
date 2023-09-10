@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\PriceQuote;
 
+use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PriceQuoteResource extends JsonResource
@@ -46,10 +47,12 @@ class PriceQuoteResource extends JsonResource
 
             $this->order->type;
             $array['order'] = $this->order;
-            $array['order']['estado_general'] = $this->order->getGeneralState;
+            $array['order']['estado_general'] = $this->order->getGeneralState();
         } else {
             $array['order'] = null;
         }
+
+        $array['init_state'] = Table::where('name', 'price_quote_state')->where('value', 'cotizar')->first();
 
         $array['shipment'] = $this->shipment;
 
