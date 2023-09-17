@@ -39,24 +39,26 @@ class ShipmentController extends Controller
                 throw new \Exception('El pedido ya tiene un envío asigando');
             }
 
+            $type = $order->type->value;
+            $newDetail = $order->detailPending;
+
+            self::changeToRetirar($type, $newDetail);
+
             $shipment = Shipment::create($data);
 
-            if (!self::storeShipmentProduct($request, $shipment->id)) {
+            if (!self::storeShipmentProduct($newDetail, $shipment->id)) {
                 DB::rollBack();
                 throw new \Exception('No se pudieron guardar los productos del pedido cliente');
             }
 
-            $order = Order::find($request->order_id);
             $order->shipment_id = $shipment->id;
             $order->save();
 
-            $order_type = Table::find($order->type_id);
-
-            if ($order_type->value === 'online') {
+            if ($type === 'online') {
                 $order = PedidoOnline::findOrFail($order->id);
-            } else if ($order_type->value === 'cliente') {
+            } else if ($type === 'cliente') {
                 $order = PedidoCliente::findOrFail($order->id);
-            } else if ($order_type->value === 'siniestro') {
+            } else if ($type === 'siniestro') {
                 $order = Siniestro::findOrFail($order->id);
             }
 
@@ -73,23 +75,36 @@ class ShipmentController extends Controller
         }
     }
 
-    private static function storeShipmentProduct($request, $shipment_id)
+    private static function changeToRetirar($order_type, $detail)
     {
-        $detail = $request->detail;
+        if ($order_type == 'online') {
+            $state = Table::where('name', 'order_online_state')->where('value', 'retirar')->first();
+        } else if ($order_type == 'cliente') {
+            $state = Table::where('name', 'order_cliente_state')->where('value', 'retirar')->first();
+        } else if ($order_type == 'siniestro') {
+            $state = Table::where('name', 'order_siniestro_state')->where('value', 'retirar')->first();
+        }
 
-        /* if ($this->hayDuplicados($detail)) {
-            throw new \Exception("Existen productos duplicados");
-        } */
+        foreach ($detail as $orderProduct) {
+            $orderProduct->state_id = $state->id;
+            $orderProduct->save();
+        }
+    }
 
+    private static function storeShipmentProduct($detail, $shipment_id)
+    {
         $pendiente = Table::where('name', 'order_envio_state')->where('value', 'pendiente')->first();
+
         foreach ($detail as $item) {
 
-            $item['shipment_id'] = $shipment_id;
-            $item['state_id'] = $pendiente->id;
+            $data = [];
+            $data['shipment_id'] = $shipment_id;
+            $data['state_id'] = $pendiente->id;
+            $data['product_id'] = $item->product->id;
+            $data['amount'] = $item->amount;
+            $data['unit_price'] = $item->unit_price;
 
-            $item['product_id'] = $item['product']['id'];
-
-            if (!ShipmentProduct::create($item)) {
+            if (!ShipmentProduct::create($data)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");
             }
         }

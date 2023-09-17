@@ -54,6 +54,14 @@ class Order extends Model
         return $this->belongsToMany(Product::class);
     }
 
+    public function detailPending()
+    {
+        return $this->hasMany(OrderProduct::class, 'order_id')
+            ->whereHas('state', function ($query) {
+                $query->whereNotIn('value', ['entregado', 'cancelado']);
+            });
+    }
+
     public function detail()
     {
         return $this->hasMany(OrderProduct::class, 'order_id');

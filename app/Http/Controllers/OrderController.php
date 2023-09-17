@@ -136,4 +136,21 @@ class OrderController extends \App\Http\Controllers\Controller
 
         return $pdf->download('informe.pdf');
     }
+
+    private function storeOrderProduct($request, $order_id)
+    {
+        $detail = $request->detail;
+
+        foreach ($detail as $item) {
+            $item['order_id'] = $order_id;
+            $item['state_id'] = $item['state']['id'];
+
+            $item['product_id'] = $item['product']['id'];
+
+            if (!OrderProduct::create($item)) {
+                throw new \Exception("No se pudo crear el detalle del pedido");
+            }
+        }
+        return true;
+    }
 }
