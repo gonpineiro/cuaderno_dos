@@ -25,8 +25,8 @@ class CreateProductsTable extends Migration
             $table->string('engine')->nullable();
             $table->string('observation')->nullable();
 
-            $table->boolean('min_stock')->default(0);
-            $table->boolean('empty_stock')->default(0);
+            /* $table->boolean('min_stock')->default(0);
+            $table->boolean('empty_stock')->default(0); */
 
             $table->string('ship')->nullable();
             $table->string('module')->nullable();
@@ -34,18 +34,19 @@ class CreateProductsTable extends Migration
             $table->string('column')->nullable();
             $table->string('row')->nullable();
 
-            $table->boolean('in_catalogue')->default(0);
             $table->boolean('is_special')->default(0);
             $table->boolean('verified')->default(0);
 
             $table->unsignedBigInteger('provider_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
 
             $table->timestamps();
 
             /* Relaciones */
             $table->foreign('brand_id')->references('id')->on('tables');
             $table->foreign('provider_id')->references('id')->on('providers');
+            $table->foreign('state_id')->references('id')->on('tables');
         });
     }
 

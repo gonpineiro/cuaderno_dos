@@ -17,7 +17,16 @@ class ProductFactory extends Factory
     public function definition()
     {
         $code = $this->faker->unique()->numberBetween(100, 652135);
-        if ($in_catalogue = $this->faker->boolean()) {
+        $state_id = Table::where('name', 'product_state')->where('value', 'sin_control_stock')->first()->id;
+
+        if ($is_special = $this->faker->boolean()) {
+            return [
+                'code' => $code,
+                'description' => $this->faker->text(200),
+                'is_special' => $is_special,
+                'state_id' =>  $state_id,
+            ];
+        } else {
             return [
                 'code' => $code,
                 'provider_code' => $this->faker->randomNumber(5, true),
@@ -29,31 +38,15 @@ class ProductFactory extends Factory
                 'engine' => $this->faker->bothify('????######'),
                 'observation' => $this->faker->sentence(3),
 
-                'min_stock' => $this->faker->boolean(),
-                'empty_stock' => $this->faker->boolean(),
-
                 'ship' => 1,
                 'module' => $this->faker->randomDigitNotNull(),
                 'side' => 'D',
                 'column' => $this->faker->randomDigitNotNull(),
                 'row' => $this->faker->randomDigitNotNull(),
 
-                'in_catalogue' => $in_catalogue,
-
                 'provider_id' => $this->faker->randomElement(Provider::all())['id'],
                 'brand_id' => $this->faker->randomElement(Table::where('name', 'brand')->get())['id'],
-            ];
-        } else if ($is_special = $this->faker->boolean()) {
-            return [
-                'code' => $code,
-                'description' => $this->faker->text(200),
-                'is_special' => $is_special,
-            ];
-        } else {    
-            return [
-                'code' => $code,
-                'description' => $this->faker->text(200),
-                'provider_id' => $this->faker->randomElement(Provider::all())['id'],
+                'state_id' =>  $state_id,
             ];
         }
     }

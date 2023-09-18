@@ -13,6 +13,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\Table;
 use Illuminate\Http\Request;
 
 class ProductController extends \App\Http\Controllers\Controller
@@ -165,7 +166,12 @@ class ProductController extends \App\Http\Controllers\Controller
     public function storeIsSpecial(StoreProductSpecialRequest $request)
     {
         try {
-            $product = Product::create($request->all());
+            $body = $request->all();
+
+            $state = Table::where('name', 'product_state')->where('value', 'sin_control_stock')->first();
+            $body['state_id'] = $state->id;
+
+            $product = Product::create($body);
             return sendResponse(new ProductResource($product));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());

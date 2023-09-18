@@ -100,9 +100,9 @@ class PriceQuote extends Model
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
-                $type['string'] =  'PEDIDO SINIESTRO';
+                $type['string'] =  'SINIESTRO';
                 $type['className'] = 'success';
-                $type['url'] = "/pedidos-siniestro/$order->id";
+                $type['url'] = "/siniestro/$order->id";
             }
         } else {
             $type = [];

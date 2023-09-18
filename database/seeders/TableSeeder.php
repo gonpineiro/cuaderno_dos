@@ -70,5 +70,8 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'payment_method_send', 'value' => 'contrareembolso', 'description' => 'Contrareembolso']);
         DB::table('tables')->insert(['name' => 'payment_method_send', 'value' => 'online', 'description' => 'Pagado online']);
         DB::table('tables')->insert(['name' => 'payment_method_send', 'value' => 'corriente', 'description' => 'Cuenta corriente']);
+
+        DB::table('tables')->insert(['name' => 'product_state', 'value' => 'sin_control_stock', 'description' => 'Sin control de stock']);
+        DB::table('tables')->insert(['name' => 'product_state', 'value' => 'control_stock', 'description' => 'Control de stock']);
     }
 }

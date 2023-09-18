@@ -20,9 +20,6 @@ class Product extends Model
         'engine',
         'observation',
 
-        'min_stock',
-        'empty_stock',
-
         'ship',
         'module',
         'side',
@@ -33,12 +30,14 @@ class Product extends Model
 
         'provider_id',
         'brand_id',
+        'state_id',
     ];
 
     protected $hidden = [
         'pivot',
         'provider_id',
         'brand_id',
+        'state_id',
         'created_at',
         'updated_at',
         'ship',
@@ -56,6 +55,11 @@ class Product extends Model
     public function provider()
     {
         return $this->belongsTo(Provider::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(Table::class);
     }
 
     public function orders()
@@ -99,16 +103,5 @@ class Product extends Model
         $row = sprintf('%02d', $this->row);
 
         return $this->ship . $this->module . $this->side . $column . $row;
-    }
-
-    public function getStateAttribute()
-    {
-        if ($this->is_special) return 'is_special';
-
-        if ($this->empty_stock) return 'empty_stock';
-
-        if ($this->min_stock) return 'min_stock';
-
-        if (!$this->min_stock && !$this->empty_stock) return 'ok';
     }
 }

@@ -48,6 +48,7 @@ class StoreProductRequest extends FormRequest
 
             'provider_id' => 'required',
             'brand_id' => 'required',
+            'state_id' => 'required',
         ];
     }
 
@@ -102,6 +103,9 @@ class StoreProductRequest extends FormRequest
 
             'brand_id.required' => 'Marca es requerido',
             'brand_id.integer' => 'Marca debe ser un entero',
+
+            'state_id.required' => 'Estado de stock es requerido',
+            'state_id.integer' => 'Marca debe ser un entero',
         ];
     }
 }
