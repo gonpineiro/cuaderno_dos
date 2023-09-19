@@ -21,6 +21,7 @@ class OrderProductResource extends JsonResource
         $array['product'] = new ProductResource($this->product);
 
         $array['state'] =  $this->state;
+        $array['provider'] =  $this->provider;
 
         return $array;
     }

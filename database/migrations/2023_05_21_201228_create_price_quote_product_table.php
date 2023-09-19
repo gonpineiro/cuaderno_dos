@@ -18,7 +18,8 @@ class CreatePriceQuoteProductTable extends Migration
             $table->unsignedBigInteger('price_quote_id');
 
             /* Requieren que sea nulos porque o va ser uno o el otro, jamas ambos */
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('provider_id')->nullable();
             $table->unsignedBigInteger('state_id');
 
             /* Detalle del pedido */

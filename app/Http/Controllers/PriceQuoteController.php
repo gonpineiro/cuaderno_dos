@@ -96,6 +96,7 @@ class PriceQuoteController extends Controller
             $item['price_quote_id'] = $price_quote_id;
             $item['state_id'] = $item['state']['id'];
 
+            $item['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
             $item['product_id'] = $item['product']['id'];
 
             if (!PriceQuoteProduct::create($item)) {
@@ -341,6 +342,7 @@ class PriceQuoteController extends Controller
                     'unit_price' => $item['unit_price'],
                     'description' => $item['description'],
                     'state_id' => $item['state']['id'],
+                    'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
                 ];
 
                 PriceQuoteProduct::updateOrInsert(

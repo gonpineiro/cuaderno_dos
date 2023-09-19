@@ -145,6 +145,7 @@ class OrderController extends \App\Http\Controllers\Controller
             $item['order_id'] = $order_id;
             $item['state_id'] = $item['state']['id'];
 
+            $item['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
             $item['product_id'] = $item['product']['id'];
 
             if (!OrderProduct::create($item)) {

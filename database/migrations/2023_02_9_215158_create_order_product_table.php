@@ -17,8 +17,8 @@ class CreateOrderProductTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
 
-            /* Requieren que sea nulos porque o va ser uno o el otro, jamas ambos */
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('provider_id')->nullable();
             $table->unsignedBigInteger('state_id');
 
             /* Detalle del pedido */

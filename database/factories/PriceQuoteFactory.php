@@ -18,8 +18,8 @@ class PriceQuoteFactory extends Factory
     public function definition()
     {
         $dates = [];
-        for ($i=0; $i <= 8; $i++) {
-            $dates[] =Carbon::now()->subDays($i);
+        for ($i = 0; $i <= 8; $i++) {
+            $dates[] = Carbon::now()->subDays($i);
         }
 
         return [

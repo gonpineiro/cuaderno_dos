@@ -18,6 +18,7 @@ class CreateShipmentProductTable extends Migration
             $table->unsignedBigInteger('shipment_id');
 
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('provider_id')->nullable();
             $table->unsignedBigInteger('state_id');
 
             $table->integer('amount');

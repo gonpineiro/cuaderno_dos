@@ -13,6 +13,7 @@ class OrderProduct extends Model
         'order_id',
         'state_id',
         'product_id',
+        'provider_id',
         'amount',
         'unit_price',
         'description'
@@ -22,6 +23,7 @@ class OrderProduct extends Model
         'order_id',
         'state_id',
         'product_id',
+        'provider_id',
     ];
 
     protected $dates = ['deleted_at'];
@@ -38,6 +40,11 @@ class OrderProduct extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
     }
 
     public function order()

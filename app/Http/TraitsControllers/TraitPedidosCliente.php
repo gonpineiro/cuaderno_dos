@@ -46,7 +46,6 @@ trait TraitPedidosCliente
 
         /* Intentamos guardar lss ordernes productos */
         if (!self::storeOrderProduct($request, $order->id)) {
-            DB::rollBack();
             throw new \Exception('No se pudieron guardar los productos del pedido cliente');
         }
 

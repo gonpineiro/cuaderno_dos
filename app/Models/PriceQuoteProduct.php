@@ -15,6 +15,7 @@ class PriceQuoteProduct extends Model
         'price_quote_id',
         'state_id',
         'product_id',
+        'provider_id',
         'amount',
         'unit_price',
         'quote',
@@ -23,6 +24,7 @@ class PriceQuoteProduct extends Model
 
     protected $hidden = [
         'state_id',
+        'provider_id',
         'product_id',
     ];
 
@@ -40,10 +42,17 @@ class PriceQuoteProduct extends Model
     {
         return $this->belongsTo(Table::class);
     }
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
     public function price_quote()
     {
         return $this->belongsTo(PriceQuote::class);
