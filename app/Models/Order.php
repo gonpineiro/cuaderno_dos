@@ -191,12 +191,12 @@ class Order extends Model
     private function clienteState()
     {
         $detail = $this->detail;
-        $pendiente = $detail->sum(function ($a) {
-            return  $a->state->value == 'pendiente';
-        });
-
         $incompleto = $detail->sum(function ($a) {
             return  $a->state->value == 'incompleto';
+        });
+
+        $pendiente = $detail->sum(function ($a) {
+            return  $a->state->value == 'pendiente';
         });
 
         $retirar = $detail->sum(function ($a) {
@@ -213,10 +213,10 @@ class Order extends Model
 
         $estadoGeneral = '';
 
-        if ($pendiente > 0) {
-            $estadoGeneral = 'pendiente';
-        } else if ($incompleto > 0) {
+        if ($incompleto > 0) {
             $estadoGeneral = 'incompleto';
+        } else if ($pendiente > 0) {
+            $estadoGeneral = 'pendiente';
         } else if ($retirar > 0) {
             $estadoGeneral = 'retirar';
         } else if ($entregado > 0) {

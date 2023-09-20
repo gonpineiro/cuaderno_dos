@@ -92,11 +92,11 @@ class PriceQuote extends Model
             unset($type["color"]);
 
             if ($type['value'] === 'online') {
-                $type['string'] = 'PEDIDO';
+                $type['string'] = 'COMPLETO';
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'cliente') {
-                $type['string'] = 'PEDIDO';
+                $type['string'] = 'INCOMPLETO';
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
@@ -106,19 +106,28 @@ class PriceQuote extends Model
             }
         } else {
             $type = [];
+
+            $to_asign = $this->to_asign;
+
             $type['value'] = 'pendiente';
-            $type['string'] = 'PENDIENTE';
             $type['className'] = 'danger';
-            $type['url'] = null;
+
+            if ($to_asign->value === 'cliente') {
+                $type['string'] = 'INCOMPLETO S/A';
+            } else if ($to_asign->value === 'online') {
+                $type['string'] = 'COMPLETO S/A';
+            } else if ($to_asign->value === 'siniestro') {
+                $type['string'] = 'SINIESTRO S/A';
+            }
 
             $fechaActual = \Carbon\Carbon::now();
             $diferenciaDias = $this->created_at->diffInDays($fechaActual);
-
             if ($diferenciaDias >= 7) {
-                $type['className'] = 'badge-vencido';
                 $type['value'] = 'vencido';
-                $type['string'] = 'VENCIDO';
+                $type['className'] = 'badge-vencido';
             }
+
+            $type['url'] = null;
         }
 
         return $type;

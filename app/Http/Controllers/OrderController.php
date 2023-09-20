@@ -21,7 +21,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
     use TraitPedidosOnline, TraitPedidosCliente, TraitPedidos, TraitPedidosSiniestro;
 
-
     private function hayDuplicados($productos)
     {
         // Agrupa los productos por su campo "id"
