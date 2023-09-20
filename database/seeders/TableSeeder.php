@@ -14,11 +14,11 @@ class TableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'FIAT']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'RENO']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'CITROEN']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'BMW']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'ALGO']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'FIAT', 'description' => 'FIAT']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'RENO', 'description' => 'RENO']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'CITROEN', 'description' => 'CITROEN']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'BMW', 'description' => 'BMW']);
+        DB::table('tables')->insert(['name' => 'brand', 'value' => 'TOYOTA', 'description' => 'TOYOTA']);
 
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'online', 'description' => 'Pedido Online']);
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'cliente', 'description' => 'Pedido Cliente']);
