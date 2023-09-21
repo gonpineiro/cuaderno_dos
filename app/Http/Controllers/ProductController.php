@@ -78,8 +78,9 @@ class ProductController extends \App\Http\Controllers\Controller
             $code = $request->id;
             $product = Product::where('code', $code)->first();
 
+            $state = Table::where('name', 'price_quote_state')->where('value', 'cotizar')->first();
             $pq = PriceQuoteProduct::where('product_id', $product->id)
-                ->where('state_id', 27)->with('price_quote')->get();
+                ->where('state_id', $state->id)->with('price_quote')->get();
 
             $priceQuotes = $pq->map(function ($item) {
                 return $item->price_quote;
@@ -99,18 +100,18 @@ class ProductController extends \App\Http\Controllers\Controller
             $model = $request->model;
 
             if ($model == 'pedidos_online') {
-                $state_id = 10;
+                $state = Table::where('name', 'order_online_state')->where('value', 'pendiente')->first();
             } else if ($model == 'pedidos_cliente') {
-                $state_id = 14;
+                $state = Table::where('name', 'order_cliente_state')->where('value', 'incompleto')->first();
             } else if ($model == 'pedidos_siniestro') {
-                $state_id = 17;
+                $state = Table::where('name', 'order_siniestro_state')->where('value', 'incompleto')->first();
             } else if ($model == 'cotizaciones') {
                 return $this->cotizaciones($request);
             }
             $product = Product::where('code', $code)->first();
 
             $pq = OrderProduct::where('product_id', $product->id)
-                ->where('state_id', $state_id)->with('order')->get();
+                ->where('state_id', $state->id)->with('order')->get();
 
             $orders = $pq->map(function ($item) {
                 $o = $item->order;
