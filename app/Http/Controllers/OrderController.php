@@ -63,6 +63,7 @@ class OrderController extends \App\Http\Controllers\Controller
                 $orderProductData = [
                     'order_id' => $order->id,
                     'product_id' => $item['product']['id'],
+                    'provider_id' => $item['provider'] ? $item['provider']['id'] : null,
                     'amount' => $item['amount'],
                     'unit_price' => $item['unit_price'],
                     'description' => $item['description'],

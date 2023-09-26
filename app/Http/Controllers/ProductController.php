@@ -9,7 +9,8 @@ use App\Http\Requests\Product\StoreProductSpecialRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\Product\PedirResource;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
@@ -46,6 +47,15 @@ class ProductController extends \App\Http\Controllers\Controller
             ->get();
 
         return sendResponse(ProductResource::collection($products));
+    }
+
+    public function pedir()
+    {
+        $orderProducts = OrderProduct::whereHas('product', function ($query) {
+            $query->where('is_special', true);
+        })->orderBy('order_id', 'asc')->get();
+
+        return sendResponse(PedirResource::collection($orderProducts));
     }
 
     public function relationEmptyStock(Request $request)
@@ -114,7 +124,6 @@ class ProductController extends \App\Http\Controllers\Controller
                 ->where('state_id', $state->id)->with('order')->get();
 
             $orders = $pq->map(function ($item) {
-                $o = $item->order;
                 return $item->order;
             });
 

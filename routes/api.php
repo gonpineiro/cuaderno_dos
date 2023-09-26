@@ -26,6 +26,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('ciudad', CityController::class);
     Route::resource('cliente', ClientController::class);
     Route::get('producto/relacion', [ProductController::class, 'relation']);
+    Route::get('producto/pedir', [ProductController::class, 'pedir']);
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */
     Route::post('producto/guardar-fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);

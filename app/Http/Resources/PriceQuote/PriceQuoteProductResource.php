@@ -4,7 +4,7 @@ namespace App\Http\Resources\PriceQuote;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\Product\ProductResource;
 
 class PriceQuoteProductResource extends JsonResource
 {
