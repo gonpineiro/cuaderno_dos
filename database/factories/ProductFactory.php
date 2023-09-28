@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Brand;
 use App\Models\Provider;
 use App\Models\Table;
 
@@ -45,7 +46,7 @@ class ProductFactory extends Factory
                 'row' => $this->faker->randomDigitNotNull(),
 
                 'provider_id' => $this->faker->randomElement(Provider::all())['id'],
-                'brand_id' => $this->faker->randomElement(Table::where('name', 'brand')->get())['id'],
+                'brand_id' => $this->faker->randomElement(Brand::all())['id'],
                 'state_id' =>  $state_id,
             ];
         }

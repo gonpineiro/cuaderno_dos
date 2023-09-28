@@ -14,16 +14,9 @@ class TableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'FIAT', 'description' => 'FIAT']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'RENO', 'description' => 'RENO']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'CITROEN', 'description' => 'CITROEN']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'BMW', 'description' => 'BMW']);
-        DB::table('tables')->insert(['name' => 'brand', 'value' => 'TOYOTA', 'description' => 'TOYOTA']);
-
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'online', 'description' => 'Pedido Online']);
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'cliente', 'description' => 'Pedido Cliente']);
         DB::table('tables')->insert(['name' => 'order_type', 'value' => 'siniestro', 'description' => 'Pedido Siniestro']);
-        DB::table('tables')->insert(['name' => 'order_type', 'value' => 'envio', 'description' => 'Envío']);
 
         DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'pendiente', 'description' => 'Pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'order_online_state', 'value' => 'retirar', 'description' => 'Para retiro o para envio', 'background_color' => '#0d6efd', 'color' => 'white']);

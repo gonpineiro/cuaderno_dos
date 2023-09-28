@@ -42,9 +42,10 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('state_id')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
             /* Relaciones */
-            $table->foreign('brand_id')->references('id')->on('tables');
+            $table->foreign('brand_id')->references('id')->on('brands');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->foreign('state_id')->references('id')->on('tables');
         });

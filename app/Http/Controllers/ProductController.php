@@ -179,7 +179,9 @@ class ProductController extends \App\Http\Controllers\Controller
             $body = $request->all();
 
             $state = Table::where('name', 'product_state')->where('value', 'sin_control_stock')->first();
+
             $body['state_id'] = $state->id;
+            $body['is_special'] = true;
 
             $product = Product::create($body);
             return sendResponse(new ProductResource($product));
@@ -190,8 +192,35 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function show($id)
     {
-        $product = Product::where('code', $id)->first();
-        return sendResponse(new ProductResource($product));
+        $products = Product::where(function ($query) use ($id) {
+            $query->where('code', 'LIKE', '%' . $id . '%')
+                ->orWhere('description', 'LIKE', '%' . $id . '%');
+        })->get();
+
+        if (!$products) {
+            return sendResponse(null, 'No se encontro un resultado de busqueda');
+        }
+        return sendResponse(ProductResource::collection($products));
+    }
+
+    public function search(Request $request)
+    {
+        $model = new Product();
+
+        $attributes = $model->getFillable();
+
+        $products = Product::query();
+
+        foreach ($attributes as $attribute) {
+            $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        }
+
+        $results = $products->get();
+
+        if (!$results) {
+            return sendResponse(null, 'No se encontro un resultado de busqueda');
+        }
+        return sendResponse(ProductResource::collection($results));
     }
 
     public function update(UpdateProductRequest $request, $id)

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PriceQuoteController;
@@ -25,12 +26,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('proveedor', ProviderController::class);
     Route::resource('ciudad', CityController::class);
     Route::resource('cliente', ClientController::class);
+    Route::resource('marca', BrandController::class);
+
+    Route::get('producto/buscar', [ProductController::class, 'search']);
+
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/pedir', [ProductController::class, 'pedir']);
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */
     Route::post('producto/guardar-fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);
     Route::post('producto/guardar-unico', [ProductController::class, 'storeIsSpecial']);
+
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
     Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);
