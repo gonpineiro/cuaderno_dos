@@ -31,6 +31,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/buscar', [ProductController::class, 'search']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
+    Route::get('producto/cotizaciones', [ProductController::class, 'getByCotizaciones']);
+
     Route::get('producto/pedir', [ProductController::class, 'pedir']);
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */

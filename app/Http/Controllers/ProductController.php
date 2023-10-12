@@ -33,7 +33,11 @@ class ProductController extends \App\Http\Controllers\Controller
         $products = Product::withCount([
             /* Cantidad de padres (cotizacion o pedidos) */
             "$model as count" => function ($query) use ($state_id) {
-                $query->where('state_id', $state_id);
+                if ($state_id == 'pedido') {
+                    $query->where('state_id', 4)->orWhere('state_id', 8);
+                } else {
+                    $query->where('state_id', $state_id);
+                }
             }
         ])
             /* Suma total de la cantidad de productos en todos los padres (cotizacion o pedidos) */
@@ -44,6 +48,26 @@ class ProductController extends \App\Http\Controllers\Controller
             /* Opcional: para asegurarse de que haya al menos una relación con PriceQuoteProduct en el estado filtrado */
             ->having('count', '>', 0)
             ->orderBy('sum_amount', 'desc')
+            ->get();
+
+        return sendResponse(ProductResource::collection($products));
+    }
+
+    public function getByCotizaciones(Request $request)
+    {
+        $model = new Product();
+
+        $attributes = $model->getFillable();
+
+        $products = Product::query();
+
+        foreach ($attributes as $attribute) {
+            $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        }
+
+        $products = $products->withCount(["priceQuoteProduct as count"])
+            ->having('count', '>', 0)
+            ->orderBy('count', 'desc')
             ->get();
 
         return sendResponse(ProductResource::collection($products));
@@ -109,7 +133,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $code = $request->id;
             $model = $request->model;
 
-            if ($model == 'pedidos_online') {
+            /*  if ($model == 'pedidos_online') {
                 $state = Table::where('name', 'order_online_state')->where('value', 'pendiente')->first();
             } else if ($model == 'pedidos_cliente') {
                 $state = Table::where('name', 'order_cliente_state')->where('value', 'incompleto')->first();
@@ -117,11 +141,11 @@ class ProductController extends \App\Http\Controllers\Controller
                 $state = Table::where('name', 'order_siniestro_state')->where('value', 'incompleto')->first();
             } else if ($model == 'cotizaciones') {
                 return $this->cotizaciones($request);
-            }
+            } */
+
             $product = Product::where('code', $code)->first();
 
-            $pq = OrderProduct::where('product_id', $product->id)
-                ->where('state_id', $state->id)->with('order')->get();
+            $pq = OrderProduct::where('product_id', $product->id)->with('order')->get();
 
             $orders = $pq->map(function ($item) {
                 return $item->order;

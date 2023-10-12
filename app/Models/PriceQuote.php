@@ -91,40 +91,29 @@ class PriceQuote extends Model
             unset($type["background_color"]);
             unset($type["color"]);
 
-            if ($type['value'] === 'online') {
-                $type['string'] = 'COMPLETO';
-                $type['className'] = 'success';
-                $type['url'] = "/pedidos/$order->id";
-            } else if ($type['value'] === 'cliente') {
-                $type['string'] = 'INCOMPLETO';
+            if ($type['value'] === 'online' || $type['value'] === 'cliente') {
+                $type['string'] = 'PEDIDO';
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
                 $type['string'] =  'SINIESTRO';
                 $type['className'] = 'success';
-                $type['url'] = "/siniestro/$order->id";
+                $type['url'] = "/siniestros/$order->id";
             }
         } else {
             $type = [];
 
-            $to_asign = $this->to_asign;
-
             $type['value'] = 'pendiente';
-            $type['className'] = 'danger';
+            $type['className'] = 'warning';
 
-            if ($to_asign->value === 'cliente') {
-                $type['string'] = 'INCOMPLETO S/A';
-            } else if ($to_asign->value === 'online') {
-                $type['string'] = 'COMPLETO S/A';
-            } else if ($to_asign->value === 'siniestro') {
-                $type['string'] = 'SINIESTRO S/A';
-            }
+            $type['string'] = 'PENDIENTE';
 
             $fechaActual = \Carbon\Carbon::now();
             $diferenciaDias = $this->created_at->diffInDays($fechaActual);
-            if ($diferenciaDias >= 7) {
+            if ($diferenciaDias >= 1) {
+                $type['string'] = 'PENDIENTE';
                 $type['value'] = 'vencido';
-                $type['className'] = 'badge-vencido';
+                $type['className'] = 'danger';
             }
 
             $type['url'] = null;
