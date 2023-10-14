@@ -18,23 +18,17 @@ trait TraitPedidos
     public function index(): \Illuminate\Http\JsonResponse
     {
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
-        $pedidos = Order::where('type_id', '!=', $siniestro->id)->get();
+        $pedidos = Order::where('type_id', '!=', $siniestro->id)->orderBy('estimated_date')->get();
 
-        /* $pedidos = $pedidos->sortBy(function ($order) {
+        $pedidos = $pedidos->sortBy(function ($order) {
             return [
-                'pendiente' => 1,
-                'recibido' => 2,
-                'avisado' => 3,
-                'retirar' => 4,
-                'entregado' => 5,
-                'cancelado' => 6,
-            ][$order->getGeneralState()];
-        }); */
-
-        // Ordenar los pedidos dentro de cada grupo por estimated_date
-        /*    $pedidos = $pedidos->groupBy('estado_general')->map(function ($group) {
-            return $group->sortBy('estimated_date');
-        })->collapse(); */
+                'incompleto' => 1,
+                'pendiente' => 2,
+                'retirar' => 3,
+                'entregado' => 4,
+                'cancelado' => 5,
+            ][$order->getGeneralState()->value];
+        });
 
         $pedidos = OrderResource::collection($pedidos);
 

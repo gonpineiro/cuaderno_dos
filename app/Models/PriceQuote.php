@@ -17,7 +17,9 @@ class PriceQuote extends Model
         'chasis',
         'information_source_id',
         'type_price_id',
-        'observation'
+        'observation',
+        'brand_id',
+        'year'
     ];
 
     protected $dates = ['deleted_at'];
@@ -28,6 +30,7 @@ class PriceQuote extends Model
         'updated_at',
         'information_source_id',
         'type_price_id',
+        'brand_id',
         'pivot',
     ];
 
@@ -50,6 +53,11 @@ class PriceQuote extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function order()

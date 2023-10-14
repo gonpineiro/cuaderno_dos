@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Provider;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ProviderSeeder extends Seeder
 {
@@ -14,6 +15,9 @@ class ProviderSeeder extends Seeder
      */
     public function run()
     {
-        Provider::factory()->count(10)->create();
+        $rutaArchivo = base_path('database/seeders/providers.sql');
+        $contenidoSQL = file_get_contents($rutaArchivo);
+
+        DB::statement($contenidoSQL);
     }
 }

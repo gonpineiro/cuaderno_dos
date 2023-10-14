@@ -19,6 +19,9 @@ class CreatePriceQuotesTable extends Migration
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('order_id')->nullable();
 
+            $table->unsignedBigInteger('brand_id');
+            $table->integer('year');
+
             $table->string('engine');
             $table->string('chasis')->nullable();
 
@@ -30,6 +33,7 @@ class CreatePriceQuotesTable extends Migration
             $table->softDeletes();
 
             /* Relaciones */
+            $table->foreign('brand_id')->references('id')->on('brands');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders');

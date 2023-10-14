@@ -32,7 +32,7 @@ class StoreClienteOrderRequest extends FormRequest
             'detail' => 'required',
 
             'engine' => 'required',
-            'chasis' => 'required',
+            /* 'chasis' => 'required', */
             'payment_method_id' => 'required',
             'deposit' => 'required',
             'estimated_date' => 'required',
@@ -48,7 +48,7 @@ class StoreClienteOrderRequest extends FormRequest
             'detail.required' => 'Productos es requerido',
 
             'engine.required' => 'Vehículo/Motor es requerido',
-            'chasis.required' => 'Chasis es requerido',
+            /* 'chasis.required' => 'Chasis es requerido', */
             'payment_method_id.required' => 'Forma de pago es requerido',
             'deposit.required' => 'Seña es requerido',
             'estimated_date.required' => 'Fecha estimada es requerida',

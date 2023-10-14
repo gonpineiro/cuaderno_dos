@@ -24,10 +24,10 @@ class PedirResource extends JsonResource
             'code' => $this->product->code //
         ];
 
-        $array['client'] = [
+        /* $array['client'] = [
             'dni' => $this->order->client->dni ? $this->order->client->dni : $this->order->client->cuit,
             'name' => $this->order->client->name
-        ];
+        ]; */
 
         $array['order'] = [
             'id' => $this->order->id,

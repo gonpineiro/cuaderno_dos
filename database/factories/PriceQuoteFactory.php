@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Brand;
 use App\Models\Client;
 use App\Models\Table;
 use App\Models\User;
@@ -29,6 +30,8 @@ class PriceQuoteFactory extends Factory
             'engine' => $this->faker->bothify('????######'),
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
             'information_source_id' => $this->faker->randomElement(Table::where('name', 'information_source')->get())['id'],
+            'brand_id' => $this->faker->randomElement(Brand::all())['id'],
+            'year' =>  $this->faker->numberBetween(1900, 2023),,
             'type_price_id' => $this->faker->randomElement(Table::where('name', 'type_price')->get())['id'],
             'observation' => $this->faker->text(200),
             'created_at' => $this->faker->randomElement($dates),

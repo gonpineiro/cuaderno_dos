@@ -30,8 +30,9 @@ class StorePriceQuoteRequest extends FormRequest
             'client_id' => 'required',
             'detail' => 'required',
             'engine' => 'required|max:200',
-            /* 'chasis' => 'required', */
             'type_price_id' => 'required',
+            'year' => 'required|max:4|min:4',
+            'brand_id' => 'required',
             'information_source_id' => 'required',
         ];
     }
@@ -45,9 +46,15 @@ class StorePriceQuoteRequest extends FormRequest
 
             'engine.required' => 'Vehículo/Motor es requerido',
             'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
-            /* 'chasis.required' => 'Chasis es requerido', */
+
             'type_price_id.required' => 'Tipo precio requerido',
             'information_source_id.required' => 'Medio de consulta es requerido',
+
+            'year.required' => 'El año es requerido',
+            'year.max' => 'Año Inválido',
+            'year.min' => 'Año Inválido',
+
+            'brand_id.required' => 'La Marca es requerida',
         ];
     }
 }

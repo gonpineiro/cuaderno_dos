@@ -103,7 +103,8 @@
                 <td>{{$cotizacion->engine}}</td>
             </tr>
             <tr>
-                <td class="bold">{{$cotizacion->type_price}}</td>
+                <td class="bold">Tipo Precio:</td>
+                <td>{{$cotizacion->type_price->value}}</td>
             </tr>
         </table>
         <hr>
