@@ -2,11 +2,9 @@
 
 namespace App\Http\TraitsControllers;
 
-use App\Http\Requests\Order\StoreClienteOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\OrderProduct;
-use App\Models\PedidoCliente;
 use App\Models\Siniestro;
 use App\Models\Table;
 use Illuminate\Http\Request;

@@ -64,7 +64,7 @@ class OrderResource extends JsonResource
 
     private function default($array)
     {
-        unset($array['description']);
+        unset($array['observation']);
         unset($array['detail']);
         $array['user'] = $this->user->name;
         $array['client'] = $this->client;

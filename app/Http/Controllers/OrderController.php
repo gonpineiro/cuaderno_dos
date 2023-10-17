@@ -11,6 +11,7 @@ use App\Http\TraitsControllers\TraitPedidosOnline;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\ToAsk;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -148,8 +149,23 @@ class OrderController extends \App\Http\Controllers\Controller
             $item['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
             $item['product_id'] = $item['product']['id'];
 
-            if (!OrderProduct::create($item)) {
+            $order_product = OrderProduct::create($item);
+
+            if (!$order_product) {
                 throw new \Exception("No se pudo crear el detalle del pedido");
+            }
+
+            if (!!$item['product']['is_special']) {
+
+                $toAsk = ToAsk::create([
+                    'order_product_id' => $order_product->id,
+                    'product_id' => $item['product']['id'],
+                    'amount' => $item['amount'],
+                ]);
+
+                if (!$toAsk) {
+                    throw new \Exception("No se pudo registro de to_ask");
+                }
             }
         }
         return true;

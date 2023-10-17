@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\PurchaseOrderController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -33,7 +34,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getByCotizaciones']);
 
-    Route::get('producto/pedir', [ProductController::class, 'pedir']);
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */
     Route::post('producto/guardar-fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);
@@ -85,6 +85,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
+
+    /* Ordenes de compra */
+    Route::get('ordenes_compra/pedir', [PurchaseOrderController::class, 'pedir']);
+    Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
+    Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);
+    Route::resource('ordenes_compra', PurchaseOrderController::class);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 });

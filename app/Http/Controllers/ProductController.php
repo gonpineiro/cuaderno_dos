@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
 use App\Models\Table;
+use App\Models\ToAsk;
 use Illuminate\Http\Request;
 
 class ProductController extends \App\Http\Controllers\Controller
@@ -71,15 +72,6 @@ class ProductController extends \App\Http\Controllers\Controller
             ->get();
 
         return sendResponse(ProductResource::collection($products));
-    }
-
-    public function pedir()
-    {
-        $orderProducts = OrderProduct::whereHas('product', function ($query) {
-            $query->where('is_special', true);
-        })->orderBy('order_id', 'asc')->get();
-
-        return sendResponse(PedirResource::collection($orderProducts));
     }
 
     public function relationEmptyStock(Request $request)

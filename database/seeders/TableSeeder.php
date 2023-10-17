@@ -43,6 +43,10 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'description' => 'Cotizar', 'background_color' => '#198754', 'color' => 'white']);
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'description' => 'No Cotizar', 'background_color' => '#6c757d', 'color' => 'white']);
 
+        DB::table('tables')->insert(['name' => 'purchase_order', 'value' => 'pendiente', 'description' => 'Pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'purchase_order', 'value' => 'enviado', 'description' => 'Enviado', 'background_color' => '#ffc107', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'purchase_order', 'value' => 'entregado', 'description' => 'Entregado', 'background_color' => '#198754', 'color' => 'white']);
+
         DB::table('tables')->insert(['name' => 'config', 'value' => 'product.ship', 'description' => '1']);
 
         DB::table('tables')->insert(['name' => 'type_price', 'value' => 'contado', 'description' => 'Precio de contado']);

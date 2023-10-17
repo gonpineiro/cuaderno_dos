@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Product;
 
-use App\Http\Resources\Order\OrderResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PedirResource extends JsonResource
@@ -17,11 +16,12 @@ class PedirResource extends JsonResource
     {
         $array = parent::toArray($request);
 
-        $array['provider'] = $this->provider;
+        $array['provider'] = $this->product->provider ? $this->product->provider : $this->order_product->provider;
 
         $array['product'] = [
             'id' => $this->product->id,
-            'code' => $this->product->code //
+            'code' => $this->product->code,
+            'ubication' => $this->product->ubication,
         ];
 
         /* $array['client'] = [
@@ -30,10 +30,10 @@ class PedirResource extends JsonResource
         ]; */
 
         $array['order'] = [
-            'id' => $this->order->id,
-            'type' => $this->order->type->value,
-            'created_at' => $this->order->created_at,
-            'estimated_date' => $this->order->estimated_date
+            'id' => $this->order_product ? $this->order_product->order->id : null,
+            'type' => $this->order_product ? $this->order_product->order->type->value : null,
+            'created_at' => $this->order_product ? $this->order_product->order->created_at : null,
+            'estimated_date' => $this->order_product ? $this->order_product->order->estimated_date : null
         ];
 
         return $array;

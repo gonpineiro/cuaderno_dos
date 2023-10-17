@@ -21,7 +21,7 @@ class PriceQuoteSeeder extends Seeder
         PriceQuote::factory()->times(10)->create(['order_id' => null])->each(function ($price_quote) {
 
             $generatedValues = [];
-            $cantidadProductos = rand(2, 10);
+            $cantidadProductos = rand(2, 5);
             for ($i = 1; $i <= $cantidadProductos; $i++) {
                 do {
                     $product = Product::inRandomOrder()->first();
@@ -30,7 +30,7 @@ class PriceQuoteSeeder extends Seeder
 
                 $generatedValues[] = $valor;
 
-                $product_detail =  $this->createProduct($price_quote->id, 'price_quote_id', rand(28, 29), $valor);
+                $product_detail =  $this->createProduct($price_quote->id, 'price_quote_id', 22, $valor);
                 PriceQuoteProduct::create($product_detail);
             }
         });

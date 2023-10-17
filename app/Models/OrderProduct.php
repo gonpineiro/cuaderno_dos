@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OrderProduct extends Model
 {
     use SoftDeletes;
-
     protected $fillable = [
         'order_id',
         'state_id',
         'product_id',
         'provider_id',
         'amount',
+        'purchase_order',
         'unit_price',
         'description'
     ];
@@ -24,6 +24,7 @@ class OrderProduct extends Model
         'state_id',
         'product_id',
         'provider_id',
+        'purchase_order',
     ];
 
     protected $dates = ['deleted_at'];

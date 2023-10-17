@@ -31,7 +31,7 @@ class PriceQuoteFactory extends Factory
             'chasis' => $this->faker->bothify('??#??#??#??#??#??#??#??#'),
             'information_source_id' => $this->faker->randomElement(Table::where('name', 'information_source')->get())['id'],
             'brand_id' => $this->faker->randomElement(Brand::all())['id'],
-            'year' =>  $this->faker->numberBetween(1900, 2023),,
+            'year' =>  $this->faker->numberBetween(1900, 2023),
             'type_price_id' => $this->faker->randomElement(Table::where('name', 'type_price')->get())['id'],
             'observation' => $this->faker->text(200),
             'created_at' => $this->faker->randomElement($dates),
