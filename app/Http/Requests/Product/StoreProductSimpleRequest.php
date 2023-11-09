@@ -5,7 +5,7 @@ namespace App\Http\Requests\Product;
 use App\Http\Requests\TraitRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductOutRequest extends FormRequest
+class StoreProductSimpleRequest extends FormRequest
 {
     use TraitRequest;
 
@@ -28,8 +28,6 @@ class StoreProductOutRequest extends FormRequest
     {
         return [
             'code' => 'required|max:25|unique:products',
-
-            'provider_id' => 'required',
             'description' => 'required|max:500',
         ];
     }
@@ -43,9 +41,6 @@ class StoreProductOutRequest extends FormRequest
 
             'description.required' => 'Description es requerido',
             'description.max' => 'Description no debe superar el maximo de 500 caracteres',
-
-            'provider_id.required' => 'Proveedor es requerido',
-            'provider_id.integer' => 'Proveedor debe ser un entero',
         ];
     }
 }

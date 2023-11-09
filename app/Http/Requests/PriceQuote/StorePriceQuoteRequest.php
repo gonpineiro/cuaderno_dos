@@ -31,7 +31,6 @@ class StorePriceQuoteRequest extends FormRequest
             'detail' => 'required',
             'engine' => 'required|max:200',
             'type_price_id' => 'required',
-            'year' => 'required|max:4|min:4',
             'brand_id' => 'required',
             'information_source_id' => 'required',
         ];
@@ -50,7 +49,6 @@ class StorePriceQuoteRequest extends FormRequest
             'type_price_id.required' => 'Tipo precio requerido',
             'information_source_id.required' => 'Medio de consulta es requerido',
 
-            'year.required' => 'El año es requerido',
             'year.max' => 'Año Inválido',
             'year.min' => 'Año Inválido',
 

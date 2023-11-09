@@ -46,7 +46,7 @@ class ShipmentResource extends JsonResource
         $array['price_quote'] = $this->price_quote;
 
         $array['detail'] = ShipmentProductResource::collection($this->detail);
-        $array['percentages'] = $this->getPercentages();
+        /* $array['percentages'] = $this->getPercentages(); */
 
         return $array;
     }

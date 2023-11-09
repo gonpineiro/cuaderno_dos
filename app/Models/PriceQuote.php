@@ -81,19 +81,19 @@ class PriceQuote extends Model
     }
 
     public function getStateAttribute()
-    {
-        $order = $this->order;
+    {;
 
-        if ($this->shipment) {
+        if ($shipment = $this->shipment) {
             return [
                 'value' => 'envio',
                 'string' => 'ENVÍO',
+                'hover' => strtoupper($shipment->getGeneralState()->description),
                 'className' => 'primary',
-                'url' =>  "/pedidos-envio/$order->id",
+                'url' =>  "/envios/$shipment->id",
             ];
         }
 
-        if ($order) {
+        if ($order = $this->order) {
             $type = $order->type->toArray();
             unset($type['id']);
             unset($type["background_color"]);
@@ -101,10 +101,12 @@ class PriceQuote extends Model
 
             if ($type['value'] === 'online' || $type['value'] === 'cliente') {
                 $type['string'] = 'PEDIDO';
+                $type['hover'] = strtoupper($order->getGeneralState()->description);
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
                 $type['string'] =  'SINIESTRO';
+                $type['hover'] = strtoupper($order->getGeneralState()->description);
                 $type['className'] = 'success';
                 $type['url'] = "/siniestros/$order->id";
             }

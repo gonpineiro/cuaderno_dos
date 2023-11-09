@@ -36,7 +36,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */
-    Route::post('producto/guardar-fuera-catalogo', [ProductController::class, 'storeOutCatalogue']);
+    Route::post('producto/guardar-simple', [ProductController::class, 'storeIsSimple']);
     Route::post('producto/guardar-unico', [ProductController::class, 'storeIsSpecial']);
 
     Route::resource('producto', ProductController::class)->except(['destroy']);

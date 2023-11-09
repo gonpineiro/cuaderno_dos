@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Product\StoreProductOutRequest;
+use App\Http\Requests\Product\StoreProductSimpleRequest;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\StoreProductSpecialRequest;
@@ -56,19 +56,12 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function getByCotizaciones(Request $request)
     {
-        $model = new Product();
-
-        $attributes = $model->getFillable();
-
         $products = Product::query();
 
-        foreach ($attributes as $attribute) {
-            $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
-        }
-
-        $products = $products->withCount(["priceQuoteProduct as count"])
-            ->having('count', '>', 0)
-            ->orderBy('count', 'desc')
+        $products = $products->whereHas('price_quotes', function ($query) use ($request) {
+            $query->where('engine', 'LIKE', '%' . $request->string . '%');
+        })
+            ->distinct()
             ->get();
 
         return sendResponse(ProductResource::collection($products));
@@ -179,7 +172,7 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function storeOutCatalogue(StoreProductOutRequest $request)
+    public function storeIsSimple(StoreProductSimpleRequest $request)
     {
         try {
             $product = Product::create($request->all());

@@ -84,6 +84,11 @@ class Product extends Model
         return $this->hasMany(PriceQuoteProduct::class);
     }
 
+    public function price_quotes()
+    {
+        return $this->belongsToMany(PriceQuote::class);
+    }
+
     public function brand()
     {
         return $this->belongsTo(Brand::class);

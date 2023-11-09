@@ -28,6 +28,7 @@ class OrderResource extends JsonResource
                 break;
         }
         $array['estado_general'] = $this->getGeneralState();
+        $array['estado_shipment'] = $this->shipment ? strtoupper($this->shipment->getGeneralState()->description) : null;
 
         return $array;
     }

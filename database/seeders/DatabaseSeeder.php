@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             ProviderSeeder::class,
             ClientSeeder::class,
-            /* ProductSeeder::class, */
+            ProductSeeder::class,
             /* PriceQuoteSeeder::class, */
             /* OrderSeeder::class, */
             /* SiniestroSeeder::class, */

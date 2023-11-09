@@ -18,9 +18,12 @@ class ProductResource extends JsonResource
         $array['provider'] = (isset($this->provider) && $this->provider) ? $this->provider->name : null;
         $array['brand'] = $this->brand ? $this->brand->name : null;
         $array['ubication'] = $this->ubication;
+        $array['description'] = $this->description;
 
         if ($this->is_special) {
             $array['state'] = 'is_special';
+        } else if (!$this->ubication) {
+            $array['state'] = 'is_simple';
         } else {
             $array['state'] = $this->state ? $this->state->value : null;
         }

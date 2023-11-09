@@ -32,7 +32,7 @@ class StoreOnlineOrderRequest extends FormRequest
             'detail' => 'required',
 
             'engine' => 'required',
-            'chasis' => 'required',
+            /* 'chasis' => 'required', */
             'payment_method_id' => 'required',
             /*  'deposit' => 'required',
             'estimated_date' => 'required', */

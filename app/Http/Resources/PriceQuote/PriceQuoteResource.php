@@ -41,6 +41,7 @@ class PriceQuoteResource extends JsonResource
 
         $this->client->city;
         $array['client'] = $this->client;
+        $array['brand'] = $this->brand;
 
         $array['observation'] = $this->observation;
         if ($this->order) {

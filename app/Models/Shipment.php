@@ -68,7 +68,7 @@ class Shipment extends Model
         return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
-    public function getPercentages()
+    /* public function getPercentages()
     {
 
         $array['pendiente'] = $this->detail->sum(function ($a) {
@@ -110,7 +110,7 @@ class Shipment extends Model
         }
 
         return $array;
-    }
+    } */
 
     public function getGeneralState()
     {
@@ -149,6 +149,8 @@ class Shipment extends Model
             $estadoGeneral = 'cancelado';
         }
 
-        return $estadoGeneral;
+        $estado = Table::where('name', 'order_envio_state')->where('value', $estadoGeneral)->first();
+
+        return $estado;
     }
 }

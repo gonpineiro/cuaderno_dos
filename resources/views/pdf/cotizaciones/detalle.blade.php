@@ -130,7 +130,7 @@
             @if ($type === 'interno')
             <td>{{$item->product->code}}</td>
             @else
-            <td>{{$item->description}}</td>
+            <td>{{$item->product->description}}</td>
             @endif
 
             <td>{{$item->amount}}</td>
