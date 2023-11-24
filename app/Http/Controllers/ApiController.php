@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coeficiente;
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -98,9 +99,9 @@ class ApiController extends \App\Http\Controllers\Controller
         $data = [
             'user' => auth()->user(),
             'tables' => Table::all(),
+            'coeficientes' => Coeficiente::all(),
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $JWTAuth::factory()->getTTL() * 60 * 1000
         ];
 
         return sendResponse($data);

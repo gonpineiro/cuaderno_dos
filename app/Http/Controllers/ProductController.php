@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\StoreProductSimpleRequest;
+use App\Http\Resources\Product\ProductCotizacionesResource;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\StoreProductSpecialRequest;
@@ -64,7 +65,13 @@ class ProductController extends \App\Http\Controllers\Controller
             ->distinct()
             ->get();
 
-        return sendResponse(ProductResource::collection($products));
+
+            $col = ProductCotizacionesResource::collection($products);
+            /* $col = $col->sortByDesc(function ($producto) {
+                return $producto->orders;
+            }); */
+
+        return sendResponse($col);
     }
 
     public function relationEmptyStock(Request $request)

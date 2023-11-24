@@ -40,7 +40,7 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'contrareemboldo', 'description' => 'Contrareemboso pago', 'background_color' => '#ffc107', 'color' => 'black']);
         DB::table('tables')->insert(['name' => 'order_envio_state', 'value' => 'cancelado', 'description' => 'Cancelado', 'background_color' => '#6c757d', 'color' => 'white']);
 
-        DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'description' => 'Cotizar', 'background_color' => '#198754', 'color' => 'white']);
+        DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'cotizar', 'description' => 'Cotizar', 'background_color' => 'white', 'color' => 'black']);
         DB::table('tables')->insert(['name' => 'price_quote_state', 'value' => 'no cotizar', 'description' => 'No Cotizar', 'background_color' => '#6c757d', 'color' => 'white']);
 
         DB::table('tables')->insert(['name' => 'purchase_order', 'value' => 'pendiente', 'description' => 'Pendiente', 'background_color' => '#dc3545', 'color' => 'white']);
@@ -70,5 +70,10 @@ class TableSeeder extends Seeder
 
         DB::table('tables')->insert(['name' => 'product_state', 'value' => 'sin_control_stock', 'description' => 'Sin control de stock']);
         DB::table('tables')->insert(['name' => 'product_state', 'value' => 'control_stock', 'description' => 'Control de stock']);
+
+        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'contado_deb', 'description' => '1.02']);
+        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_3', 'description' => '1.2272']);
+        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_6', 'description' => '1.39641']);
+        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_12', 'description' => '1.89696']);
     }
 }
