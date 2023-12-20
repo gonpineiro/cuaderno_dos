@@ -59,6 +59,7 @@ class PriceQuoteResource extends JsonResource
 
         $array['state'] = $this->state;
         $array['detail'] = PriceQuoteProductResource::collection($this->detail);
+        $array['total'] = get_total_price($array['detail']);
 
         return $array;
     }

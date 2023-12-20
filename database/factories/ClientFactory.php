@@ -39,7 +39,6 @@ class ClientFactory extends Factory
             return [
                 'dni' => $this->faker->unique()->numberBetween(20000000, 48000000),
                 'name' => $this->faker->name(),
-                'lastname' => $this->faker->lastName(),
                 'phone' => $this->faker->unique()->phoneNumber(),
                 'email' => $this->faker->email(),
                 'city_id' =>  $this->faker->randomElement(City::all())['id'],

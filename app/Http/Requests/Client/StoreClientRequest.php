@@ -35,7 +35,6 @@ class StoreClientRequest extends FormRequest
         }
 
         return [
-            'lastname' => 'required|max:35',
             'name' => 'required|max:35',
             'phone' => 'required|max:35',
             'dni' => 'required|max:8|min:8|unique:clients',
@@ -61,9 +60,6 @@ class StoreClientRequest extends FormRequest
             'dni.max' => 'Formato del documento es invalido',
             'dni.min' => 'Formato del documento es invalido',
             'dni.unique' => 'Documento ya se encuentra registrado',
-
-            'lastname.required' => 'Apellido es requerido',
-            'lastname.max' => 'Apellido no debe superar los 35 caracteres',
 
             'name.required' => 'Nombre es requerido',
             'name.max' => 'Nombre no debe superar los 35 caracteres',

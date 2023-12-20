@@ -14,11 +14,12 @@ class CoeficientesSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('coeficientes')->insert(['description' => 'CONTADO / DEB / 1 CUOTA', 'value' => 1.02]);
-        DB::table('coeficientes')->insert(['description' => 'AHORA 3', 'value' => 1.2272, 'cuotas' => 3]);
-        DB::table('coeficientes')->insert(['description' => 'AHORA 6', 'value' => 1.39641, 'cuotas' => 6]);
-        DB::table('coeficientes')->insert(['description' => 'AHORA 12', 'value' => 1.89696, 'cuotas' => 12]);
-        DB::table('coeficientes')->insert(['description' => 'OTRAS 3C / CREDICOM', 'value' => 1.39641000, 'cuotas' => 3]);
-        DB::table('coeficientes')->insert(['description' => 'MERCADO PAGO', 'value' => 1.02]);
+        DB::table('coeficientes')->insert(['description' => 'LISTA', 'value' => 1, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'CONTADO / DEB / 1 CUOTA', 'value' => 1.02, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'AHORA 3', 'value' => 1.2272, 'cuotas' => 3, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'AHORA 6', 'value' => 1.39641, 'cuotas' => 6, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'AHORA 12', 'value' => 1.89696, 'cuotas' => 12, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'OTRAS 3C / CREDICOM', 'value' => 1.39641000, 'cuotas' => 3, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'MERCADO PAGO', 'value' => 1.02, 'coeficiente' => 1]);
     }
 }

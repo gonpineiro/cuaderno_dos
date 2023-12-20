@@ -16,8 +16,7 @@ class ClientSeeder extends Seeder
     {
         $generic = [
             'dni' => '99999999',
-            'name' => 'Allende',
-            'lastname' => 'Repuestos',
+            'name' => 'Allende Repuestos',
             'email' => 'allende@allende.com.ar',
             'is_company' => false,
             'is_insurance' => false,

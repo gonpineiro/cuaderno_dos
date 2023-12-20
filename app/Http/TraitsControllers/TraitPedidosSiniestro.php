@@ -14,7 +14,8 @@ trait TraitPedidosSiniestro
 {
     public function indexSiniestros(): \Illuminate\Http\JsonResponse
     {
-        $order = OrderResource::collection(Siniestro::where('type_id', 8)->get());
+        $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
+        $order = OrderResource::collection(Siniestro::where('type_id', $siniestro->id)->get());
 
         return sendResponse($order);
     }

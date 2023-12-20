@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\StoreClienteOrderRequest;
-use App\Http\Requests\Order\StoreEnvioOrderRequest;
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +12,7 @@ use App\Http\Requests\PriceQuote\UpdatePriceQuoteRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
+use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\PriceQuote;
 use App\Models\PriceQuoteProduct;
@@ -287,27 +287,55 @@ class PriceQuoteController extends Controller
         $order->client;
         $detail = PriceQuoteProductResource::collection($order->detail);
 
+        $precioContado = null;
+        $contado_deb = Coeficiente::find(2);
+        $total = get_total_price($detail);
+
+        $coefs = null;
         if ($request->type == 'total' || $request->type == 'interno') {
-            $total = 0;
-            foreach ($detail as $item) {
-                $total += $item['amount'] * $item['unit_price'];
+
+            if ($request->type == 'interno') {
+                $coefs = $this->get_total_calculadora($total);
             }
         }
 
-        if ($request->type == 'sin_total') {
+        if ($request->type == 'calculadora') {
+            $coefs = $this->get_total_calculadora($total);
+        }
+
+        if ($order->type_price->value == 'contado') {
+            $precioContado = round($total *  $contado_deb->coeficiente  * $contado_deb->value);
             $total = null;
         }
 
         $vars = [
             'cotizacion' => $order,
             'detail' => $detail,
+            'coefs' => $coefs,
             'total' => $total,
-            'type' => $request->type
+            'precioContado' => $precioContado,
+            'contado_deb' => $contado_deb,
+            'type' => $request->type,
         ];
 
         $pdf = Pdf::loadView('pdf.cotizaciones.detalle', $vars);
 
         return $pdf->download('informe.pdf');
+    }
+
+    private function get_total_calculadora($total)
+    {
+        $coefs = Coeficiente::all()->toArray();
+
+        return array_map(function ($coef) use ($total) {
+            $totalDesc = round($total *  $coef['coeficiente'] * $coef['value']);
+
+            return [
+                'description' => $coef['description'],
+                'price' => "$ " . number_format($totalDesc, 2),
+                'valor_cuota' => $coef['cuotas'] ? '$ ' . number_format($totalDesc / $coef['cuotas'], 2) : ' '
+            ];
+        }, $coefs);
     }
 
     public function update(Request $request, $id)

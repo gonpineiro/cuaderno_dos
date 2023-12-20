@@ -28,10 +28,13 @@
         border: 1px solid rgba(0, 0, 0, .125);
     }
 
-    .total {
-        font-size: 2rem;
-        font-weight: 500;
+    .importe {
         text-decoration: underline;
+        font-size: 1.4rem;
+    }
+
+    .total {
+        font-weight: 500;
     }
 </style>
 
@@ -104,7 +107,7 @@
             </tr>
             <tr>
                 <td class="bold">Tipo Precio:</td>
-                <td>{{$cotizacion->type_price->value}}</td>
+                <td>{{$cotizacion->type_price->description}}</td>
             </tr>
         </table>
         <hr>
@@ -112,10 +115,12 @@
         <p>{{$cotizacion->observation}}</p>
     </div>
 
+    <hr>
+    {{-- Detalle productos --}}
     <table class="table-productos">
         <tr>
             @if ($type === 'interno')
-            <td>Código</td>
+            <th>Código</th>
             @else
             <th style="width: 50%">Descripción</th>
             @endif
@@ -134,16 +139,55 @@
             @endif
 
             <td>{{$item->amount}}</td>
-            <td>$ {{ number_format($item->unit_price, 2, ',', '.') }}</td>
-            <td>$ {{ number_format($item->unit_price * $item->amount, 2, ',', '.') }}</td>
+            <td>$ {{ number_format(
+                $precioContado ?
+                round($item->unit_price * $contado_deb->coeficiente * $contado_deb->value) :
+                round($item->unit_price),
+                2, ',', '.') }}
+            </td>
+            <td>$ {{ number_format(
+                $precioContado ?
+                round($item->unit_price * $item->amount * $contado_deb->coeficiente * $contado_deb->value) :
+                round($item->unit_price * $item->amount),
+                2, ',', '.') }}
+            </td>
         </tr>
         @endforeach
     </table>
+
+    {{-- Total --}}
+    @if ($type == 'total' && isset($total) && $total)
     <hr>
-    @if (isset($total) && $total)
-    <p class="w-100 text-center total">
-        IMPORTE TOTAL : $ {{number_format($total, 2, ',', '.')}}
+    <p class="w-100 importe">
+        IMPORTE TOTAL: <span class="total">$ {{number_format($total, 2, ',', '.')}}</span>
     </p>
+    @endif
+    @if ($type == 'total' && isset($precioContado) && $precioContado)
+    <p class="w-100 importe">
+        IMPORTE TOTAL PRECIO CONTADO: <span class="total">$ {{number_format($precioContado, 2, ',', '.')}}</span>
+    </p>
+    @endif
+
+    @if (isset($coefs) && $coefs)
+    <hr>
+    <h2>Tipos de financiación</h2>
+    <table class="table-productos">
+        <tr>
+            @if ($type === 'interno')
+            <th>CANTIDAD CUOTAS</th>
+            <th>PRECIO</th>
+            <th>VALOR CUOTA</th>
+            @endif
+        </tr>
+
+        @foreach ($coefs as $coef)
+        <tr>
+            <td>{{ $coef['description']}}</td>
+            <td>{{ $coef['price']}}</td>
+            <td>{{ $coef['valor_cuota']}}</td>
+        </tr>
+        @endforeach
+    </table>
     @endif
 </body>
 
