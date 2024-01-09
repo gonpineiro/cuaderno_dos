@@ -6,22 +6,34 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClientResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    protected $customParam;
+
+    public function __construct($resource, $customParam = null)
+    {
+        parent::__construct($resource);
+        $this->customParam = $customParam;
+    }
+
     public function toArray($request)
     {
         $array = parent::toArray($request);
 
-        $data_type = $request->query('data_type');
+        switch ((string) $this->customParam) {
+            case 'complete':
+                $array = $this->complete($array);
+                break;
+            default:
+                $array = $this->default($array);
+                break;
+        }
+        return $array;
+
+        /* $data_type = $request->query('data_type');
         $withOrder = (bool) $request->query('withOrder');
 
         if (!$data_type) {
             $withOrder && $array['orders'] = $this->orders;
-            $array['city'] = $this->city;
+            $array['city'] = new CityResource($this->city);
         }
 
         if ($data_type && $data_type == 'table') {
@@ -29,6 +41,19 @@ class ClientResource extends JsonResource
             $array['province'] = $this->city ? $this->city->province : null;
         }
 
+        return $array;
+        */
+    }
+
+    private function complete($array)
+    {
+        $array['city'] = new CityResource($this->city);
+        return $array;
+    }
+
+    private function default($array)
+    {
+        $array['city'] = new CityResource($this->city);
         return $array;
     }
 }

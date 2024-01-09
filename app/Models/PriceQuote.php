@@ -13,6 +13,7 @@ class PriceQuote extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+        'vehiculo_id',
         'engine',
         'chasis',
         'information_source_id',
@@ -27,6 +28,7 @@ class PriceQuote extends Model
     protected $hidden = [
         'user_id',
         'client_id',
+        'vehiculo_id',
         'updated_at',
         'information_source_id',
         'type_price_id',
@@ -55,9 +57,9 @@ class PriceQuote extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function brand()
+    public function vehiculo()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Vehiculo::class);
     }
 
     public function order()

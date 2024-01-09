@@ -14,9 +14,9 @@ class RenameColumnPrinviceToProvinceId extends Migration
     public function up()
     {
         Schema::table('cities', function (Blueprint $table) {
-            $table->renameColumn('province', 'province_id');
+            /* $table->dropColumn('province');
             $table->unsignedBigInteger('province_id');
-            $table->foreign('province_id')->references('id')->on('tables')->onDelete('cascade');
+            $table->foreign('province_id')->references('id')->on('tables')->onDelete('cascade'); */
         });
     }
 
@@ -28,9 +28,9 @@ class RenameColumnPrinviceToProvinceId extends Migration
     public function down()
     {
         Schema::table('cities', function (Blueprint $table) {
-            $table->dropForeign(['province_id']);
+            /* $table->dropForeign(['province_id']);
             $table->dropColumn('province_id');
-            $table->string('province');
+            $table->string('province'); */
         });
     }
 }

@@ -9,47 +9,24 @@ use App\Http\Resources\CityResource;
 
 class CityController extends \App\Http\Controllers\Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function index()
     {
-        return sendResponse(CityResource::collection(City::all()));
+        $ciudades = City::all();
+        return sendResponse(CityResource::collection($ciudades));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\City\StoreCityRequest  $request
-     * @return \App\Http\Resources\CityResource|\Illuminate\Http\JsonResponse
-     */
     public function store(StoreCityRequest $request)
     {
         $city = City::create($request->all());
         return sendResponse(new CityResource($city));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  CityResource  $request
-     * @return CityResource|\Illuminate\Http\JsonResponse
-     */
     public function show($id)
     {
         $city = City::findOrFail($id);
         return sendResponse(new CityResource($city));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  UpdateCityRequest $request
-     * @param  \App\Models\City $city
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(UpdateCityRequest $request, $id)
     {
         $city = City::findOrFail($id);
@@ -57,12 +34,6 @@ class CityController extends \App\Http\Controllers\Controller
         return sendResponse(new CityResource($city));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         $city = City::findOrFail($id);

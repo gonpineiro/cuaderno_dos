@@ -33,12 +33,8 @@ class StoreCityRequest extends FormRequest
             'name' => [
                 'required',
                 'max:35',
-                Rule::unique('cities')->where(function ($query) {
-                    // Agregar la cláusula WHERE para verificar la combinación name y province
-                    $query->where('province', $this->input('province'));
-                })->ignore($cityId),
             ],
-            'province' => 'required|max:35',
+            'province_id' => 'required',
         ];
     }
 
@@ -47,11 +43,9 @@ class StoreCityRequest extends FormRequest
         return [
             'name.required' => 'ciudad es requerido',
             'name.max' => 'ciudad no debe superar los 35 caracteres',
-            'name.unique' => 'La combinación de nombre y provincia ya existe.',
 
             'province.required' => 'provincia es requerido',
             'province.max' => 'provincia 35 caracteres',
-
 
         ];
     }

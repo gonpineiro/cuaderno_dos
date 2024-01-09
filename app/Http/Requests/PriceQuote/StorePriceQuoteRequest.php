@@ -29,9 +29,9 @@ class StorePriceQuoteRequest extends FormRequest
         return [
             'client_id' => 'required',
             'detail' => 'required',
-            'engine' => 'required|max:200',
+            /* 'engine' => 'required|max:200', */
             'type_price_id' => 'required',
-            'brand_id' => 'required',
+            'vehiculo_id' => 'required',
             'information_source_id' => 'required',
         ];
     }
@@ -43,8 +43,8 @@ class StorePriceQuoteRequest extends FormRequest
             'client_id.required' => 'El Cliente es requerido',
             'detail.required' => 'Productos es requerido',
 
-            'engine.required' => 'Vehículo/Motor es requerido',
-            'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
+            /* 'engine.required' => 'Vehículo/Motor es requerido',
+            'engine.max' => 'Motor no debe superar el maximo de 200 caracteres', */
 
             'type_price_id.required' => 'Tipo precio requerido',
             'information_source_id.required' => 'Medio de consulta es requerido',
@@ -52,7 +52,7 @@ class StorePriceQuoteRequest extends FormRequest
             'year.max' => 'Año Inválido',
             'year.min' => 'Año Inválido',
 
-            'brand_id.required' => 'La Marca es requerida',
+            'vehiculo_id.required' => 'Vehículo es requerida',
         ];
     }
 }

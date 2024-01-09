@@ -28,9 +28,8 @@ class UpdatePriceQuoteRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
-            'engine' => 'required|max:200',
-            /* 'chasis' => 'required', */
             'type_price_id' => 'required',
+            'vehiculo_id' => 'required',
             'information_source_id' => 'required',
         ];
     }
@@ -41,11 +40,10 @@ class UpdatePriceQuoteRequest extends FormRequest
         return [
             'client_id.required' => 'El Cliente es requerido',
 
-            'engine.required' => 'Vehículo/Motor es requerido',
-            'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
-            /* 'chasis.required' => 'Chasis es requerido', */
             'type_price_id.required' => 'Tipo precio requerido',
             'information_source_id.required' => 'Medio de consulta es requerido',
+
+            'vehiculo_id.required' => 'Vehículo es requerida',
         ];
     }
 }

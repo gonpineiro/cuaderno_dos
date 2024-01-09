@@ -60,14 +60,16 @@ class ProductController extends \App\Http\Controllers\Controller
         $products = Product::query();
 
         $products = $products->whereHas('price_quotes', function ($query) use ($request) {
-            $query->where('engine', 'LIKE', '%' . $request->string . '%');
+            $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+            });
         })
             ->distinct()
             ->get();
 
 
-            $col = ProductCotizacionesResource::collection($products);
-            /* $col = $col->sortByDesc(function ($producto) {
+        $col = ProductCotizacionesResource::collection($products);
+        /* $col = $col->sortByDesc(function ($producto) {
                 return $producto->orders;
             }); */
 

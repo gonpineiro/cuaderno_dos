@@ -13,7 +13,10 @@ class City extends Model
 
     protected $fillable = [
         'name',
-        'province'
+        'province_id'
+    ];
+    protected $hidden = [
+        'province_id',
     ];
 
     public function province()

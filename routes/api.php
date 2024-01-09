@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\VehiculoController;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -26,6 +27,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
     Route::resource('ciudad', CityController::class);
+    Route::resource('vehiculo', VehiculoController::class);
     Route::resource('cliente', ClientController::class);
     Route::resource('marca', BrandController::class);
 
