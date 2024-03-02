@@ -29,8 +29,8 @@
     }
 
     .importe {
-        text-decoration: underline;
-        font-size: 1.4rem;
+        margin-top: 16px;
+        font-size: 1.2rem;
     }
 
     .total {
@@ -103,11 +103,12 @@
             </tr>
             <tr>
                 <td class="bold">Vehículo:</td>
-                <td>{{$cotizacion->engine}}</td>
+                <td>{{$cotizacion->vehiculo->name}}</td>
             </tr>
             <tr>
                 <td class="bold">Tipo Precio:</td>
-                <td>{{$cotizacion->type_price->description}}</td>
+                <td>{{$cotizacion->type_price->description == 'Precio de contado' ? 'Precio de contado / debito /
+                    tarjeta 1 pago. IVA INCLUIDO' : $cotizacion->type_price->description}}</td>
             </tr>
         </table>
         <hr>
@@ -115,6 +116,7 @@
         <p>{{$cotizacion->observation}}</p>
     </div>
 
+    @if ($type != 'calculadora')
     <hr>
     {{-- Detalle productos --}}
     <table class="table-productos">
@@ -154,10 +156,10 @@
         </tr>
         @endforeach
     </table>
+    @endif
 
     {{-- Total --}}
     @if ($type == 'total' && isset($total) && $total)
-    <hr>
     <p class="w-100 importe">
         IMPORTE TOTAL: <span class="total">$ {{number_format($total, 2, ',', '.')}}</span>
     </p>
@@ -168,7 +170,7 @@
     </p>
     @endif
 
-    @if (isset($coefs) && $coefs)
+    @if ($type != 'interno' && isset($coefs) && $coefs )
     <hr>
     <h2>Tipos de financiación</h2>
     <table class="table-productos">

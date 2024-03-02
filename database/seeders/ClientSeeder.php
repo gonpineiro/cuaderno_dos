@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ClientSeeder extends Seeder
 {
@@ -14,15 +15,9 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
-        $generic = [
-            'dni' => '99999999',
-            'name' => 'Allende Repuestos',
-            'email' => 'allende@allende.com.ar',
-            'is_company' => false,
-            'is_insurance' => false,
-            'is_generic' => true,
-        ];
-        Client::factory()->create($generic);
-        Client::factory()->count(50)->create();
+        /* $rutaArchivo = base_path('database/seeders/clients.sql');
+        $contenidoSQL = file_get_contents($rutaArchivo);
+
+        DB::statement($contenidoSQL); */
     }
 }

@@ -31,7 +31,7 @@ class StoreClienteOrderRequest extends FormRequest
             'type_id' => 'required',
             'detail' => 'required',
 
-            'engine' => 'required',
+            /* 'engine' => 'required', */
             /* 'chasis' => 'required', */
             'payment_method_id' => 'required',
             'deposit' => 'required',

@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProviderSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         $rutaArchivo = base_path('database/seeders/providers.sql');

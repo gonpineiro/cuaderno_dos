@@ -31,7 +31,6 @@ class StoreSiniestroOrderRequest extends FormRequest
             'type_id' => 'required',
             'detail' => 'required',
 
-            'engine' => 'required',
             'chasis' => 'required',
             'remito' => 'required',
             'workshop' => 'required',
@@ -45,7 +44,6 @@ class StoreSiniestroOrderRequest extends FormRequest
             'client_id.required' => 'El Cliente es requerido',
             'detail.required' => 'Productos es requerido',
 
-            'engine.required' => 'Vehículo/Motor es requerido',
             'chasis.required' => 'Chasis es requerido',
             'remito.required' => 'Remito es requerido',
             'workshop.required' => 'Taller es requerido',

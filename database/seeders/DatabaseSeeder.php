@@ -36,10 +36,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BrandSeeder::class,
             TableSeeder::class,
+            ProvinceSeeder::class,
             CitySeeder::class,
             ProviderSeeder::class,
             ClientSeeder::class,
-            ProductSeeder::class,
+            VehiculoSeeder::class,
+            CoeficientesSeeder::class,
+            /* ProductSeeder::class, */
             /* PriceQuoteSeeder::class, */
             /* OrderSeeder::class, */
             /* SiniestroSeeder::class, */

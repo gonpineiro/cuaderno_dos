@@ -70,10 +70,5 @@ class TableSeeder extends Seeder
 
         DB::table('tables')->insert(['name' => 'product_state', 'value' => 'sin_control_stock', 'description' => 'Sin control de stock']);
         DB::table('tables')->insert(['name' => 'product_state', 'value' => 'control_stock', 'description' => 'Control de stock']);
-
-        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'contado_deb', 'description' => '1.02']);
-        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_3', 'description' => '1.2272']);
-        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_6', 'description' => '1.39641']);
-        DB::table('tables')->insert(['name' => 'coeficientes', 'value' => 'ahora_12', 'description' => '1.89696']);
     }
 }

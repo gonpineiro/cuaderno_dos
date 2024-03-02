@@ -31,8 +31,8 @@ class StoreEnvioOrderRequest extends FormRequest
             'type_id' => 'required',
             'detail' => 'required',
 
-            'engine' => 'required',
-            'chasis' => 'required',
+            /* 'engine' => 'required', */
+            /* 'chasis' => 'required', */
 
             'payment_method_id' => 'required',
             'invoice_number' => 'required',

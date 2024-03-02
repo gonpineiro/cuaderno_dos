@@ -7,15 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class CoeficientesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         DB::table('coeficientes')->insert(['description' => 'LISTA', 'value' => 1, 'coeficiente' => 1]);
         DB::table('coeficientes')->insert(['description' => 'CONTADO / DEB / 1 CUOTA', 'value' => 1.02, 'coeficiente' => 1]);
+        DB::table('coeficientes')->insert(['description' => 'PLAN Z NARANJA', 'value' => 1.2272, 'cuotas' => 3, 'coeficiente' => 1]);
         DB::table('coeficientes')->insert(['description' => 'AHORA 3', 'value' => 1.2272, 'cuotas' => 3, 'coeficiente' => 1]);
         DB::table('coeficientes')->insert(['description' => 'AHORA 6', 'value' => 1.39641, 'cuotas' => 6, 'coeficiente' => 1]);
         DB::table('coeficientes')->insert(['description' => 'AHORA 12', 'value' => 1.89696, 'cuotas' => 12, 'coeficiente' => 1]);

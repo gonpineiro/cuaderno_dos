@@ -17,7 +17,6 @@ class Order extends Model
         'type_id',
 
         /* Generales */
-        'engine',
         'chasis',
 
         /* Pedido online */

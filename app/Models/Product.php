@@ -31,14 +31,12 @@ class Product extends Model
         'is_special',
 
         'provider_id',
-        'brand_id',
         'state_id',
     ];
 
     protected $hidden = [
         'pivot',
         'provider_id',
-        'brand_id',
         'state_id',
         'created_at',
         'updated_at',
