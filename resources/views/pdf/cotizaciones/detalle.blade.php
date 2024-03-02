@@ -129,6 +129,9 @@
             <th>Cant.</th>
             <th>Precio U.</th>
             <th>Total</th>
+            @if ($type === 'interno')
+            <th>Ubicación</th>
+            @endif
         </tr>
 
 
@@ -153,6 +156,9 @@
                 round($item->unit_price * $item->amount),
                 2, ',', '.') }}
             </td>
+            @if ($type === 'interno')
+            <td>{{$item->product->ubication}}</td>
+            @endif
         </tr>
         @endforeach
     </table>
