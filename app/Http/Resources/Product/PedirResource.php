@@ -16,7 +16,7 @@ class PedirResource extends JsonResource
     {
         $array = parent::toArray($request);
 
-        $array['provider'] = !!$this->product->provider ? $this->product->provider : $this->order_product->provider;
+        $array['provider'] = $this->provider;
 
         $array['product'] = [
             'id' => $this->product->id,

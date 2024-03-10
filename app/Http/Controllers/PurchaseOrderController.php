@@ -27,6 +27,12 @@ class PurchaseOrderController extends Controller
         return sendResponse(new PurchaseOrderResource($purchaseOrder, 'complete'));
     }
 
+    public function generar_pedir(Request $request)
+    {
+        $detail = $request->all();
+        return ToAsk::insert($detail);
+    }
+
     public function pedir()
     {
         /* $orderProducts = OrderProduct::whereHas('product', function ($query) {

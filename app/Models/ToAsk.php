@@ -13,6 +13,7 @@ class ToAsk extends Model
     protected $fillable = [
         'order_product_id',
         'product_id',
+        'provider_id',
         'purchase_order',
         'amount',
     ];
@@ -20,6 +21,7 @@ class ToAsk extends Model
     protected $hidden = [
         'order_product_id',
         'product_id',
+        'provider_id',
         'purchase_order',
     ];
 
@@ -31,5 +33,10 @@ class ToAsk extends Model
     public function order_product()
     {
         return $this->belongsTo(OrderProduct::class);
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
     }
 }

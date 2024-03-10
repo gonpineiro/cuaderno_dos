@@ -18,6 +18,7 @@ class CreateToAskTable extends Migration
 
             $table->unsignedBigInteger('order_product_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('provider_id')->nullable();
             $table->boolean('purchase_order')->default(true);
 
             $table->integer('amount');
@@ -25,6 +26,7 @@ class CreateToAskTable extends Migration
             /* Relaciones */
             $table->foreign('order_product_id')->references('id')->on('order_product')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('provider_id')->references('id')->on('providers')->onDelete('cascade');
         });
     }
 

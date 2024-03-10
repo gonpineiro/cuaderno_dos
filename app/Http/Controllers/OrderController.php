@@ -141,6 +141,7 @@ class OrderController extends \App\Http\Controllers\Controller
     private function storeOrderProduct($request, $order_id)
     {
         $detail = $request->detail;
+        $to_ask = $request->to_ask;
 
         foreach ($detail as $item) {
             $item['order_id'] = $order_id;
@@ -155,18 +156,27 @@ class OrderController extends \App\Http\Controllers\Controller
                 throw new \Exception("No se pudo crear el detalle del pedido");
             }
 
-            if (!!$item['product']['is_special']) {
+            $toAskElement = array_filter($to_ask, function ($ts) use ($item) {
+                return $ts['product_id'] == $item['product']['id'];
+            });
 
+            if (!empty($toAskElement)) {
+                $toAskElement = array_values($toAskElement);
                 $toAsk = ToAsk::create([
                     'order_product_id' => $order_product->id,
-                    'product_id' => $item['product']['id'],
-                    'amount' => $item['amount'],
+                    'product_id' => $toAskElement[0]['product_id'],
+                    'provider_id' => $toAskElement[0]['provider_id'],
+                    'amount' => $toAskElement[0]['amount'],
                 ]);
-
                 if (!$toAsk) {
                     throw new \Exception("No se pudo registro de to_ask");
                 }
             }
+
+
+            /* if (!!$item['product']['is_special']) {
+
+            } */
         }
         return true;
     }

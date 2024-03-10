@@ -146,10 +146,11 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             DB::commit();
-
+            
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
                 'cotizacion' => new PriceQuoteResource($priceQuote),
+                'order_products' => $order->detail
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -189,6 +190,7 @@ class PriceQuoteController extends Controller
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
                 'cotizacion' => new PriceQuoteResource($priceQuote),
+                'order_products' => $order->detail
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -228,6 +230,7 @@ class PriceQuoteController extends Controller
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
                 'cotizacion' => new PriceQuoteResource($priceQuote),
+                'order_products' => $order->detail
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
