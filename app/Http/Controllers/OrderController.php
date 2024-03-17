@@ -133,7 +133,13 @@ class OrderController extends \App\Http\Controllers\Controller
         $detail = OrderProductResource::collection($order->detail);
 
         //return view('pdf.template', ['pedido' => $order, 'detail' => $detail]);
-        $pdf = Pdf::loadView('pdf.pedido', ['pedido' => $order, 'detail' => $detail]);
+        $total = get_total_price($detail);
+            $pdf = Pdf::loadView('pdf.pedido', [
+            'pedido' => $order,
+            'cotizacion' => $order->price_quote,
+            'detail' => $detail,
+            'total' => $total,
+        ]);
 
         return $pdf->download('informe.pdf');
     }

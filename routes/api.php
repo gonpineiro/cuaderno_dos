@@ -90,6 +90,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Ordenes de compra */
     Route::post('ordenes_compra/generar_pedir', [PurchaseOrderController::class, 'generar_pedir']);
+    Route::post('ordenes_compra/producto_generar_pedir', [PurchaseOrderController::class, 'producto_generar_pedir']);
     Route::get('ordenes_compra/pedir', [PurchaseOrderController::class, 'pedir']);
     Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
     Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);

@@ -33,6 +33,13 @@ class PurchaseOrderController extends Controller
         return ToAsk::insert($detail);
     }
 
+    public function producto_generar_pedir(Request $request)
+    {
+        $toAsk =ToAsk::create($request->all());
+
+        return new PedirResource($toAsk);
+    }
+
     public function pedir()
     {
         /* $orderProducts = OrderProduct::whereHas('product', function ($query) {

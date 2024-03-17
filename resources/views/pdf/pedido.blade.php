@@ -9,6 +9,11 @@
 </head>
 
 <style>
+    .bold {
+        font-weight: bold;
+    }
+
+    /* Agrega más definiciones para otros pesos y estilos de la fuente Roboto */
     table {
         width: 100%
     }
@@ -23,10 +28,13 @@
         border: 1px solid rgba(0, 0, 0, .125);
     }
 
+    .importe {
+        margin-top: 16px;
+        font-size: 1.2rem;
+    }
+
     .total {
-        font-size: 2rem;
         font-weight: 500;
-        text-decoration: underline;
     }
 </style>
 
@@ -41,7 +49,7 @@
                 </tr>
                 <hr>
                 <tr>
-                    <td>Nombre y apeliido:</td>
+                    <td>Nombre y apellido:</td>
                     <td>{{$pedido->client->name}}</td>
                 </tr>
                 <tr>
@@ -54,7 +62,7 @@
                 </tr>
                 <tr>
                     <td>Vehículo:</td>
-                    <td>{{$pedido->engine}}</td>
+                    <td>{{$pedido->price_quote->vehiculo->name}}</td>
                 </tr>
             </table>
             <hr>
@@ -75,16 +83,16 @@
             @foreach ($detail as $item)
             <tr>
                 <td>{{$item->product->code}}</td>
-                <td>{{'Descripción del producto'}}</td>
+                <td>{{$item->product->description}}</td>
                 <td>{{$item->amount}}</td>
                 <td>{{$item->unit_price}}</td>
-                <td>{{$item->unit_price * $item->amount}}</td>
+                <td>$ {{number_format($item->unit_price * $item->amount, 2, ',', '.')}}</td>
             </tr>
             @endforeach
         </table>
         <hr>
-        <p class="w-100 text-center total">
-            IMPORTE TOTAL : $3324,32
+        <p class="w-100 importe">
+            IMPORTE TOTAL: <span class="total">$ {{number_format($total, 2, ',', '.')}}</span>
         </p>
     </div>
 </body>
