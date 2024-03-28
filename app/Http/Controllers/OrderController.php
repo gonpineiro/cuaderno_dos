@@ -118,12 +118,11 @@ class OrderController extends \App\Http\Controllers\Controller
     {
 
         // Enviar el correo electrónico
-        $correo = new CrearPedidoClienteEmail();;
 
         // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
 
         // Redireccionar a una página de éxito, por ejemplo
-        return sendResponse(Mail::to('gon.pineiro@gmail.com')->send($correo));
+        return sendResponse(Mail::to('gon.pineiro@gmail.com')->send(new CrearPedidoClienteEmail()));
     }
 
     public function getPdfPedido($id)
