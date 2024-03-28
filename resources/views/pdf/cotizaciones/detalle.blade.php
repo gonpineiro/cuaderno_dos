@@ -26,6 +26,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
+        font-size: 0.9rem;
     }
 
     .importe {
@@ -35,6 +36,12 @@
 
     .total {
         font-weight: 500;
+    }
+
+    .final-p {
+        margin-top: 15px;
+        text-align: center;
+        font-size: 1.5rem;
     }
 </style>
 
@@ -107,8 +114,8 @@
             </tr>
             <tr>
                 <td class="bold">Tipo Precio:</td>
-                <td>{{$cotizacion->type_price->description == 'Precio de contado' ? 'Precio de contado / debito /
-                    tarjeta 1 pago. IVA INCLUIDO' : $cotizacion->type_price->description}}</td>
+                <td>{{$cotizacion->type_price->value == 'contado' ? 'Contado / debito /
+                    tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}</td>
             </tr>
         </table>
         <hr>
@@ -196,6 +203,7 @@
         </tr>
         @endforeach
     </table>
+    <p class="final-p bold">No trabajamos con las tarjetas CONFIABLE, CREDICOM y CREDIGUIA.</p>
     @endif
 </body>
 

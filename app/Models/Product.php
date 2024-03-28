@@ -30,13 +30,14 @@ class Product extends Model
         'verified',
         'is_special',
 
+        'brand_id',
         'provider_id',
         'state_id',
     ];
 
     protected $hidden = [
         'pivot',
-        'provider_id',
+        /* 'provider_id', */
         'state_id',
         'created_at',
         'updated_at',

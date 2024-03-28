@@ -13,6 +13,7 @@ class Shipment extends Model
         'user_id',
         'order_id',
         'client_id',
+        'payment_method_id',
 
         'transport',
         'invoice_number',
@@ -28,6 +29,7 @@ class Shipment extends Model
     protected $hidden = [
         'user_id',
         'order_id',
+        'payment_method_id',
         'client_id',
         'updated_at',
         'deleted_at',

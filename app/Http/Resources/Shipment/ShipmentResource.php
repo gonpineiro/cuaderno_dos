@@ -55,6 +55,8 @@ class ShipmentResource extends JsonResource
     {
         unset($array['description']);
         $array['user'] = $this->user->name;
+        $this->client->city;
+        $array['payment_method'] = $this->payment_method->description;
         $array['client'] = $this->client;
 
         return $array;

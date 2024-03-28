@@ -146,7 +146,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             DB::commit();
-            
+
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
                 'cotizacion' => new PriceQuoteResource($priceQuote),
@@ -328,7 +328,7 @@ class PriceQuoteController extends Controller
 
     private function get_total_calculadora($total)
     {
-        $coefs = Coeficiente::all()->toArray();
+        $coefs = Coeficiente::orderBy('position', 'asc')->get()->toArray();
 
         return array_map(function ($coef) use ($total) {
             $totalDesc = round($total *  $coef['coeficiente'] * $coef['value']);

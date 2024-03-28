@@ -11,6 +11,7 @@
 <style>
     .bold {
         font-weight: bold;
+        font-size: 0.7rem;
     }
 
     /* Agrega más definiciones para otros pesos y estilos de la fuente Roboto */
@@ -26,6 +27,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
+        font-size: 0.9rem;
     }
 
     .importe {
@@ -73,7 +75,8 @@
         <table class="table-productos">
             <tr>
                 <th>Código</th>
-                <th style="width: 50%">Descripcion</th>
+                <th>Ubicación</th>
+                <th>Descripcion</th>
                 <th>Cant</th>
                 <th>Precio U.</th>
                 <th>Total</th>
@@ -83,9 +86,10 @@
             @foreach ($detail as $item)
             <tr>
                 <td>{{$item->product->code}}</td>
+                <td>{{$item->product->ubication}}</td>
                 <td>{{$item->product->description}}</td>
                 <td>{{$item->amount}}</td>
-                <td>{{$item->unit_price}}</td>
+                <td>$ {{number_format($item->unit_price, 2, ',', '.')}}</td>
                 <td>$ {{number_format($item->unit_price * $item->amount, 2, ',', '.')}}</td>
             </tr>
             @endforeach

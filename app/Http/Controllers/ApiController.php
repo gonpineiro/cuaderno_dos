@@ -99,7 +99,7 @@ class ApiController extends \App\Http\Controllers\Controller
         $data = [
             'user' => auth()->user(),
             'tables' => Table::all(),
-            'coeficientes' => Coeficiente::all(),
+            'coeficientes' => Coeficiente::orderBy('position', 'asc')->get(),
             'access_token' => $token,
             'token_type' => 'bearer',
         ];

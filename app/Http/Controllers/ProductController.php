@@ -61,7 +61,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $products = $products->whereHas('price_quotes', function ($query) use ($request) {
             $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
-                $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                $innerQuery->where('name', /* 'LIKE', '%' . */ $request->string /* . '%' */);
             });
         })
             ->distinct()
