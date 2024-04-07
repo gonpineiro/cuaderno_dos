@@ -31,7 +31,6 @@ class StoreOnlineOrderRequest extends FormRequest
             'type_id' => 'required',
             'detail' => 'required',
 
-            'payment_method_id' => 'required',
         ];
     }
 
@@ -43,7 +42,6 @@ class StoreOnlineOrderRequest extends FormRequest
             'detail.required' => 'Productos es requerido',
 
             'chasis.required' => 'Chasis es requerido',
-            'payment_method_id.required' => 'Forma de pago es requerido',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Order\StoreClienteOrderRequest;
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
+use App\Http\Resources\Shipment\ShipmentResource;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests\PriceQuote\StorePriceQuoteRequest;
@@ -16,6 +17,7 @@ use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\PriceQuote;
 use App\Models\PriceQuoteProduct;
+use App\Models\Shipment;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -145,6 +147,12 @@ class PriceQuoteController extends Controller
             $priceQuote->order_id = $order->id;
             $priceQuote->save();
 
+            if ($request->envio) {
+                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $order->shipment_id = $shipment->id;
+                $order->save();
+            }
+
             DB::commit();
 
             return sendResponse([
@@ -185,6 +193,12 @@ class PriceQuoteController extends Controller
             $priceQuote->order_id = $order->id;
             $priceQuote->save();
 
+            if ($request->envio) {
+                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $order->shipment_id = $shipment->id;
+                $order->save();
+            }
+
             DB::commit();
 
             return sendResponse([
@@ -224,6 +238,12 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
             $priceQuote->save();
+
+            if ($request->envio) {
+                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $order->shipment_id = $shipment->id;
+                $order->save();
+            }
 
             DB::commit();
 

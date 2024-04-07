@@ -48,9 +48,9 @@ class StoreShipmentRequest extends FormRequest
             'nro_gruia.max' => 'Nro de guia no puede superar los 100 caracteres',
 
             'bultos.int' => 'Bultos debe ser un número',
-            'bultos.max' => 'Bultos no puede superar los 50',
+            'bultos.max' => 'Bultos no puede superar los 50 caracteres',
 
-            'send_adress.max' => 'Nro de guia no puede superar los 100 caracteres',
+            'send_adress.max' => 'Dirección de envío no puede superar los 100 caracteres',
         ];
     }
 }

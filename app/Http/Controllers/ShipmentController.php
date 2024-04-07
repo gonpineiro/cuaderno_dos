@@ -100,15 +100,35 @@ class ShipmentController extends Controller
             $data = [];
             $data['shipment_id'] = $shipment_id;
             $data['state_id'] = $pendiente->id;
-            $data['product_id'] = $item->product->id;
-            $data['amount'] = $item->amount;
-            $data['unit_price'] = $item->unit_price;
+            $data['product_id'] = $item['product']['id'];
+            $data['amount'] = $item['amount'];
+            $data['unit_price'] = $item['unit_price'];
 
             if (!ShipmentProduct::create($data)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");
             }
         }
         return true;
+    }
+
+    public static function storeShipment($request, $order_id, $detail)
+    {
+        $envio = $request->envio;
+        $shipment = Shipment::create([
+            'user_id' => auth()->user()->id,
+            'order_id' => $order_id,
+            'client_id' => $request->client_id,
+            'payment_method_id' => $envio['payment_method_id'],
+            'transport' => $envio['transport'],
+            'invoice_number' => $envio['invoice_number'],
+            'nro_guia' => $envio["nro_gruia"],
+            'bultos' => $envio['bultos'],
+            'send_adress' => $envio['send_adress'],
+        ]);
+
+        self::storeShipmentProduct($detail, $shipment->id);
+
+        return $shipment;
     }
 
     public function updateState(Request $request, $id)
