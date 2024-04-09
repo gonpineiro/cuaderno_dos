@@ -141,7 +141,6 @@
             @endif
         </tr>
 
-
         @foreach ($detail as $item)
         <tr>
             @if ($type === 'interno')
@@ -153,14 +152,15 @@
             <td>{{$item->amount}}</td>
             <td>$ {{ number_format(
                 $precioContado ?
-                round($item->unit_price * $contado_deb->coeficiente * $contado_deb->value) :
-                round($item->unit_price),
+                redondearNumero(round($item->unit_price * $contado_deb->coeficiente * $contado_deb->value)) :
+                redondearNumero(round($item->unit_price)),
                 2, ',', '.') }}
             </td>
             <td>$ {{ number_format(
                 $precioContado ?
-                round($item->unit_price * $item->amount * $contado_deb->coeficiente * $contado_deb->value) :
-                round($item->unit_price * $item->amount),
+                redondearNumero(round($item->unit_price * $item->amount * $contado_deb->coeficiente *
+                $contado_deb->value)) :
+                redondearNumero(round($item->unit_price * $item->amount)),
                 2, ',', '.') }}
             </td>
             @if ($type === 'interno')
@@ -174,12 +174,13 @@
     {{-- Total --}}
     @if ($type == 'total' && isset($total) && $total)
     <p class="w-100 importe">
-        IMPORTE TOTAL: <span class="total">$ {{number_format($total, 2, ',', '.')}}</span>
+        IMPORTE TOTAL: <span class="total">$ {{number_format(redondearNumero($total), 2, ',', '.')}}</span>
     </p>
     @endif
     @if ($type == 'total' && isset($precioContado) && $precioContado)
     <p class="w-100 importe">
-        IMPORTE TOTAL PRECIO CONTADO: <span class="total">$ {{number_format($precioContado, 2, ',', '.')}}</span>
+        IMPORTE TOTAL PRECIO CONTADO: <span class="total">$ {{number_format(redondearNumero($precioContado), 2, ',',
+            '.')}}</span>
     </p>
     @endif
 
@@ -188,11 +189,9 @@
     <h2>Tipos de financiación</h2>
     <table class="table-productos">
         <tr>
-            @if ($type === 'interno')
             <th>CANTIDAD CUOTAS</th>
             <th>PRECIO</th>
             <th>VALOR CUOTA</th>
-            @endif
         </tr>
 
         @foreach ($coefs as $coef)

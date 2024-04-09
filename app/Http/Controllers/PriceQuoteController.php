@@ -335,7 +335,7 @@ class PriceQuoteController extends Controller
             'cotizacion' => $order,
             'detail' => $detail,
             'coefs' => $coefs,
-            'total' => $total,
+            'total' => redondearNumero($total),
             'precioContado' => $precioContado,
             'contado_deb' => $contado_deb,
             'type' => $request->type,
@@ -355,7 +355,7 @@ class PriceQuoteController extends Controller
 
             return [
                 'description' => $coef['description'],
-                'price' => "$ " . number_format($totalDesc, 2),
+                'price' => "$ " . number_format(redondearNumero($totalDesc), 2),
                 'valor_cuota' => $coef['cuotas'] ? '$ ' . number_format($totalDesc / $coef['cuotas'], 2) : ' '
             ];
         }, $coefs);

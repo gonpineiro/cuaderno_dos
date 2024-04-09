@@ -22,6 +22,18 @@ if (!function_exists('isEven')) {
     }
 }
 
+if (!function_exists('redondearNumero')) {
+    function redondearNumero($numero)
+    {
+        $residuo = $numero % 100;
+        if ($residuo >= 50) {
+            return $numero + (100 - $residuo);
+        } else {
+            return $numero - $residuo;
+        }
+    }
+}
+
 if (!function_exists('calcularDescuento')) {
     function calcularDescuento(float $total, float $coef, int $decimals = 2): float
     {

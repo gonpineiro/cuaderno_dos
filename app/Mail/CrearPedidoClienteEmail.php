@@ -28,6 +28,6 @@ class CrearPedidoClienteEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.crearPedidoCliente');
+        return $this->view('emails.pedidos.producto_unico');
     }
 }
