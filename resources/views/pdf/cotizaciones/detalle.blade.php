@@ -98,7 +98,7 @@
             <hr>
             <tr>
                 <td class="bold">Fecha:</td>
-                <td>{{$cotizacion->created_at}}</td>
+                <td>{{date("d/m/Y", strtotime($cotizacion->created_at))}}</td>
             </tr>
             <tr>
                 <td class="bold">Cliente:</td>
@@ -116,6 +116,9 @@
                 <td class="bold">Tipo Precio:</td>
                 <td>{{$cotizacion->type_price->value == 'contado' ? 'Contado / debito /
                     tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}</td>
+            </tr>
+            <tr>
+                <td colspan="3"><small>Precios sujeto a modificación sin previo aviso</small></td>
             </tr>
         </table>
         <hr>
