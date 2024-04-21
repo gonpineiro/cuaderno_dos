@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -43,8 +42,8 @@ class Handler extends ExceptionHandler
         });
 
         /** Ocuerre un error en la base de datos */
-        $this->renderable(function (QueryException $e) {
-            return sendResponse(null, $e, 301);
+        $this->renderable(function (\Illuminate\Database\QueryException $e) {
+            return sendResponse(null, 'No es posible realizar esta operación', 301);
         });
 
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {

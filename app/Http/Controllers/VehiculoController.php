@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Vehiculo\StoreVehiculoRequest;
+use App\Http\Requests\Vehiculo\UpdateVehiculoRequest;
 use App\Http\Resources\VehiculoResource;
 use App\Models\Vehiculo;
-use Illuminate\Http\Request;
 
 class VehiculoController extends Controller
 {
@@ -14,7 +15,7 @@ class VehiculoController extends Controller
         return sendResponse(VehiculoResource::collection($vehiculos));
     }
 
-    public function store(Request $request)
+    public function store(StoreVehiculoRequest $request)
     {
         $vehiculo = Vehiculo::create($request->all());
         return sendResponse(new VehiculoResource($vehiculo));
@@ -26,7 +27,7 @@ class VehiculoController extends Controller
         return sendResponse(new VehiculoResource($vehiculo));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateVehiculoRequest $request, $id)
     {
         $vehiculo = Vehiculo::findOrFail($id);
         $vehiculo->fill($request->all())->save();

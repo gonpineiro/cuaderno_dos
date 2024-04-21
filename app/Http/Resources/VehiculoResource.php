@@ -14,6 +14,8 @@ class VehiculoResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $array = parent::toArray($request);
+        $array['brand'] = $this->brand;
+        return  $array;
     }
 }
