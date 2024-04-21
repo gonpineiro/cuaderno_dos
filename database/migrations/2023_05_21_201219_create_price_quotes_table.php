@@ -36,6 +36,7 @@ class CreatePriceQuotesTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('information_source_id')->references('id')->on('tables');
+            $table->foreign('vehiculo_id')->references('id')->on('vehiculos');
             $table->foreign('type_price_id')->references('id')->on('tables');
         });
 
