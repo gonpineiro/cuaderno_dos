@@ -30,7 +30,6 @@ class CreatePriceQuotesTable extends Migration
 
             $table->timestamps();
             $table->softDeletes();
-
             /* Relaciones */
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');

@@ -27,10 +27,20 @@ if (!function_exists('redondearNumero')) {
     {
         $residuo = $numero % 100;
         if ($residuo >= 50) {
-            return $numero + (100 - $residuo);
+            return (int) ($numero + (100 - $residuo));
         } else {
-            return $numero - $residuo;
+            return (int) $numero - $residuo;
         }
+    }
+}
+
+if (!function_exists('formatoMoneda')) {
+    function formatoMoneda($numero)
+    {
+        if (!$numero) {
+            return '$ ' . number_format(0, 2);
+        }
+        return '$ ' . number_format($numero, 2);
     }
 }
 

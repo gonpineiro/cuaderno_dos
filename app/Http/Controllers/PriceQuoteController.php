@@ -308,55 +308,45 @@ class PriceQuoteController extends Controller
     {
         $order = PriceQuote::find($id);
         $order->client;
-        $detail = PriceQuoteProductResource::collection($order->detail);
 
-        $precioContado = null;
-        $contado_deb = Coeficiente::find(2);
+        $is_contado = $order->type_price->value == 'contado';
+
+        $contado_deb = $is_contado ? Coeficiente::find(2) : null;
+        $detail = PriceQuoteProductResource::pdfArray($order->detail, $contado_deb);
+        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail);
+
         $total = get_total_price($detail);
-
-        $coefs = null;
-        if ($request->type == 'total' || $request->type == 'interno') {
-
-            if ($request->type == 'interno') {
-                $coefs = $this->get_total_calculadora($total);
-            }
-        }
-
-        if ($request->type == 'calculadora') {
-            $coefs = $this->get_total_calculadora($total);
-        }
-
-        if ($order->type_price->value == 'contado') {
-            $precioContado = round($total *  $contado_deb->coeficiente  * $contado_deb->value);
-            $total = null;
-        }
 
         $vars = [
             'cotizacion' => $order,
-            'detail' => $detail,
-            'coefs' => $coefs,
-            'total' => redondearNumero($total),
-            'precioContado' => $precioContado,
-            'contado_deb' => $contado_deb,
+            'detail' => PriceQuoteProductResource::formatPdf($detail),
+            'coefs' => $this->get_total_calculadora($detail_lista),
+            'total' => formatoMoneda($total),
             'type' => $request->type,
+            'is_contado' => $is_contado
         ];
 
-        $pdf = Pdf::loadView('pdf.cotizaciones.detalle', $vars);
+        $pdf = Pdf::loadView("pdf.cotizaciones.$request->type", $vars);
 
         return $pdf->download('informe.pdf');
     }
 
-    private function get_total_calculadora($total)
+    private function get_total_calculadora($detail_lista)
     {
         $coefs = Coeficiente::orderBy('position', 'asc')->get()->toArray();
 
-        return array_map(function ($coef) use ($total) {
-            $totalDesc = round($total *  $coef['coeficiente'] * $coef['value']);
+        return array_map(function ($coef) use ($detail_lista) {
+
+            $multiplo = $coef['coeficiente'] * $coef['value'];
+            $total = 0;
+            foreach ($detail_lista as $value) {
+                $total += (int) redondearNumero($value['unit_price'] * $multiplo) * $value['amount'];
+            }
 
             return [
                 'description' => $coef['description'],
-                'price' => "$ " . number_format(redondearNumero($totalDesc), 2),
-                'valor_cuota' => $coef['cuotas'] ? '$ ' . number_format($totalDesc / $coef['cuotas'], 2) : ' '
+                'price' => formatoMoneda($total),
+                'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas']) : ' '
             ];
         }, $coefs);
     }
