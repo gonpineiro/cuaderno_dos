@@ -37,7 +37,7 @@ class PriceQuoteProductResource extends JsonResource
 
             $array[] = [
                 'code' => $value->product->code,
-                'description' => $value->product->ubication,
+                'description' => $value->product->description,
                 'amount' => $value->amount,
                 'unit_price' => $unitario,
                 'total' => $unitario * $value->amount,
