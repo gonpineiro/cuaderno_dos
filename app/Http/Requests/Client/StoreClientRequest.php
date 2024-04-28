@@ -34,11 +34,20 @@ class StoreClientRequest extends FormRequest
             ];
         }
 
+        if ($this->input('is_company')) {
+            return [
+                'name' => 'required|max:35',
+                'cuit' => 'required|max:11|min:11|unique:clients',
+                'email' => 'required|email|max:100|unique:clients',
+                'phone' => 'required|max:35',
+            ];
+        }
+
         return [
             'name' => 'required|max:35',
-            'phone' => 'required|max:35',
             'dni' => 'required|max:8|min:8|unique:clients',
             'email' => 'required|email|max:100|unique:clients',
+            'phone' => 'required|max:35',
             'city_id' => 'required',
         ];
     }

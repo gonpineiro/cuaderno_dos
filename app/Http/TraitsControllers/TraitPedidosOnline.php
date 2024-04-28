@@ -4,6 +4,7 @@ namespace App\Http\TraitsControllers;
 
 use App\Http\Requests\Order\StoreOnlineOrderRequest;
 use App\Http\Resources\Order\OrderResource;
+use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
@@ -29,15 +30,17 @@ trait TraitPedidosOnline
 
         $order = PedidoOnline::create($data);
 
+        $is_contado = $order->price_quote->type_price->value == 'contado';
+        $contado_deb = $is_contado ? Coeficiente::find(2) : null;
+
         /* Intentamos guardar lss ordernes productos */
-        if (!self::storeOrderProduct($request, $order->id)) {
-            DB::rollBack();
-            throw new \Exception('No se pudieron guardar los productos del pedido online');
+        if (!self::storeOrderProduct($request, $order->id, $contado_deb)) {
+            throw new \Exception('No se pudieron guardar los productos del pedido cliente');
         }
 
         return $order;
     }
-
+    
     public function showPedidoOnline($id)
     {
         $order = PedidoOnline::findOrFail($id);

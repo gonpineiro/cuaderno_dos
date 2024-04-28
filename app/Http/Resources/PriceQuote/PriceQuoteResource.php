@@ -69,12 +69,29 @@ class PriceQuoteResource extends JsonResource
     private function default($array)
     {
         $array['user'] = $this->user->name;
+        $array['client']['id'] = $this->client->id;
         $array['client']['name'] = $this->client->name;
         $array['client']['phone'] = $this->client->phone;
         $array['state'] = $this->state;
-        $array['vehiculo'] = $this->vehiculo->name;
+        $array['vehiculo'] = $this->vehiculo;
 
         return $array;
+    }
+
+    public static function toForm($priceQuote)
+    {
+        return [
+            'id' => $priceQuote->id,
+            'client_id' => $priceQuote->client_id,
+            'brand_id' => $priceQuote->vehiculo->brand_id,
+            'vehiculo_id' => $priceQuote->vehiculo_id,
+            'chasis' => $priceQuote->chasis,
+            'contacto' => $priceQuote->contacto,
+            'year' => $priceQuote->year,
+            'type_price_id' => $priceQuote->type_price_id,
+            'information_source_id' => $priceQuote->information_source_id,
+            'observation' => $priceQuote->observation,
+        ];
     }
 
     private function formatState($order)

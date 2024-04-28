@@ -133,7 +133,8 @@ class OrderController extends \App\Http\Controllers\Controller
 
         //return view('pdf.template', ['pedido' => $order, 'detail' => $detail]);
         $total = get_total_price($detail);
-            $pdf = Pdf::loadView('pdf.pedido', [
+
+        $pdf = Pdf::loadView('pdf.pedido', [
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
             'detail' => $detail,
@@ -143,7 +144,7 @@ class OrderController extends \App\Http\Controllers\Controller
         return $pdf->download('informe.pdf');
     }
 
-    private function storeOrderProduct($request, $order_id)
+    private function storeOrderProduct($request, $order_id, $coef = null)
     {
         $detail = $request->detail;
         $to_ask = $request->to_ask;
@@ -151,6 +152,7 @@ class OrderController extends \App\Http\Controllers\Controller
         foreach ($detail as $item) {
             $item['order_id'] = $order_id;
             $item['state_id'] = $item['state']['id'];
+            $item['unit_price'] = redondearNumero($coef ? $item['unit_price'] * $coef->coeficiente * $coef->value : $item['unit_price']);
 
             $item['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
             $item['product_id'] = $item['product']['id'];

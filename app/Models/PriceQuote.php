@@ -13,13 +13,13 @@ class PriceQuote extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+        'contacto',
         'vehiculo_id',
         'engine',
         'chasis',
         'information_source_id',
         'type_price_id',
         'observation',
-        'brand_id',
         'year'
     ];
 

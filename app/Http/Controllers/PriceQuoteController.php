@@ -114,9 +114,13 @@ class PriceQuoteController extends Controller
      * @param  \App\Models\Order $priceQuote
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $requets, $id)
     {
         $priceQuote = PriceQuote::findOrFail($id);
+        if ($requets->type) {
+            $method = $requets->type;
+            return sendResponse(PriceQuoteResource::$method($priceQuote));
+        }
         return sendResponse(new PriceQuoteResource($priceQuote, 'complete'));
     }
 

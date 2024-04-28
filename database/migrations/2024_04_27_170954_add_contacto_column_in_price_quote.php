@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPositionCoeficientesTable extends Migration
+class AddContactoColumnInPriceQuote extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddPositionCoeficientesTable extends Migration
      */
     public function up()
     {
-        Schema::table('coeficientes', function (Blueprint $table) {
-            $table->integer('position')->nullable()->after('cuotas');
+        Schema::table('price_quotes', function (Blueprint $table) {
+            $table->string('contacto')->nullable()->after('chasis');
         });
     }
 
@@ -25,8 +25,8 @@ class AddPositionCoeficientesTable extends Migration
      */
     public function down()
     {
-        Schema::table('coeficientes', function (Blueprint $table) {
-            $table->dropColumn('position');
+        Schema::table('price_quotes', function (Blueprint $table) {
+            $table->dropColumn('contacto');
         });
     }
 }
