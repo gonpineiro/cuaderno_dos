@@ -6,7 +6,6 @@
 {{-- Detalle productos --}}
 <table class="table-productos">
     <tr>
-        <th>Código</th>
         <th>Descripción</th>
         <th>Cant.</th>
         <th>Precio U.</th>
