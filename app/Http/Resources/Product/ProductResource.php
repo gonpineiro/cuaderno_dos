@@ -28,6 +28,8 @@ class ProductResource extends JsonResource
             $array['state'] = $this->state ? $this->state->value : null;
         }
 
+        /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
+
         if ($request->query('ordenes') == "true") {
             $array['ordenes'] = count($this->orders) > 0 ? $this->orders : null;
         }

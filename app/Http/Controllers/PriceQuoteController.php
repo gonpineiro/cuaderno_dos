@@ -337,7 +337,7 @@ class PriceQuoteController extends Controller
 
     private function get_total_calculadora($detail_lista)
     {
-        $coefs = Coeficiente::orderBy('position', 'asc')->get()->toArray();
+        $coefs = Coeficiente::where('show', true)->orderBy('position', 'asc')->get()->toArray();
 
         return array_map(function ($coef) use ($detail_lista) {
 
@@ -385,7 +385,7 @@ class PriceQuoteController extends Controller
                     'product_id' => $item['product']['id'],
                     'amount' => $item['amount'],
                     'unit_price' => $item['unit_price'],
-                    'description' => $item['description'],
+                    /* 'description' => $item['description'], */
                     'state_id' => $item['state']['id'],
                     'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
                 ];
