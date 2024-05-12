@@ -174,14 +174,15 @@ class ProductController extends \App\Http\Controllers\Controller
     public function store(StoreProductRequest $request)
     {
         try {
-            $product = Product::create($request->all());
+            $body = $request->all();
+            $product = Product::create($body);
             return sendResponse(new ProductResource($product));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());
         }
     }
 
-    public function storeIsSimple(StoreProductSimpleRequest $request)
+    /* public function storeIsSimple(StoreProductSimpleRequest $request)
     {
         try {
             $product = Product::create($request->all());
@@ -206,7 +207,7 @@ class ProductController extends \App\Http\Controllers\Controller
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());
         }
-    }
+    } */
 
     public function show($id)
     {

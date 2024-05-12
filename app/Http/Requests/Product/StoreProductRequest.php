@@ -26,19 +26,24 @@ class StoreProductRequest extends FormRequest
      */
     public function rules()
     {
+
+        if ($this->is_special || $this->is_simple) {
+            return  [
+                'code' => 'required|max:25|unique:products',
+                'description' => 'required|max:500',
+            ];
+        }
+
         return [
             'code' => 'required|max:25|unique:products',
             'provider_code' => 'required|max:25',
             'factory_code' => 'required|max:25',
             'equivalence' => 'required|max:255',
-
             'description' => 'required|max:500',
+
             'model' => 'required|max:25',
             'engine' => 'required|max:200',
             'observation' => 'required|max:500',
-
-            'min_stock' => 'boolean',
-            'empty_stock' => 'boolean',
 
             'ship' => 'required|max:5',
             'module' => 'required|max:5',
@@ -76,12 +81,6 @@ class StoreProductRequest extends FormRequest
 
             'observation.required' => 'Observación es requerido',
             'observation.max' => 'Observación no debe superar el maximo de 500 caracteres',
-
-            'min_stock.required' => 'min_stock es requerido',
-            'min_stock.boolean' => 'min_stock debe ser un booleano',
-
-            'empty_stock.required' => 'empty_stock es requerido',
-            'empty_stock.boolean' => 'empty_stock debe ser un booleano',
 
             'ship.required' => 'Nave es requerido',
             'ship.max' => 'Nave no debe superar el maximo de 5 caracteres',
