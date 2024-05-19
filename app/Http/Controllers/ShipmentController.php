@@ -131,23 +131,23 @@ class ShipmentController extends Controller
         return $shipment;
     }
 
-    public function updateState(Request $request, $id)
+    public function updateState(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $detail = ShipmentProduct::where('shipment_id', $id)->get();
+            $detail = ShipmentProduct::where('shipment_id', $request->shipment_id)->get();
 
             $cacelado = Table::where('name', 'order_envio_state')->where('value', 'cancelado')->first();
             foreach ($detail as $item) {
                 /* Verificamos que cada item no tenga el estado de entregado */
                 if ($item->state_id != $cacelado->id) {
-                    $item->state_id = (int)$request->id;
+                    $item->state_id = (int)$request->state_id;
                     $item->save();
                 }
             }
 
-            $shipment = Shipment::find($id);
+            $shipment = Shipment::find($request->shipment_id);
 
             DB::commit();
 

@@ -59,16 +59,16 @@ trait TraitPedidos
         return sendResponse(new OrderResource($order, 'complete'));
     }
 
-    public function updateState(Request $request, $id)
+    public function updateState(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $order = Order::find($id);
+            $order = Order::find($request->order_id);
 
             $type = $order->type->value;
 
-            $detail = OrderProduct::where('order_id', $order->id)->get();
+            $detail = OrderProduct::where('order_id', $request->order_id)->get();
             if ($type === 'cliente') {
 
                 $entregado = Table::where('name', 'order_cliente_state')->where('value', 'entregado')->first();
@@ -77,7 +77,7 @@ trait TraitPedidos
                 foreach ($detail as $item) {
                     /* Verificamos que cada item no tenga el estado de entregado */
                     if ($item->state_id != $entregado->id) {
-                        $item->state_id = (int)$request->id;
+                        $item->state_id = (int)$request->state_id;
                         $item->save();
                     }
                 }
@@ -89,13 +89,13 @@ trait TraitPedidos
                 foreach ($detail as $item) {
                     /* Verificamos que cada item no tenga el estado de entregado o cancelado */
                     if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
-                        $item->state_id = (int)$request->id;
+                        $item->state_id = (int)$request->state_id;
                         $item->save();
                     }
                 }
             }
 
-            $order = Order::find($id);
+            $order = Order::find($request->order_id);
 
             DB::commit();
 

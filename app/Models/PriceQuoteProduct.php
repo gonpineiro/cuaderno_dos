@@ -19,7 +19,6 @@ class PriceQuoteProduct extends Model
         'amount',
         'unit_price',
         'quote',
-        'description'
     ];
 
     protected $hidden = [

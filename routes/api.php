@@ -59,7 +59,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
     Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
-    Route::post('pedidos/cambiar-estado/{id}', [OrderController::class, 'updateState']);
+    Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
     Route::post('update_pedido_product', [OrderProductController::class, 'updatePedidoProduct']);
 
     /* Siniestros */
@@ -75,7 +75,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Envios */
     Route::resource('envio', ShipmentController::class);
-    Route::post('envio/cambiar-estado/{id}', [ShipmentController::class, 'updateState']);
+    Route::post('envio/cambiar-estado', [ShipmentController::class, 'updateState']);
     Route::post('update_envio_product', [ShipmentController::class, 'updateEnvio']);
 
     /* Cotizaciones */

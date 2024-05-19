@@ -20,7 +20,6 @@ class OrderProduct extends Model
     ];
 
     protected $hidden = [
-        'order_id',
         'state_id',
         'product_id',
         'provider_id',

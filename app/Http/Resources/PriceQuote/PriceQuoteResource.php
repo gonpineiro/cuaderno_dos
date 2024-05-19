@@ -57,6 +57,7 @@ class PriceQuoteResource extends JsonResource
 
         $array['init_state'] = Table::where('name', 'price_quote_state')->where('value', 'cotizar')->first();
 
+        $this->shipment && $this->shipment->payment_method;
         $array['shipment'] = $this->shipment;
 
         $array['state'] = $this->state;
