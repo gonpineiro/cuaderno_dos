@@ -34,7 +34,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/buscar', [ProductController::class, 'search']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
-    Route::get('producto/cotizaciones', [ProductController::class, 'getByCotizaciones']);
+    Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);
 
     Route::get('producto/relacion/sin-stock', [ProductController::class, 'relationEmptyStock']);
     /* Route::get('producto/pedido-online', [ProductController::class, 'inPedidoOnline']); */
@@ -59,6 +59,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
     Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
+    Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
     Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
     Route::post('update_pedido_product', [OrderProductController::class, 'updatePedidoProduct']);
 
@@ -76,6 +77,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Envios */
     Route::resource('envio', ShipmentController::class);
     Route::post('envio/cambiar-estado', [ShipmentController::class, 'updateState']);
+    Route::get('envio/pdf/{id}', [ShipmentController::class, 'get_pdf']);
     Route::post('update_envio_product', [ShipmentController::class, 'updateEnvio']);
 
     /* Cotizaciones */
@@ -86,6 +88,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('cotizacion/asignar/online', [PriceQuoteController::class, 'asignarOnline']);
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
+    Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 
     /* Ordenes de compra */
@@ -98,11 +101,5 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 });
-
-Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
-
-Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
-
-
 
 /* php artisan make:model Api/Product -rcmfsR */

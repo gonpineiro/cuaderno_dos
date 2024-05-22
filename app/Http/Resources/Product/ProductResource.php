@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -35,5 +36,34 @@ class ProductResource extends JsonResource
         }
 
         return $array;
+    }
+
+    public static function complete(Product $product)
+    {
+        $product->provider;
+        $product->brand;
+        $product->state;
+        /* $product->orders;
+        $product->price_quotes; */
+
+        $product['ubication'] =  $product->ubication;
+
+        /*  $array = parent::toArray($product);
+        $array['provider'] = (isset($this->provider) && $this->provider) ? $this->provider->name : null;
+        $array['brand'] = $this->brand ? $this->brand->name : null;
+        $array['ubication'] = $this->ubication;
+        $array['description'] = $this->description;
+
+        if ($this->is_special) {
+            $array['state'] = 'is_special';
+        } else if (!$this->ubication) {
+            $array['state'] = 'is_simple';
+        } else {
+            $array['state'] = $this->state ? $this->state->value : null;
+        } */
+
+        /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
+
+        return $product;
     }
 }

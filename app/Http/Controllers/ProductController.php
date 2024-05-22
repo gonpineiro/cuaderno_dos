@@ -55,23 +55,39 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(ProductResource::collection($products));
     }
 
-    public function getByCotizaciones(Request $request)
+    public function getInCotizaciones(Request $request)
     {
+        $model = new Product();
+
+        $attributes = $model->getFillable();
         $products = Product::query();
 
-        $products = $products->whereHas('price_quotes', function ($query) use ($request) {
-            $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
-                $innerQuery->where('name', /* 'LIKE', '%' . */ $request->string /* . '%' */);
-            });
-        })
-            ->distinct()
-            ->get();
+        $type = $request->type;
+        if (!$type) {
+            $products = $products->whereHas('price_quotes')
+                ->distinct()
+                ->where(function ($query) use ($attributes, $request) {
+                    foreach ($attributes as $attribute) {
+                        $query->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+                    }
+                });
+        }
 
+        if ($type === 'vehiculos') {
+            $products = $products->whereHas('price_quotes', function ($query) use ($request) {
+                $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                    $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                });
+            })
+                ->distinct();
+        }
+
+        $products = $products->get();
 
         $col = ProductCotizacionesResource::collection($products);
-        /* $col = $col->sortByDesc(function ($producto) {
-                return $producto->orders;
-            }); */
+        $col = $col->sortByDesc(function ($producto) {
+            return $producto->cantidad_cotizaciones;
+        });
 
         return sendResponse($col);
     }
@@ -212,14 +228,13 @@ class ProductController extends \App\Http\Controllers\Controller
     public function show($id)
     {
         $products = Product::where(function ($query) use ($id) {
-            $query->where('code', 'LIKE', '%' . $id . '%')
-                ->orWhere('description', 'LIKE', '%' . $id . '%');
-        })->get();
+            $query->where('code', $id);
+        })->first();
 
         if (!$products) {
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
-        return sendResponse(ProductResource::collection($products));
+        return sendResponse(new ProductResource($products));
     }
 
     public function search(Request $request)

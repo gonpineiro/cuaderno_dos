@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use App\Http\Requests\Shipment\StoreShipmentRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Shipment\ShipmentResource;
@@ -12,8 +16,6 @@ use App\Models\Shipment;
 use App\Models\ShipmentProduct;
 use App\Models\Siniestro;
 use App\Models\Table;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ShipmentController extends Controller
 {
@@ -172,6 +174,27 @@ class ShipmentController extends Controller
             return sendResponse(new ShipmentResource($shipment, 'complete'));
         }
         return sendResponse(null, 'Error a modificar el detalle');
+    }
+
+    public function get_pdf(Request $request, $id)
+    {
+        $shipment = Shipment::find($id);
+        $shipment->client;
+
+        $detail = ShipmentResource::pdfArray($shipment->detail);
+
+        $total = get_total_price($detail);
+
+        $vars = [
+            'cotizacion' => $shipment,
+            'detail' => ShipmentResource::formatPdf($detail),
+            'total' => formatoMoneda($total),
+            'type' => $request->type,
+        ];
+
+        $pdf = Pdf::loadView("pdf.envios.$request->type", $vars);
+
+        return $pdf->download('informe.pdf');
     }
 
     public function show($id)

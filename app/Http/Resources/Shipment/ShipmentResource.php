@@ -61,4 +61,32 @@ class ShipmentResource extends JsonResource
 
         return $array;
     }
+
+    public static function pdfArray($detail)
+    {
+        $array = [];
+
+        foreach ($detail as $value) {
+
+            $array[] = [
+                'amount' => $value->amount,
+                'code' => $value->product->code,
+                'description' => $value->product->description,
+                'unit_price' =>  $value->unit_price,
+                'total' =>  $value->unit_price * $value->amount,
+            ];
+        }
+
+        return $array;
+    }
+
+    public static function formatPdf($detail)
+    {
+        foreach ($detail as $key => $value) {
+            $detail[$key]['unit_price'] = formatoMoneda($value['unit_price']);
+            $detail[$key]['total'] = formatoMoneda($value['total']);
+        }
+
+        return $detail;
+    }
 }
