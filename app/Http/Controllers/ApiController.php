@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coeficiente;
+use App\Models\Province;
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -100,6 +101,7 @@ class ApiController extends \App\Http\Controllers\Controller
             'user' => auth()->user(),
             'tables' => Table::all(),
             'coeficientes' => Coeficiente::orderBy('position', 'asc')->get(),
+            'provinces' => Province::all(),
             'access_token' => $token,
             'token_type' => 'bearer',
         ];

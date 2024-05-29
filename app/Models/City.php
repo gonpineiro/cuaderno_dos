@@ -13,7 +13,8 @@ class City extends Model
 
     protected $fillable = [
         'name',
-        'province_id'
+        'province_id',
+        'zip_code'
     ];
     protected $hidden = [
         'province_id',
@@ -21,6 +22,6 @@ class City extends Model
 
     public function province()
     {
-        return $this->belongsTo(Table::class, 'province_id');
+        return $this->belongsTo(Province::class, 'province_id');
     }
 }
