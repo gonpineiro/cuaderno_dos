@@ -176,7 +176,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*

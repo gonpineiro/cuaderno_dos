@@ -96,9 +96,11 @@ class ApiController extends \App\Http\Controllers\Controller
     protected function respondWithToken($token)
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
+        $user =User::find(auth()->user()->id);
+        $user->roles;
 
         $data = [
-            'user' => auth()->user(),
+            'user' => $user,
             'tables' => Table::all(),
             'coeficientes' => Coeficiente::orderBy('position', 'asc')->get(),
             'provinces' => Province::all(),
