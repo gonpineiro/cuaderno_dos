@@ -257,12 +257,12 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(ProductResource::collection($results));
     }
 
-    public function update(UpdateProductRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
         $product->fill($request->all())->save();
 
-        return sendResponse($product);
+        return sendResponse(new ProductResource($product));
     }
 
     public function out()

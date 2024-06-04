@@ -33,19 +33,19 @@ class Product extends Model
         'brand_id',
         'provider_id',
         'state_id',
-    ];
 
-    protected $hidden = [
-        'pivot',
-        /* 'provider_id', */
-        'state_id',
-        'created_at',
-        'updated_at',
         'ship',
         'module',
         'side',
         'column',
         'row',
+    ];
+
+    protected $hidden = [
+        'pivot',
+        /* 'provider_id', */
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts = [
