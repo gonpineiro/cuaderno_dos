@@ -105,6 +105,7 @@ class ShipmentController extends Controller
             $data['product_id'] = $item['product']['id'];
             $data['amount'] = $item['amount'];
             $data['unit_price'] = $item['unit_price'];
+            $data['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
 
             if (!ShipmentProduct::create($data)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");
@@ -161,7 +162,7 @@ class ShipmentController extends Controller
         }
     }
 
-    public function updateEnvio(Request $request)
+    public function update_envio_product(Request $request)
     {
         $shipment_product =
             ShipmentProduct::where('shipment_id', $request->shipment_id)
@@ -197,9 +198,13 @@ class ShipmentController extends Controller
         return $pdf->download('informe.pdf');
     }
 
-    public function show($id)
+    public function show(Request $requets, $id)
     {
         $shipment = Shipment::findOrFail($id);
+        if ($requets->type) {
+            $method = $requets->type;
+            return sendResponse(ShipmentResource::$method($shipment));
+        }
         return sendResponse(new ShipmentResource($shipment, 'complete'));
     }
 
@@ -218,6 +223,64 @@ class ShipmentController extends Controller
             DB::rollBack();
 
             return sendResponse(null, $e->getMessage(), 300, $id);
+        }
+    }
+
+    public function updateEnvio(Request $request, int $id)
+    {
+        $shipment = Shipment::findOrFail($id);
+
+        $shipment->fill($request->all())->save();
+
+        return sendResponse(new ShipmentResource($shipment, 'complete'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $shipment = Shipment::findOrFail($id);
+
+            $detail = $request->detail;
+
+            // Obtén los IDs de producto de detail
+            $productIdsInDetail = array_map(function ($item) {
+                return $item['product']['id'];
+            }, $detail);
+
+            // Elimina los registros OrderProduct que no están en $productIdsInDetail
+            ShipmentProduct::where('shipment_id', $id)
+                ->whereNotIn('product_id', $productIdsInDetail)
+                ->delete();
+
+            // Actualiza o agrega registros OrderProduct según detail
+            foreach ($detail as $item) {
+                $shipmentProductData = [
+                    'shipment_id' => $shipment->id,
+                    'product_id' => $item['product']['id'],
+                    'amount' => $item['amount'],
+                    'unit_price' => $item['unit_price'],
+                    /* 'description' => $item['description'], */
+                    'state_id' => $item['state']['id'],
+                    'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
+                ];
+
+                ShipmentProduct::updateOrInsert(
+                    [
+                        'shipment_id' => $shipment->id,
+                        'product_id' => $item['product']['id'],
+                    ],
+                    $shipmentProductData
+                );
+            }
+
+            DB::commit();
+            return sendResponse(new ShipmentResource($shipment, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
 }

@@ -75,10 +75,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('online/cambiar-estado/{id}', [OrderController::class, 'updateStateOnline']);
 
     /* Envios */
-    Route::resource('envio', ShipmentController::class);
+    Route::resource('envio', ShipmentController::class)->only(['index', 'store', 'show', 'destroy']);
+    Route::put('envio/{id}', [ShipmentController::class, 'updateEnvio']);
+    Route::put('envio/{id}/update-productos', [ShipmentController::class, 'update']);
     Route::post('envio/cambiar-estado', [ShipmentController::class, 'updateState']);
     Route::get('envio/pdf/{id}', [ShipmentController::class, 'get_pdf']);
-    Route::post('update_envio_product', [ShipmentController::class, 'updateEnvio']);
+    Route::post('update_envio_product', [ShipmentController::class, 'update_envio_product']);
 
     /* Cotizaciones */
     Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show', 'destroy']);

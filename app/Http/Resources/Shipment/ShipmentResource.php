@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Shipment;
 
+use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ShipmentResource extends JsonResource
@@ -45,6 +46,8 @@ class ShipmentResource extends JsonResource
 
         $array['price_quote'] = $this->price_quote;
 
+        $array['init_state'] = Table::where('name', 'order_envio_state')->where('value', 'pendiente')->first();
+
         $array['detail'] = ShipmentProductResource::collection($this->detail);
         /* $array['percentages'] = $this->getPercentages(); */
 
@@ -60,6 +63,19 @@ class ShipmentResource extends JsonResource
         $array['client'] = $this->client;
 
         return $array;
+    }
+
+    public static function toForm($shipment)
+    {
+        return [
+            'id' => $shipment->id,
+            'payment_method_id' => $shipment->payment_method_id,
+            'transport' => $shipment->transport,
+            'invoice_number' => $shipment->invoice_number,
+            'nro_guia' => $shipment->nro_guia,
+            'bultos' => $shipment->bultos,
+            'send_adress' => $shipment->send_adress,
+        ];
     }
 
     public static function pdfArray($detail)

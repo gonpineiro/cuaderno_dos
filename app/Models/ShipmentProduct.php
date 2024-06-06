@@ -13,6 +13,7 @@ class ShipmentProduct extends Model
         'shipment_id',
         'state_id',
         'product_id',
+        'provider_id',
 
         'amount',
         'unit_price',
@@ -37,5 +38,10 @@ class ShipmentProduct extends Model
     public function shipment()
     {
         return $this->belongsTo(Shipment::class);
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
     }
 }
