@@ -17,8 +17,11 @@ class PedidoOnline extends Order
         'price_quote_id',
         'type_id',
 
-        'engine',
+        /* Generales */
+        'year',
         'chasis',
+        'contacto',
+        'vehiculo_id',
 
         'payment_method_id',
         'invoice_number',

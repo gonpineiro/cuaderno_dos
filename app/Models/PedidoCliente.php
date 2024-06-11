@@ -17,8 +17,11 @@ class PedidoCliente extends Order
         'price_quote_id',
         'type_id',
 
-        'engine',
+        /* Generales */
+        'year',
         'chasis',
+        'contacto',
+        'vehiculo_id',
 
         'deposit',
         'payment_method_id',

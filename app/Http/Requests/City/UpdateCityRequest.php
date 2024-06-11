@@ -30,7 +30,7 @@ class UpdateCityRequest extends FormRequest
                 'required',
                 'max:35'
             ],
-            'province' => 'required|max:35',
+            'province_id' => 'required',
         ];
     }
 }

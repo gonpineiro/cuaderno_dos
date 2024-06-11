@@ -35,12 +35,12 @@ if (!function_exists('redondearNumero')) {
 }
 
 if (!function_exists('formatoMoneda')) {
-    function formatoMoneda($numero)
+    function formatoMoneda($number, $decimals = 0, $dec_point = ',', $thousands_sep = '.')
     {
-        if (!$numero) {
-            return '$ ' . number_format(0, 2);
+        if (!$number) {
+            return '$ ' . number_format(0, $decimals, $dec_point, $thousands_sep);
         }
-        return '$ ' . number_format($numero, 2);
+        return '$ ' . number_format($number, $decimals, $dec_point, $thousands_sep);
     }
 }
 
@@ -55,11 +55,11 @@ if (!function_exists('calcularDescuento')) {
 }
 
 if (!function_exists('get_total_price')) {
-    function get_total_price($detail)
+    function get_total_price($detail, $coef = 1)
     {
         $total = 0;
         foreach ($detail as $item) {
-            $total += $item['amount'] * $item['unit_price'];
+            $total += $item['amount'] * $item['unit_price'] * $coef;
         }
 
         return $total;

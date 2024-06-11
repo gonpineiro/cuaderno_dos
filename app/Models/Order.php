@@ -14,10 +14,14 @@ class Order extends Model
         'user_id',
         'client_id',
         'price_quote_id',
+        'shipment_id',
         'type_id',
 
         /* Generales */
+        'year',
         'chasis',
+        'contacto',
+        'vehiculo_id',
 
         /* Pedido online */
         'payment_method_id',
@@ -67,7 +71,7 @@ class Order extends Model
     }
 
     public function client()
-    
+
     {
         return $this->belongsTo(Client::class);
     }

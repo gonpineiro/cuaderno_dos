@@ -17,8 +17,11 @@ class Siniestro extends Order
         'price_quote_id',
         'type_id',
 
-        'engine',
+        /* Generales */
+        'year',
         'chasis',
+        'contacto',
+        'vehiculo_id',
 
         'remito',
         'workshop',

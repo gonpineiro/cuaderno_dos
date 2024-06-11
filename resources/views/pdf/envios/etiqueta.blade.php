@@ -3,10 +3,12 @@
 @section('content')
 
 <style>
-    .card {
-        width: 90%;
+    .etiqueta {
+        width: 65%;
         margin: auto;
         text-align: center;
+        padding: 1rem 6.4rem;
+        margin-top: 1.1rem;
     }
 
     .container {
@@ -14,7 +16,12 @@
     }
 
     td {
-        font-size: 25px !important;
+        font-size: 18px !important;
+    }
+
+    .total {
+        text-align: right;
+        margin-right: 3rem;
     }
 </style>
 
@@ -24,20 +31,19 @@
     <br>
     <br>
     <br>
-    <br>
-    <div class="card px-3">
+    <div class="etiqueta">
         <table>
             <tr>
-                <td>{{$cotizacion->client->name}}</td>
+                <td class="cliente">{{$cotizacion->client->name}}</td>
             </tr>
             <tr>
-                <td style="text-align: right;">{{$total}}</td>
+                <td class="total">{{$total}}</td>
             </tr>
             <tr>
                 <td>{{$cotizacion->client->city->name}}</td>
             </tr>
             <tr>
-                <td>{{$cotizacion->client->city->province->description}}</td>
+                <td>{{$cotizacion->client->city->province->name}}</td>
             </tr>
             <tr>
                 <td>{{$cotizacion->bultos}}</td>

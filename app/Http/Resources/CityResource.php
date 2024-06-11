@@ -16,7 +16,7 @@ class CityResource extends JsonResource
     {
         $array =  parent::toArray($request);
 
-        $array['province'] = $this->province->name;
+        $array['province'] = $this->province;
 
         return $array;
     }

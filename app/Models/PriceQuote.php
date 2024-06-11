@@ -13,14 +13,15 @@ class PriceQuote extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+
+        'year',
+        'chasis',
         'contacto',
         'vehiculo_id',
-        'engine',
-        'chasis',
+
         'information_source_id',
         'type_price_id',
         'observation',
-        'year'
     ];
 
     protected $dates = ['deleted_at'];
