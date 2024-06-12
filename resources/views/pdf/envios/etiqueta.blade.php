@@ -19,7 +19,7 @@
         font-size: 18px !important;
     }
 
-    .total {
+    .r {
         text-align: right;
         margin-right: 3rem;
     }
@@ -37,16 +37,15 @@
                 <td class="cliente">{{$cotizacion->client->name}}</td>
             </tr>
             <tr>
-                <td class="total">{{$total}}</td>
+                <td class="cliente">{{$cotizacion->client->adress}}</td>
+                <td class="r">{{$total}}</td>
             </tr>
             <tr>
                 <td>{{$cotizacion->client->city->name}}</td>
+                <td class="r">{{$cotizacion->bultos}}</td>
             </tr>
             <tr>
                 <td>{{$cotizacion->client->city->province->name}}</td>
-            </tr>
-            <tr>
-                <td>{{$cotizacion->bultos}}</td>
             </tr>
         </table>
     </div>
