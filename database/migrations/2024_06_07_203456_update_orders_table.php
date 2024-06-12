@@ -19,7 +19,7 @@ class UpdateOrdersTable extends Migration
             $table->integer('year')->nullable()->after('shipment_id');
             $table->unsignedBigInteger('vehiculo_id')->nullable()->after('year');
 
-            $table->string('contacto')->after('chasis');
+            $table->string('contacto')->nullable()->after('chasis');
 
 
             $table->foreign('vehiculo_id')->references('id')->on('vehiculos');
