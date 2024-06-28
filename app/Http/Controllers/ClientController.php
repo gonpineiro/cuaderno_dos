@@ -29,6 +29,12 @@ class ClientController extends Controller
         return sendResponse(new ClientResource($client, 'complete'));
     }
 
+    public function getByReference(Request $request)
+    {
+        $client = Client::where('reference_id', $request->id)->first();
+        return sendResponse(new ClientResource($client, 'complete'));
+    }
+
     public function update(UpdateClientRequest $request, $id)
     {
         $client = Client::findOrFail($id);
