@@ -43,6 +43,28 @@
         text-align: center;
         font-size: 1.5rem;
     }
+
+    .width-5 {
+        width: 5%;
+    }
+
+    .width-10 {
+        width: 10%;
+    }
+
+    .width-20 {
+        width: 20%;
+    }
+
+    .width-15 {
+        width: 15%;
+    }
+
+    .width-50 {
+        width: 50%;
+    }
+
+
 </style>
 
 <body>

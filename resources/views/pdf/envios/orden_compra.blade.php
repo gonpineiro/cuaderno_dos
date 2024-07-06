@@ -15,11 +15,11 @@
 
     @foreach ($detail as $item)
     <tr>
-        <td>{{$item['amount']}}</td>
-        <td>{{$item['code']}}</td>
-        <td>{{$item['description']}}</td>
-        <td>{{$item['unit_price']}}</td>
-        <td>{{$item['total']}} </td>
+        <td class="width-5">{{$item['amount']}}</td>
+        <td class="width-10">{{$item['code']}}</td>
+        <td class="width-50">{{$item['description'] }}</td>
+        <td class="width-15">{{$item['unit_price']}}</td>
+        <td class="width-20">{{$item['total']}} </td>
     </tr>
     @endforeach
 </table>

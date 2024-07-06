@@ -349,7 +349,7 @@ class PriceQuoteController extends Controller
 
             return [
                 'description' => $coef['description'],
-                'price' => formatoMoneda($total, 2),
+                'price' => formatoMoneda($total),
                 'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' '
             ];
         }, $coefs);

@@ -85,18 +85,18 @@
 
             @foreach ($detail as $item)
             <tr>
-                <td>{{$item->product->code}}</td>
-                <td>{{$item->product->ubication}}</td>
-                <td>{{$item->product->description}}</td>
-                <td>{{$item->amount}}</td>
-                <td>$ {{number_format($item->unit_price, 2, ',', '.')}}</td>
-                <td>$ {{number_format($item->unit_price * $item->amount, 2, ',', '.')}}</td>
+                <td>{{$item['code']}}</td>
+                <td>{{$item['ubication']}}</td>
+                <td>{{$item['description']}}</td>
+                <td>{{$item['amount']}}</td>
+                <td>{{$item['unit_price']}}</td>
+                <td>{{$item['total']}}</td>
             </tr>
             @endforeach
         </table>
         <hr>
         <p class="w-100 importe">
-            IMPORTE TOTAL: <span class="total">$ {{number_format($total, 2, ',', '.')}}</span>
+            IMPORTE TOTAL: <span class="total">{{$total}}</span>
         </p>
     </div>
 </body>

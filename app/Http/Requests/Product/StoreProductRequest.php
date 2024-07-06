@@ -38,11 +38,11 @@ class StoreProductRequest extends FormRequest
             'code' => 'required|max:25|unique:products',
             'provider_code' => 'required|max:25',
             'factory_code' => 'required|max:25',
-            'equivalence' => 'required|max:255',
+            /* 'equivalence' => 'required|max:255', */
             'description' => 'required|max:500',
 
             'model' => 'required|max:25',
-            'engine' => 'required|max:200',
+            /* 'engine' => 'required|max:200', */
             'observation' => 'required|max:500',
 
             'ship' => 'required|max:5',
@@ -67,7 +67,7 @@ class StoreProductRequest extends FormRequest
             'factory_code.required' => 'Código de fabrica es requerido',
             'factory_code.max' => 'Código de fabrica no debe superar el maximo de 25 caracteres',
 
-            'equivalence.required' => 'Equivalencia es requerido',
+            /* 'equivalence.required' => 'Equivalencia es requerido', */
             'equivalence.max' => 'Equivalencia no debe superar el maximo de 25 caracteres',
 
             'description.required' => 'Description es requerido',
@@ -76,7 +76,7 @@ class StoreProductRequest extends FormRequest
             'model.required' => 'Modelo es requerido',
             'model.max' => 'Modelo no debe superar el maximo de 25 caracteres',
 
-            'engine.required' => 'Motor es requerido',
+            /* 'engine.required' => 'Motor es requerido', */
             'engine.max' => 'Motor no debe superar el maximo de 200 caracteres',
 
             'observation.required' => 'Observación es requerido',

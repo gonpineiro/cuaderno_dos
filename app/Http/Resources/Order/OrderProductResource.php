@@ -25,4 +25,33 @@ class OrderProductResource extends JsonResource
 
         return $array;
     }
+
+    public static function pdfArray($detail)
+    {
+        $array = [];
+
+        foreach ($detail as $value) {
+
+            $array[] = [
+                'code' => $value->product->code,
+                'ubication' => $value->product->ubication,
+                'description' => $value->product->description,
+                'amount' => $value->amount,
+                'unit_price' => $value->unit_price,
+                'total' => $value->unit_price * $value->amount,
+            ];
+        }
+
+        return $array;
+    }
+
+    public static function formatPdf($detail)
+    {
+        foreach ($detail as $key => $value) {
+            $detail[$key]['unit_price'] = formatoMoneda($value['unit_price']);
+            $detail[$key]['total'] = formatoMoneda($value['total']);
+        }
+
+        return $detail;
+    }
 }

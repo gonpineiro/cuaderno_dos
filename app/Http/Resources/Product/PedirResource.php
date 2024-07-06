@@ -22,6 +22,7 @@ class PedirResource extends JsonResource
             'id' => $this->product->id,
             'code' => $this->product->code,
             'ubication' => $this->product->ubication,
+            'description' => $this->product->description
         ];
 
         /* $array['client'] = [
