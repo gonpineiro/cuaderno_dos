@@ -20,6 +20,7 @@ class Client extends Model
         'cuit',
         'is_insurance',
         'is_company',
+        'reference_id',
         'observation',
     ];
 

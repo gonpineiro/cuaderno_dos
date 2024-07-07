@@ -29,6 +29,26 @@ class ClientController extends Controller
         return sendResponse(new ClientResource($client, 'complete'));
     }
 
+    public function search(Request $request)
+    {
+        $model = new Client();
+
+        $attributes = $model->getFillable();
+
+        $clients = Client::query();
+
+        foreach ($attributes as $attribute) {
+            $clients->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        }
+
+        $results = $clients->get();
+
+        if (!$results) {
+            return sendResponse(null, 'No se encontro un resultado de busqueda');
+        }
+        return sendResponse(ClientResource::collection($results));
+    }
+
     public function getByReference(Request $request)
     {
         $client = Client::where('reference_id', $request->id)->first();

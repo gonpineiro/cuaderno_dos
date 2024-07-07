@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\{Table, Product, ProductOther};
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\{Table, Product, ProductOther};
+use App\Models\Traits\LogsActivity;
+
 class PriceQuoteProduct extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'price_quote_id',
