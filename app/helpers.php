@@ -65,3 +65,16 @@ if (!function_exists('get_total_price')) {
         return $total;
     }
 }
+
+if (!function_exists('truncateString')) {
+    function truncateString($string, $int)
+    {
+        // Verifica si la longitud de la cadena es mayor a 50
+        if (strlen($string) > $int) {
+            // Si es mayor, devuelve solo los primeros 50 caracteres
+            return substr($string, 0, $int) . '...';
+        }
+        // Si no es mayor, devuelve la cadena original
+        return $string;
+    }
+}

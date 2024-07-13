@@ -34,7 +34,8 @@ class PedirResource extends JsonResource
             'id' => $this->order_product ? $this->order_product->order->id : null,
             'type' => $this->order_product ? $this->order_product->order->type->value : null,
             'created_at' => $this->order_product ? $this->order_product->order->created_at : null,
-            'estimated_date' => $this->order_product ? $this->order_product->order->estimated_date : null
+            'estimated_date' => $this->order_product ? $this->order_product->order->estimated_date : null,
+            'user' => $this->order_product ? $this->order_product->order->user->name : null,
         ];
 
         return $array;

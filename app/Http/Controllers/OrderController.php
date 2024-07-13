@@ -129,6 +129,7 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $order = Order::find($id);
         $order->client;
+        $order->user;
         $detail = OrderProductResource::pdfArray($order->detail);
 
         $total = get_total_price($detail);

@@ -35,7 +35,7 @@ class OrderProductResource extends JsonResource
             $array[] = [
                 'code' => $value->product->code,
                 'ubication' => $value->product->ubication,
-                'description' => $value->product->description,
+                'description' => truncateString($value->product->description, 50),
                 'amount' => $value->amount,
                 'unit_price' => $value->unit_price,
                 'total' => $value->unit_price * $value->amount,

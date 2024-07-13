@@ -152,7 +152,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->envio) {
-                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
             }
@@ -198,7 +198,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->envio) {
-                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
             }
@@ -244,7 +244,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->envio) {
-                $shipment = ShipmentController::storeShipment($request, $order->id, $request->detail);
+                $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
             }

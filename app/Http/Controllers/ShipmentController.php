@@ -114,13 +114,12 @@ class ShipmentController extends Controller
         return true;
     }
 
-    public static function storeShipment($request, $order_id, $detail)
+    public static function storeShipment($envio, $order)
     {
-        $envio = $request->envio;
         $shipment = Shipment::create([
             'user_id' => auth()->user()->id,
-            'order_id' => $order_id,
-            'client_id' => $request->client_id,
+            'order_id' => $order->id,
+            'client_id' => $order->client_id,
             'payment_method_id' => $envio['payment_method_id'],
             'transport' => $envio['transport'],
             'invoice_number' => $envio['invoice_number'],
@@ -129,7 +128,7 @@ class ShipmentController extends Controller
             'send_adress' => $envio['send_adress'],
         ]);
 
-        self::storeShipmentProduct($detail, $shipment->id);
+        self::storeShipmentProduct($order->detail, $shipment->id);
 
         return $shipment;
     }

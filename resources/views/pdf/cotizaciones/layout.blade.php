@@ -26,7 +26,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .importe {

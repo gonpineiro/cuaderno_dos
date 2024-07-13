@@ -27,7 +27,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .importe {
@@ -41,64 +41,81 @@
 </style>
 
 <body>
-    <div id="login">
-        <div class="card px-3" style="margin-bottom: 50px">
-            <table>
-                <tr>
-                    <td colspan="3">
-                        <h1>Número de pedido: {{$pedido->id}}</h1>
-                    </td>
-                </tr>
-                <hr>
-                <tr>
-                    <td>Nombre y apellido:</td>
-                    <td>{{$pedido->client->name}}</td>
-                </tr>
-                <tr>
-                    <td>Teléfono:</td>
-                    <td>{{$pedido->client->phone}}</td>
-                </tr>
-                <tr>
-                    <td>Forma de pago:</td>
-                    <td>{{$pedido->payment_method->description}}</td>
-                </tr>
-                <tr>
-                    <td>Vehículo:</td>
-                    <td>{{$pedido->price_quote->vehiculo->name}}</td>
-                </tr>
-            </table>
+    <div class="card px-3" style="margin-bottom: 50px">
+        <table>
+            <tr>
+                <td colspan="3">
+                    <h1>ID: {{$pedido->id}}</h1>
+                </td>
+            </tr>
             <hr>
-            <h3>Observaciones</h3>
-            <p>{{$pedido->observation}}</p>
-        </div>
-
-        <table class="table-productos">
             <tr>
-                <th>Código</th>
-                <th>Ubicación</th>
-                <th>Descripcion</th>
-                <th>Cant</th>
-                <th>Precio U.</th>
-                <th>Total</th>
+                <td>Nombre y apellido:</td>
+                <td>{{$pedido->client->name}}</td>
             </tr>
 
-
-            @foreach ($detail as $item)
+            @if ($pedido->client->cuit)
             <tr>
-                <td>{{$item['code']}}</td>
-                <td>{{$item['ubication']}}</td>
-                <td>{{$item['description']}}</td>
-                <td>{{$item['amount']}}</td>
-                <td>{{$item['unit_price']}}</td>
-                <td>{{$item['total']}}</td>
+                <td>CUIT:</td>
+                <td>{{$pedido->client->cuit}}</td>
             </tr>
-            @endforeach
+            @endif
+
+            @if ($pedido->client->dni)
+            <tr>
+                <td>DNI:</td>
+                <td>{{$pedido->client->dni}}</td>
+            </tr>
+            @endif
+
+            <tr>
+                <td>Teléfono:</td>
+                <td>{{$pedido->client->phone}}</td>
+            </tr>
+            <tr>
+                <td>Forma de pago:</td>
+                <td>{{$pedido->payment_method->description}}</td>
+            </tr>
+            <tr>
+                <td>Vehículo:</td>
+                <td>{{$pedido->price_quote->vehiculo->name}}</td>
+            </tr>
+            <tr>
+                <td>Vendedor:</td>
+                <td>{{$pedido->user->name}}</td>
+            </tr>
         </table>
         <hr>
-        <p class="w-100 importe">
-            IMPORTE TOTAL: <span class="total">{{$total}}</span>
-        </p>
+        <h3>Observaciones</h3>
+        <p>{{$pedido->observation}}</p>
     </div>
+
+    <table class="table-productos">
+        <tr>
+            <th>Código</th>
+            <th>Ubicación</th>
+            <th>Descripcion</th>
+            <th>Cant</th>
+            <th>Precio U.</th>
+            <th>Total</th>
+        </tr>
+
+
+        @foreach ($detail as $item)
+        <tr>
+            <td>{{$item['code']}}</td>
+            <td>{{$item['ubication']}}</td>
+            <td>{{$item['description']}}</td>
+            <td>{{$item['amount']}}</td>
+            <td>{{$item['unit_price']}}</td>
+            <td>{{$item['total']}}</td>
+        </tr>
+        @endforeach
+    </table>
+    <hr>
+    <p class="w-100 importe">
+        IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}: <span class="total">{{$total}}</span>
+    </p>
 </body>
 
 </html>

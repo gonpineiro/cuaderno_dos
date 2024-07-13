@@ -90,9 +90,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show', 'destroy']);
     Route::put('cotizacion/{id}', [PriceQuoteController::class, 'updateCotizacion']);
     Route::put('cotizacion/{id}/update-productos', [PriceQuoteController::class, 'update']);
+
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
     Route::post('cotizacion/asignar/online', [PriceQuoteController::class, 'asignarOnline']);
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
+
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
     Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
