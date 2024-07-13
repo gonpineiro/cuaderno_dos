@@ -31,7 +31,7 @@ class StoreSiniestroOrderRequest extends FormRequest
             'type_id' => 'required',
             'detail' => 'required',
 
-            'chasis' => 'required',
+            /* 'chasis' => 'required', */
             'remito' => 'required',
             'workshop' => 'required',
         ];
