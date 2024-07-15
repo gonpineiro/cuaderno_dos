@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Coeficiente extends Model
 {
+    use LogsActivity;
     protected $table = 'coeficientes';
 
     protected $fillable = [
@@ -17,4 +19,9 @@ class Coeficiente extends Model
     ];
 
     public $timestamps = false;
+
+    protected $casts = [
+        'show' => 'boolean',
+        'value' => 'double',
+    ];
 }

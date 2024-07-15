@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CoeficienteResource;
 use App\Models\Coeficiente;
 use App\Models\Province;
 use App\Models\Table;
@@ -99,13 +100,13 @@ class ApiController extends \App\Http\Controllers\Controller
         $user =User::find(auth()->user()->id);
         $user->roles;
 
+        $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
         $data = [
             'user' => $user,
-            'tables' => Table::all(),
-            'coeficientes' => Coeficiente::orderBy('position', 'asc')->get(),
+            'coeficientes' => CoeficienteResource::collection($coeficientes),
             'provinces' => Province::all(),
             'access_token' => $token,
-            'token_type' => 'bearer',
+            'tables' => Table::all(),
         ];
 
         return sendResponse($data);

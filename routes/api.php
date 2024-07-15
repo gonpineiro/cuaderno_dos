@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\CoeficienteController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\VehiculoController;
 
@@ -106,6 +107,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
     Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);
     Route::resource('ordenes_compra', PurchaseOrderController::class);
+
+    /* Coeficientes */
+    Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
 });
