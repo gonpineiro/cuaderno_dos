@@ -6,8 +6,8 @@
 {{-- Detalle productos --}}
 <table class="table-productos">
     <tr>
-        <th style="width: 50%">Descripción</th>
-        <th>Cant.</th>
+        <th style="width: 60%">Descripción</th>
+        <th style="width: 10%">Cant.</th>
         <th>Precio U.</th>
         <th>Total</th>
     </tr>
@@ -28,4 +28,3 @@
     IMPORTE TOTAL {{$is_contado ? 'PRECIO CONTADO' : ''}}: <span class="total">{{$total}}</span>
 </p>
 @endsection
-

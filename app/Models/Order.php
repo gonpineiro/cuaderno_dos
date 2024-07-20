@@ -76,6 +76,11 @@ class Order extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function vehiculo()
+    {
+        return $this->belongsTo(Vehiculo::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
@@ -99,6 +104,26 @@ class Order extends Model
     public function price_quote()
     {
         return $this->belongsTo(PriceQuote::class);
+    }
+
+    public function setShipmentState()
+    {
+        $type = $this->type->value;
+
+        $query = Table::where("name", "order_" . "$type" . "_state");
+        if ($type == 'siniestro') {
+            $newState = $query->where('value', 'incompleto')->first();
+        } else {
+            $newState = $query->where('value', 'retirar')->first();
+        }
+        $cancelado = Table::where("name", "order_" . "$type" . "_state")->where('value', 'cancelado')->first();
+
+        $this->detail->each(function ($order_product) use ($newState, $cancelado) {
+            if ($order_product->state_id != $cancelado->id) {
+                $order_product->state_id = $newState->id;
+                $order_product->save();
+            }
+        });
     }
 
     /* public function getPercentages()

@@ -13,8 +13,10 @@ class Coeficiente extends Model
     protected $fillable = [
         'description',
         'value',
+        'coeficiente',
         'cuotas',
         'decimals',
+        'position',
         'show',
     ];
 
@@ -23,5 +25,6 @@ class Coeficiente extends Model
     protected $casts = [
         'show' => 'boolean',
         'value' => 'double',
+        'coeficiente' => 'double',
     ];
 }

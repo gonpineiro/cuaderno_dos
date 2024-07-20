@@ -155,6 +155,8 @@ class PriceQuoteController extends Controller
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
+
+                $order->setShipmentState();
             }
 
             DB::commit();
@@ -201,6 +203,8 @@ class PriceQuoteController extends Controller
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
+
+                $order->setShipmentState();
             }
 
             DB::commit();
@@ -247,6 +251,8 @@ class PriceQuoteController extends Controller
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
+
+                $order->setShipmentState();
             }
 
             DB::commit();

@@ -11,24 +11,34 @@ class CoeficienteController extends Controller
 {
     public function store(Request $request)
     {
-        $coeficientes = $request->coeficientes;
+        try {
+            $coeficientes = $request->coeficientes;
 
-        DB::beginTransaction();
+            DB::beginTransaction();
 
-        foreach ($coeficientes as $coeficiente) {
-            $_coeficiente = Coeficiente::find($coeficiente['id']);
+            foreach ($coeficientes as $coef) {
+                if (isset($coef['new']) && $coef['new']) {
+                    Coeficiente::create($coef);
+                } else {
+                    if (!$_coeficiente = Coeficiente::find($coef['id'])) {
+                        throw new \Exception("Coeficiente " . $coef['id'] . " no encontrado");
+                    }
 
-            if ($_coeficiente && $coeficiente['deleted']) {
-                $_coeficiente->delete();
-            } else if ($_coeficiente) {
-                $_coeficiente->update($coeficiente);
+                    if (isset($coef['deleted']) && $coef['deleted']) {
+                        $_coeficiente->delete();
+                    } else {
+                        $_coeficiente->update($coef);
+                    }
+                }
             }
+
+            DB::commit();
+
+            $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
+
+            return sendResponse(CoeficienteResource::collection($coeficientes));
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 300);
         }
-
-        DB::commit();
-
-        $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
-
-        return sendResponse(CoeficienteResource::collection($coeficientes));
     }
 }
