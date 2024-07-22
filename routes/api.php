@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProductController;
@@ -112,6 +113,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+
+    Route::get('permissions', [PermissionController::class, 'index']);
+    Route::post('permissions/change_user_role', [PermissionController::class, 'change_user_role']);
+    Route::post('permissions/change_user_permissions', [PermissionController::class, 'change_user_permissions']);
+    Route::post('permissions/save_element', [PermissionController::class, 'save_element']);
+    Route::post('permissions/change_role_permission', [PermissionController::class, 'change_role_permission']);
 });
 
 /* php artisan make:model Api/Product -rcmfsR */
