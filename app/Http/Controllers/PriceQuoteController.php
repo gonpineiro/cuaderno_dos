@@ -322,8 +322,10 @@ class PriceQuoteController extends Controller
         $is_contado = $order->type_price->value == 'contado';
 
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
-        $detail = PriceQuoteProductResource::pdfArray($order->detail, $contado_deb);
-        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail);
+
+        $tuncate = $request->type === 'interno' ? 38 : 54;
+        $detail = PriceQuoteProductResource::pdfArray($order->detail, $contado_deb,  $tuncate);
+        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail, null,  $tuncate);
 
         $total = get_total_price($detail);
 
@@ -356,7 +358,8 @@ class PriceQuoteController extends Controller
             return [
                 'description' => $coef['description'],
                 'price' => formatoMoneda($total),
-                'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' '
+                /* 'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' ' */
+                'valor_cuota' => $coef['cuotas'] ? formatoMoneda(redondearNumero($total / $coef['cuotas'])) : ' '
             ];
         }, $coefs);
     }

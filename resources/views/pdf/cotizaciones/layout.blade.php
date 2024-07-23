@@ -47,14 +47,14 @@
 
 <body>
     @if ($type != 'interno')
-  {{--   <div class="images">
+    <div class="images">
         <img src="{{ public_path('assets/images/logoallende.png') }}" style="width: 40%; margin-right: 50px">
         <img src="{{ public_path('assets/images/fiat.png') }}" style="width: 8%; margin-right: 20px">
         <img src="{{ public_path('assets/images/peugeot.png') }}" style="width: 13%; margin-right: 20px">
         <img src="{{ public_path('assets/images/renault.png') }}" style="width: 15%; margin-right: 20px">
-    </div> --}}
+    </div>
     <hr>
-    {{-- <table>
+    <table>
         <tr>
             <td style="vertical-align: middle;" colspan="2"><img src="{{ public_path('assets/images/map.jpg') }}"
                     style="width: 25px"> <span style="vertical-align: middle;">25 de Mayo 373
@@ -84,14 +84,14 @@
                     style="width: 25px"> <span style="vertical-align: middle;">www.allenderepuestos.com.ar/</span>
             </td>
         </tr>
-    </table> --}}
+    </table>
     <hr>
     @endif
     <div class="card px-3" style="margin-bottom: 40px">
         <table>
             <tr>
                 <td colspan="3">
-                    <h1>Número de cotizacion: {{$cotizacion->id}}</h1>
+                    <h1>COTIZACION N°: {{$cotizacion->id}}</h1>
                 </td>
             </tr>
             <hr>

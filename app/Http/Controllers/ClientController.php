@@ -19,7 +19,11 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         $body = $request->all();
+
         $client = Client::create($body);
+        /*  $client->update(['reference_id', "ID" . $client->id]); */
+        $client->reference_id = "ID" . $client->id;
+        $client->save();
         return new ClientResource($client, 'complete');
     }
 
@@ -51,7 +55,7 @@ class ClientController extends Controller
 
     public function getByReference(Request $request)
     {
-        $client = Client::where('reference_id', $request->id)->first();
+        $client = Client::where('reference_id', "ID" . $request->id)->first();
         if ($client) {
             return sendResponse(new ClientResource($client, 'complete'));
         }

@@ -6,10 +6,10 @@
 {{-- Detalle productos --}}
 <table class="table-productos">
     <tr>
-        <th style="width: 60%">Descripción</th>
-        <th style="width: 10%">Cant.</th>
-        <th>Precio U.</th>
-        <th>Total</th>
+        <th style="width: 65%">Descripción</th>
+        <th style="width: 11%">Cant.</th>
+        <th style="width: 11%">Precio U.</th>
+        <th style="width: 13%">Total</th>
     </tr>
 
     @foreach ($detail as $item)
