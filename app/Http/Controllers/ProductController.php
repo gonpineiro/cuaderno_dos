@@ -187,7 +187,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse($products);
     } */
 
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
         try {
             $body = $request->all();
