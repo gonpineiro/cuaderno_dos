@@ -49,6 +49,13 @@ class PriceQuote extends Model
         return $productos;
     }
 
+    public function detail_cotizable()
+    {
+        return $this->hasMany(PriceQuoteProduct::class)->whereHas('state', function ($query) {
+            $query->where('name', 'price_quote_state')->where('value', 'cotizar');
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

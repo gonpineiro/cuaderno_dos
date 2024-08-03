@@ -84,7 +84,7 @@ class ShipmentController extends Controller
         } else if ($order_type == 'cliente') {
             $state = Table::where('name', 'order_cliente_state')->where('value', 'retirar')->first();
         } else if ($order_type == 'siniestro') {
-            $state = Table::where('name', 'order_siniestro_state')->where('value', 'retirar')->first();
+            $state = Table::where('name', 'order_siniestro_state')->where('value', 'completo')->first();
         }
 
         foreach ($detail as $orderProduct) {
@@ -123,7 +123,7 @@ class ShipmentController extends Controller
             'payment_method_id' => $envio['payment_method_id'],
             'transport' => isset($envio['transport']) ? $envio['transport'] : null,
             'invoice_number' => isset($envio['invoice_number']) ? $envio['invoice_number'] : null,
-            'nro_guia' => $envio["nro_gruia"],
+            'nro_guia' => isset($envio["nro_guia"]) ? $envio["nro_guia"] : null,
             'bultos' => $envio['bultos'],
             'send_adress' => $envio['send_adress'],
         ]);

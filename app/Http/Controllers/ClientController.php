@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\{StoreClientRequest, UpdateClientRequest};
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
-use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -33,7 +35,42 @@ class ClientController extends Controller
         return sendResponse(new ClientResource($client, 'complete'));
     }
 
-    public function search(Request $request)
+    public function search(Request $request/* , Model $model */)
+    {
+        // Obtén los datos de la solicitud
+        $data = $request->all();
+
+        // Obtén los atributos del modelo
+        $model = new Client();
+        $table = $model->getTable();
+        $columns = Schema::getColumnListing($table);
+
+        // Comienza la consulta base
+        $query = $model->newQuery();
+
+        // Agrega condiciones según los parámetros presentes y las columnas del modelo
+        foreach ($columns as $column) {
+            if (isset($data[$column])) {
+                $value = $data[$column];
+
+                // Ajustar las condiciones para diferentes tipos de datos
+                if (is_string($value)) {
+                    // Para cadenas de texto, usar 'like' para búsqueda parcial
+                    $query->where($column, 'like', '%' . $value . '%');
+                } else {
+                    // Para otros tipos de datos, buscar coincidencia exacta
+                    $query->where($column, $value);
+                }
+            }
+        }
+
+        // Obtén los resultados
+        $results = $query->get();
+
+        // Devuelve los resultados, podrías usar Resource para formatear la respuesta
+        return sendResponse(ClientResource::collection($results));
+    }
+    /* public function search(Request $request)
     {
         $model = new Client();
 
@@ -51,7 +88,7 @@ class ClientController extends Controller
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
         return sendResponse(ClientResource::collection($results));
-    }
+    } */
 
     public function getByReference(Request $request)
     {

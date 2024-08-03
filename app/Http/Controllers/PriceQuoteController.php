@@ -323,9 +323,9 @@ class PriceQuoteController extends Controller
 
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
 
-        $tuncate = $request->type === 'interno' ? 38 : 54;
-        $detail = PriceQuoteProductResource::pdfArray($order->detail, $contado_deb,  $tuncate);
-        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail, null,  $tuncate);
+        $truncate = $request->type === 'interno' ? 38 : 54;
+        $detail = PriceQuoteProductResource::pdfArray($order->detail_cotizable, $contado_deb,  $truncate);
+        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
 
         $total = get_total_price($detail);
 
