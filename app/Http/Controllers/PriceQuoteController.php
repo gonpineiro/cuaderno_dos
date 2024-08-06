@@ -149,15 +149,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveSiniestroOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -197,15 +198,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveOnlineOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -245,15 +247,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveClienteOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -352,7 +355,7 @@ class PriceQuoteController extends Controller
             $multiplo = $coef['coeficiente'] * $coef['value'];
             $total = 0;
             foreach ($detail_lista as $value) {
-                $total += (int) redondearNumero($value['unit_price'] * $multiplo) * $value['amount'];
+                $total += redondearNumero($value['unit_price'] * $multiplo) * $value['amount'];
             }
 
             return [

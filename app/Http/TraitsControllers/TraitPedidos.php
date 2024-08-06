@@ -66,6 +66,10 @@ trait TraitPedidos
         try {
             $order = Order::find($request->order_id);
 
+            if ($order->shipment) {
+                return sendResponse(null, 'Ya existe un envio creado con este pedido', 300);
+            }
+
             $type = $order->type->value;
 
             $detail = OrderProduct::where('order_id', $request->order_id)->get();
@@ -102,7 +106,6 @@ trait TraitPedidos
             return sendResponse(new OrderResource($order, 'complete'));
         } catch (\Exception $e) {
             DB::rollBack();
-
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }

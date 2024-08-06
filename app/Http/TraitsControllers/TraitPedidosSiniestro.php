@@ -5,6 +5,7 @@ namespace App\Http\TraitsControllers;
 use App\Http\Requests\Order\StoreSiniestroOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Coeficiente;
+use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Siniestro;
 use App\Models\Table;
@@ -52,6 +53,12 @@ trait TraitPedidosSiniestro
         DB::beginTransaction();
 
         try {
+            $order = Order::find($request->order_id);
+
+            if ($order->shipment) {
+                return sendResponse(null, 'Ya existe un envio creado con este pedido', 300);
+            }
+
             $detail = OrderProduct::where('order_id', $id)->get();
 
             $entregado = Table::where('name', 'order_siniestro_state')->where('value', 'entregado')->first();

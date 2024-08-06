@@ -138,6 +138,8 @@ class OrderController extends \App\Http\Controllers\Controller
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
             'detail' => OrderProductResource::formatPdf($detail),
+            'deposit' => $order->deposit ? formatoMoneda($order->deposit) : null,
+            'diferencia' => $order->deposit ? formatoMoneda($total - $order->deposit) : null,
             'total' => formatoMoneda($total),
         ];
 

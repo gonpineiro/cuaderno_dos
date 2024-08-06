@@ -112,6 +112,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
     Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+
+
 });
 
 /* php artisan make:model Api/Product -rcmfsR */

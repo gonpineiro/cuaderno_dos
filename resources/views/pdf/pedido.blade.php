@@ -116,6 +116,15 @@
     <p class="w-100 importe">
         IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}: <span class="total">{{$total}}</span>
     </p>
+    @if ($pedido->deposit)
+
+    <p class="">
+        SEÑA: <span class="total">{{$deposit}}</span>
+    </p>
+    <p class="">
+        DIFERENCIA: <span class="total">{{$diferencia}}</span>
+    </p>
+    @endif
 </body>
 
 </html>
