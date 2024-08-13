@@ -27,6 +27,7 @@ trait TraitPedidos
                 'retirar' => 3,
                 'entregado' => 4,
                 'cancelado' => 5,
+                'envio' => 6,
             ][$order->getGeneralState()->value];
         });
 

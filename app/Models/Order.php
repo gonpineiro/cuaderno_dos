@@ -166,6 +166,16 @@ class Order extends Model
 
     public function getGeneralState()
     {
+        if ($shipment = $this->shipment) {
+            return (object) [
+                'value' => 'envio',
+                'description' => 'ENVÍO',
+                'background_color' => '#0d6efd',
+                'hover' => strtoupper($shipment->getGeneralState()->description),
+                //'className' => 'primary',
+                'url' =>  "/envios/$shipment->id",
+            ];
+        }
         $type = $this->type->value;
 
         if ($type == 'online') {
