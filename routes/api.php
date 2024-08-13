@@ -37,6 +37,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('marca', BrandController::class);
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
+    Route::post('producto/borrar', [ProductController::class, 'delete']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);

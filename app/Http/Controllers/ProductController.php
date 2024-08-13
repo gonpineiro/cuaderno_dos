@@ -265,7 +265,13 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(new ProductResource($product));
     }
 
-    public function out()
+    public function delete(Request $request)
     {
+        try {
+            $product = Product::findOrFail($request->id)->delete();
+            return sendResponse('Producto eliminado');
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage());
+        }
     }
 }

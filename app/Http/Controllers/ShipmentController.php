@@ -21,9 +21,18 @@ class ShipmentController extends Controller
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $shipment = Shipment::all();
+        $shipments = Shipment::orderBy('created_at')->get();
 
-        return sendResponse(ShipmentResource::collection($shipment));
+        $shipments = $shipments->sortBy(function ($shipment) {
+            return [
+                'pendiente' => 1,
+                'listo_enviar' => 2,
+                'despachado' => 3,
+                'contrareemboldo' => 4,
+            ][$shipment->getGeneralState()->value];
+        });
+
+        return sendResponse(ShipmentResource::collection($shipments));
     }
 
     public function store(StoreShipmentRequest $request)

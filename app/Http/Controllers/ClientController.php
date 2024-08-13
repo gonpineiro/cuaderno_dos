@@ -56,13 +56,14 @@ class ClientController extends Controller
                 // Ajustar las condiciones para diferentes tipos de datos
                 if (is_string($value)) {
                     // Para cadenas de texto, usar 'like' para búsqueda parcial
-                    $query->where($column, 'like', '%' . $value . '%');
-                } else {
+                    $query->orWhere($column, 'like', "%$value%");
+                } else if($value) {
                     // Para otros tipos de datos, buscar coincidencia exacta
                     $query->where($column, $value);
                 }
             }
         }
+       // $query->where($column, 'like', "%$value%");
 
         // Obtén los resultados
         $results = $query->get();
