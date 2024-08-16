@@ -26,7 +26,7 @@ class StoreProviderRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:25',
+            'name' => 'required|max:255',
             'email' => 'required|email|unique:providers|max:255',
         ];
     }
@@ -35,7 +35,7 @@ class StoreProviderRequest extends FormRequest
     {
         return [
             'name.required' => 'Nombre es requerido',
-            'name.max' => 'Nombre no debe superar el maximo de 25 caracteres',
+            'name.max' => 'Nombre no debe superar el maximo de 255 caracteres',
 
             'email.required' => 'Email es requerido',
             'email.email' => 'Correo electronico invalido',

@@ -15,6 +15,8 @@ use App\Http\Resources\Product\ProductResource;
 use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\PurchaseOrderProduct;
+use App\Models\ShipmentProduct;
 use App\Models\Table;
 use App\Models\ToAsk;
 use Illuminate\Http\Request;
@@ -268,7 +270,16 @@ class ProductController extends \App\Http\Controllers\Controller
     public function delete(Request $request)
     {
         try {
-            $product = Product::findOrFail($request->id)->delete();
+            if (
+                OrderProduct::where('product_id', $request->id)->first() ||
+                PriceQuoteProduct::where('product_id', $request->id)->first() ||
+                ShipmentProduct::where('product_id', $request->id)->first() ||
+                PurchaseOrderProduct::where('product_id', $request->id)->first()
+            ) {
+                return sendResponse(null, 'El producto ya se encuentra en una operación', 301);
+            }
+
+            Product::findOrFail($request->id)->delete();
             return sendResponse('Producto eliminado');
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());

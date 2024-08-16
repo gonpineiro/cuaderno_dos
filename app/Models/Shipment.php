@@ -152,6 +152,10 @@ class Shipment extends Model
         }
 
         $estado = Table::where('name', 'order_envio_state')->where('value', $estadoGeneral)->first();
+        if ($estadoGeneral == 'despachado' && ($this->payment_method->value === 'online' || $this->payment_method->value === 'contrareembolso')) {
+            $estado->background_color = '#198754';
+            $estado->color = 'white';
+        }
 
         return $estado;
     }
