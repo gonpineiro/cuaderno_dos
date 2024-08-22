@@ -122,7 +122,7 @@ class ProductController extends \App\Http\Controllers\Controller
     {
         try {
             $code = $request->id;
-            $product = Product::where('code', $code)->first();
+            $product = Product::where('code', $code)->withTrashed()->first();
 
             $state = Table::where('name', 'price_quote_state')->where('value', 'cotizar')->first();
             $pq = PriceQuoteProduct::where('product_id', $product->id)
@@ -155,7 +155,7 @@ class ProductController extends \App\Http\Controllers\Controller
                 return $this->cotizaciones($request);
             } */
 
-            $product = Product::where('code', $code)->first();
+            $product = Product::where('code', $code)->withTrashed()->first();
 
             $pq = OrderProduct::where('product_id', $product->id)->with('order')->get();
 
@@ -245,7 +245,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $attributes = $model->getFillable();
 
-        $products = Product::query();
+        $products = Product::query()->withTrashed();
 
         foreach ($attributes as $attribute) {
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
