@@ -15,14 +15,4 @@ trait LogsActivity
 
         return "Este modelo ha sido {$rta}";
     }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        $config = LogOptions::defaults();
-        $config->logOnlyDirty();
-        $config->logExcept(['created_at', 'updated_at']);
-        $config->logOnly(['*']);
-
-        return $config;
-    }
 }

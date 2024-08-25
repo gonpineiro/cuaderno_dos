@@ -15,14 +15,6 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         $array = parent::toArray($request);
-
-        if ($request->query('ordenes') == "true") {
-            $array['orders'] = $this->orders;
-        }
-
-        if ($request->query('ordenes_detalle') == "true") {
-            $array['orders'] = OrderResource::collection($this->orders);
-        }
         return $array;
     }
 }

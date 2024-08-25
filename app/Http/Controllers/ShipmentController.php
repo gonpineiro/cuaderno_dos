@@ -190,7 +190,7 @@ class ShipmentController extends Controller
         $shipment = Shipment::find($id);
         $shipment->client;
 
-        $detail = ShipmentResource::pdfArray($shipment->detail);
+        $detail = ShipmentResource::pdfArray($shipment->detail, 42);
 
         $total = get_total_price($detail);
 

@@ -78,7 +78,7 @@ class ShipmentResource extends JsonResource
         ];
     }
 
-    public static function pdfArray($detail)
+    public static function pdfArray($detail, $truncate_int)
     {
         $array = [];
 
@@ -87,7 +87,7 @@ class ShipmentResource extends JsonResource
             $array[] = [
                 'amount' => $value->amount,
                 'code' => $value->product->code,
-                'description' => $value->product->description,
+                'description' => truncateString($value->product->description, $truncate_int),
                 'unit_price' =>  $value->unit_price,
                 'total' =>  $value->unit_price * $value->amount,
             ];

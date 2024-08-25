@@ -20,6 +20,7 @@
 
     .table-productos {
         border: 1px solid rgba(0, 0, 0, .125);
+        font-size: 0.8rem;
     }
 
     .table-productos tr,

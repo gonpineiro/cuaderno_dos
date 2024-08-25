@@ -54,11 +54,21 @@ trait TraitPedidos
         return $order;
     }
 
-    public function showPedido($id)
+    public function showPedido(Request $requets, $id)
+    {
+        $order = Order::findOrFail($id);
+        if ($requets->type) {
+            $method = $requets->type;
+            return sendResponse(OrderResource::$method($order));
+        }
+        return sendResponse(new OrderResource($order, 'complete'));
+    }
+
+    /*  public function showPedido($id)
     {
         $order = Order::findOrFail($id);
         return sendResponse(new OrderResource($order, 'complete'));
-    }
+    } */
 
     public function updateState(Request $request)
     {
@@ -73,32 +83,29 @@ trait TraitPedidos
 
             $type = $order->type->value;
 
+            $general_state = $order->getGeneralState();
+
+            $entregado = Table::where('name', "order_{$type}_state")->where('value', 'entregado')->first();
+            $cancelado = Table::where('name', "order_{$type}_state")->where('value', 'cancelado')->first();
+
+            if ($general_state->id == $entregado->id || $general_state->id == $cancelado->id) {
+                return sendResponse(null, "El pedido se encuentra $general_state->value ", 301);
+            }
+
             $detail = OrderProduct::where('order_id', $request->order_id)->get();
-            if ($type === 'cliente') {
-
-                $entregado = Table::where('name', 'order_cliente_state')->where('value', 'entregado')->first();
-                $entregado = Table::where('name', 'order_cliente_state')->where('value', 'cancelado')->first();
-
-                foreach ($detail as $item) {
-                    /* Verificamos que cada item no tenga el estado de entregado */
-                    if ($item->state_id != $entregado->id) {
-                        $item->state_id = (int)$request->state_id;
-                        $item->save();
-                    }
-                }
-            } else if ($type === 'online') {
-
-                $entregado = Table::where('name', 'order_online_state')->where('value', 'entregado')->first();
-                $cacelado = Table::where('name', 'order_online_state')->where('value', 'cancelado')->first();
-
-                foreach ($detail as $item) {
-                    /* Verificamos que cada item no tenga el estado de entregado o cancelado */
-                    if ($item->state_id != $entregado->id && $item->state_id != $cacelado->id) {
-                        $item->state_id = (int)$request->state_id;
-                        $item->save();
-                    }
+            foreach ($detail as $item) {
+                /* Verificamos que cada item no tenga el estado de entregado */
+                if ($item->state_id != $entregado->id && $item->state_id != $cancelado->id) {
+                    $item->state_id = (int)$request->state_id;
+                    $item->save();
                 }
             }
+
+            $estado = Table::find($request->state_id);
+            activity("pedido.$estado->value")
+                ->performedOn($order)
+                ->withProperties(['state_id' => $request->state_id])
+                ->log("Pedido $estado->value");
 
             $order = Order::find($request->order_id);
 
@@ -124,6 +131,6 @@ trait TraitPedidos
         }
 
         $pedido->fill($request->all())->save();
-        return sendResponse(new OrderResource($pedido, 'complete'));
+        return sendResponse(OrderResource::toForm($pedido));
     }
 }

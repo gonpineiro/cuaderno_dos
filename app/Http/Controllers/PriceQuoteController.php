@@ -326,7 +326,7 @@ class PriceQuoteController extends Controller
 
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
 
-        $truncate = $request->type === 'interno' ? 38 : 54;
+        $truncate = $request->type === 'interno' ? 44 : 59;
         $detail = PriceQuoteProductResource::pdfArray($order->detail_cotizable, $contado_deb,  $truncate);
         $detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
 
@@ -402,13 +402,18 @@ class PriceQuoteController extends Controller
                     'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
                 ];
 
-                PriceQuoteProduct::updateOrInsert(
-                    [
+                $priceQuoteProduct = PriceQuoteProduct::where('price_quote_id', $price_quote->id)
+                    ->where('product_id', $item['product']['id'])
+                    ->first();
+
+                if ($priceQuoteProduct) {
+                    $priceQuoteProduct->update($price_quoteProductData);
+                } else {
+                    PriceQuoteProduct::create(array_merge([
                         'price_quote_id' => $price_quote->id,
                         'product_id' => $item['product']['id'],
-                    ],
-                    $price_quoteProductData
-                );
+                    ], $price_quoteProductData));
+                }
             }
 
             DB::commit();
@@ -428,7 +433,7 @@ class PriceQuoteController extends Controller
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 
-        $price_quote->fill($request->all())->save();
+        $price_quote->update($request->all());
 
         return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
     }

@@ -46,7 +46,7 @@
 </style>
 
 <body>
-    @if ($type != 'interno')
+   {{--  @if ($type != 'interno')
     <div class="images">
         <img src="{{ public_path('assets/images/logoallende.png') }}" style="width: 40%; margin-right: 50px">
         <img src="{{ public_path('assets/images/fiat.png') }}" style="width: 8%; margin-right: 20px">
@@ -86,7 +86,7 @@
         </tr>
     </table>
     <hr>
-    @endif
+    @endif --}}
     <div class="card px-3" style="margin-bottom: 40px">
         <table>
             <tr>

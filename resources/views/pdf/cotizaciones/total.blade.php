@@ -7,7 +7,7 @@
 <table class="table-productos">
     <tr>
         <th style="width: 65%">Descripción</th>
-        <th style="width: 11%">Cant.</th>
+        <th style="width: 7%">Cant.</th>
         <th style="width: 11%">Precio U.</th>
         <th style="width: 13%">Total</th>
     </tr>

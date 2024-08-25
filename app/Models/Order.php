@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\LogsActivity;
+use Spatie\Activitylog\Models\Activity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'user_id',
@@ -104,6 +106,23 @@ class Order extends Model
     public function price_quote()
     {
         return $this->belongsTo(PriceQuote::class);
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
+
+    public function getUserCompleteAttribute()
+    {
+        $log = $this->activities()->where('log_name', 'like', 'pedido.%')->orderBy('id', 'DESC')->first();
+        if (!$log) return null;
+
+        return  [
+            'user' => User::find($log->causer_id),
+            'description' => $log->description,
+            'date' => $log->created_at,
+        ];
     }
 
     public function setShipmentState()

@@ -27,6 +27,20 @@ class PriceQuote extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected static $logAttributes = [
+        'user_id',
+        'client_id',
+
+        'year',
+        'chasis',
+        'contacto',
+        'vehiculo_id',
+
+        'information_source_id',
+        'type_price_id',
+        'observation',
+    ];
+
     protected $hidden = [
         'user_id',
         'client_id',
