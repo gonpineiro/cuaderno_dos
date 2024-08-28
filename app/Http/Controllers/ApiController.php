@@ -71,10 +71,7 @@ class ApiController extends \App\Http\Controllers\Controller
 
         \Tymon\JWTAuth\Facades\JWTAuth::invalidate($request->token);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User has been logged out'
-        ]);
+        return sendResponse('Afuera!!');
     }
 
     public function get_user()
@@ -97,7 +94,7 @@ class ApiController extends \App\Http\Controllers\Controller
     protected function respondWithToken($token)
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
-        $user =User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
         $user->roles;
 
         $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
