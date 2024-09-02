@@ -19,8 +19,10 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
-
-    use TraitPedidosOnline, TraitPedidosCliente, TraitPedidos, TraitPedidosSiniestro;
+    use TraitPedidosOnline/* Ver si no se usa mas */,
+        TraitPedidosCliente/* Ver si no se usa mas */,
+        TraitPedidos,
+        TraitPedidosSiniestro;
 
     private function hayDuplicados($productos)
     {
@@ -138,8 +140,8 @@ class OrderController extends \App\Http\Controllers\Controller
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
             'detail' => OrderProductResource::formatPdf($detail),
-            'deposit' => $order->deposit ? formatoMoneda($order->deposit) : null,
-            'diferencia' => $order->deposit ? formatoMoneda($total - $order->deposit) : null,
+            'deposit' => isset($order->deposit) ? formatoMoneda($order->deposit) : null,
+            'diferencia' => isset($order->deposit) ? formatoMoneda($total - $order->deposit) : null,
             'total' => formatoMoneda($total),
         ];
 

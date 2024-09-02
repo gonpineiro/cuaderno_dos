@@ -40,7 +40,7 @@ if (!function_exists('redondearNumero')) {
 if (!function_exists('formatoMoneda')) {
     function formatoMoneda($number, $decimals = 0, $dec_point = ',', $thousands_sep = '.')
     {
-        if (!$number) {
+        if (!isset($number)) {
             return '$ ' . number_format(0, $decimals, $dec_point, $thousands_sep);
         }
         return '$ ' . number_format($number, $decimals, $dec_point, $thousands_sep);

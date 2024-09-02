@@ -35,6 +35,7 @@ class OrderResource extends JsonResource
 
     private function complete($array)
     {
+        $array['type_price'] = $this->price_quote->type_price;
         $array['user'] = $this->user;
 
         $this->client->city;

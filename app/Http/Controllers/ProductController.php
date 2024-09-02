@@ -91,6 +91,8 @@ class ProductController extends \App\Http\Controllers\Controller
             return $producto->cantidad_cotizaciones;
         });
 
+        $col = $col->values();
+
         return sendResponse($col);
     }
 
@@ -121,8 +123,7 @@ class ProductController extends \App\Http\Controllers\Controller
     public function cotizaciones(Request $request)
     {
         try {
-            $code = $request->id;
-            $product = Product::where('code', $code)->withTrashed()->first();
+            $product = Product::where('id', $request->id)->withTrashed()->first();
 
             $state = Table::where('name', 'price_quote_state')->where('value', 'cotizar')->first();
             $pq = PriceQuoteProduct::where('product_id', $product->id)
@@ -142,8 +143,6 @@ class ProductController extends \App\Http\Controllers\Controller
     public function pedidos(Request $request)
     {
         try {
-            $code = $request->id;
-            $model = $request->model;
 
             /*  if ($model == 'pedidos_online') {
                 $state = Table::where('name', 'order_online_state')->where('value', 'pendiente')->first();
@@ -155,7 +154,7 @@ class ProductController extends \App\Http\Controllers\Controller
                 return $this->cotizaciones($request);
             } */
 
-            $product = Product::where('code', $code)->withTrashed()->first();
+            $product = Product::where('id', $request->id)->withTrashed()->first();
 
             $pq = OrderProduct::where('product_id', $product->id)->with('order')->get();
 
@@ -230,7 +229,7 @@ class ProductController extends \App\Http\Controllers\Controller
     public function show($id)
     {
         $products = Product::where(function ($query) use ($id) {
-            $query->where('code', $id);
+            $query->where('id', $id);
         })->first();
 
         if (!$products) {
