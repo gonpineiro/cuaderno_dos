@@ -27,6 +27,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
+    Route::post('ciudad/buscar', [CityController::class, 'search']);
     Route::resource('ciudad', CityController::class);
     Route::resource('vehiculo', VehiculoController::class);
 
