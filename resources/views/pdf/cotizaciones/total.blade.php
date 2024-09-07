@@ -25,6 +25,6 @@
 
 {{-- Total --}}
 <p class="w-100 importe">
-    IMPORTE TOTAL {{$is_contado ? 'PRECIO CONTADO' : ''}}: <span class="total">{{$total}}</span>
+    IMPORTE TOTAL {{$is_contado ? 'PRECIO CONTADO' : 'DE LISTA'}}: <span class="total">{{$total}}</span>
 </p>
 @endsection

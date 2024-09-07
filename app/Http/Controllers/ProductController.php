@@ -269,19 +269,33 @@ class ProductController extends \App\Http\Controllers\Controller
     public function delete(Request $request)
     {
         try {
-            if (
-                OrderProduct::where('product_id', $request->id)->first() ||
-                PriceQuoteProduct::where('product_id', $request->id)->first() ||
-                ShipmentProduct::where('product_id', $request->id)->first() ||
-                PurchaseOrderProduct::where('product_id', $request->id)->first()
-            ) {
-                return sendResponse(null, 'El producto ya se encuentra en una operación', 301);
-            }
+            $productId = $request->id;
 
-            Product::findOrFail($request->id)->delete();
-            return sendResponse('Producto eliminado');
+            // Verificar si el producto está relacionado con alguna operación
+            $existsInOperation = OrderProduct::where('product_id', $productId)->exists() ||
+                PriceQuoteProduct::where('product_id', $productId)->exists() ||
+                ShipmentProduct::where('product_id', $productId)->exists() ||
+                PurchaseOrderProduct::where('product_id', $productId)->exists();
+
+            // Buscar el producto
+            $product = Product::withTrashed()->findOrFail($productId);
+
+            if ($existsInOperation) {
+                // Borrado lógico (soft delete)
+                if ($product->trashed()) {
+                    return sendResponse(null, 'El producto ya está eliminado lógicamente', 301);
+                }
+                $product->delete();
+                return sendResponse($product);
+            } else {
+                // Borrado definitivo (hard delete)
+                $product->forceDelete();
+                return sendResponse("DELETED");
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return sendResponse(null, 'Producto no encontrado', 404);
         } catch (\Exception $e) {
-            return sendResponse(null, $e->getMessage());
+            return sendResponse(null, $e->getMessage(), 500);
         }
     }
 }
