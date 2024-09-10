@@ -31,6 +31,28 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function relation(Request $request)
     {
+        $products = OrderProduct::with(['product', 'order'])
+            ->get()
+            ->map(function ($orderProduct) {
+                return ProductResource::order($orderProduct->product, $orderProduct);
+            });
+
+        $products = $products->sortBy(function ($product) {
+            return [
+                'incompleto' => 1,
+                'pendiente' => 2,
+                'retirar' => 3,
+                'entregado' => 4,
+                'cancelado' => 5,
+                'envio' => 6,
+            ][$product['order_state']->value];
+        })->values();
+
+        return sendResponse($products);
+    }
+
+    public function relation_(Request $request)
+    {
         $model = $request->model;
         $state_id = $request->state_id;
 

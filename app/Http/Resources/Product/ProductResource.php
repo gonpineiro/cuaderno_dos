@@ -29,12 +29,6 @@ class ProductResource extends JsonResource
             $array['state'] = $this->state ? $this->state->value : null;
         }
 
-        /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
-
-        if ($request->query('ordenes') == "true") {
-            $array['ordenes'] = count($this->orders) > 0 ? $this->orders : null;
-        }
-
         return $array;
     }
 
@@ -65,5 +59,26 @@ class ProductResource extends JsonResource
         /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
 
         return $product;
+    }
+
+    public static function order(Product $product, $order_product)
+    {
+        $array = $product->toArray();
+        $array['order_product_id'] = $order_product->id;
+        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
+        $array['brand'] = $product->brand ? $product->brand->name : null;
+        $array['ubication'] = $product->ubication;
+        $array['description'] = $product->description;
+
+        if ($product->is_special) {
+            $array['state'] = 'is_special';
+        } else if (!$product->ubication) {
+            $array['state'] = 'is_simple';
+        } else {
+            $array['state'] = $product->state ? $product->state->value : null;
+        }
+
+        $array['order_state'] = $order_product->order->getGeneralState();
+        return $array;
     }
 }

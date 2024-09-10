@@ -136,6 +136,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
         $total = get_total_price($detail);
 
+       $a =  $order->payment_method->value;
         $data = [
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
