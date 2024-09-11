@@ -21,6 +21,8 @@ class Client extends Model
         'is_insurance',
         'is_company',
         'reference_id',
+        'year',
+        'vehiculo_id',
         'observation',
     ];
 
@@ -40,6 +42,11 @@ class Client extends Model
     public function city()
     {
         return $this->belongsTo(\App\Models\City::class);
+    }
+
+    public function vehiculo()
+    {
+        return $this->belongsTo(Vehiculo::class);
     }
 
     protected static function boot()
