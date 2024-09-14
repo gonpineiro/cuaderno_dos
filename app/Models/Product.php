@@ -61,13 +61,18 @@ class Product extends Model
     public function getProviderAttribute()
     {
         //return $this->belongsTo(Provider::class);
-        $provider = $this->providers()->where('habitual', 1)->first();
+        $provider = $this->providers()->where('is_habitual', 1)->first();
         return $provider;
     }
 
     public function providers()
     {
         return $this->belongsToMany(Provider::class);
+    }
+
+    public function product_providers()
+    {
+        return $this->hasMany(ProductProvider::class);
     }
 
     public function state()

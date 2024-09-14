@@ -8,5 +8,11 @@ class ProductProvider extends Model
 {
     protected $table = 'product_provider';
 
-    protected $hidden = ['pivot'];
+    protected $fillable = [
+        'product_id',
+        'provider_id',
+        'provider_code',
+        'is_habitual',
+    ];
+    protected $hidden = ['pivot', 'created_at', 'updated_at'];
 }

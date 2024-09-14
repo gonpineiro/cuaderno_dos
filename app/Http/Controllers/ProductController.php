@@ -15,11 +15,13 @@ use App\Http\Resources\Product\ProductResource;
 use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\ProductProvider;
 use App\Models\PurchaseOrderProduct;
 use App\Models\ShipmentProduct;
 use App\Models\Table;
 use App\Models\ToAsk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -213,10 +215,22 @@ class ProductController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         try {
+            DB::beginTransaction();
             $body = $request->all();
             $product = Product::create($body);
+
+            if ($request->product_providers) {
+                foreach ($request->product_providers as $product_provider) {
+                    $product_provider['product_id'] = $product->id;
+                    $product_provider['is_habitual'] = (int)$product_provider['is_habitual'];
+                    ProductProvider::create($product_provider);
+                }
+            }
+
+            DB::commit();
             return sendResponse(new ProductResource($product));
         } catch (\Exception $e) {
+            DB::rollBack();
             return sendResponse(null, $e->getMessage());
         }
     }
@@ -282,10 +296,34 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-        $product->fill($request->all())->save();
+        try {
+            DB::beginTransaction();
+            $product = Product::findOrFail($id);
+            $product->fill($request->all())->save();
 
-        return sendResponse(new ProductResource($product));
+            if ($request->product_providers) {
+                foreach ($request->product_providers as $product_provider) {
+                    $pp = ProductProvider::where('product_id', $product->id)
+                        ->where('provider_id', $product_provider['provider_id'])
+                        ->first();
+
+                    if ($pp) {
+                        $pp->delete();
+                    }
+
+                    $product_provider['product_id'] = $product->id;
+                    $product_provider['is_habitual'] = (int)$product_provider['is_habitual'];
+                    ProductProvider::create($product_provider);
+                }
+            }
+
+            DB::commit();
+
+            return sendResponse(new ProductResource($product));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return sendResponse(null, $e->getMessage());
+        }
     }
 
     public function delete(Request $request)

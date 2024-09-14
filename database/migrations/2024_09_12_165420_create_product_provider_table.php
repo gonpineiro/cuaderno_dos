@@ -18,7 +18,7 @@ class CreateProductProviderTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('provider_id');
             $table->string('provider_code')->nullable();
-            $table->boolean('habitual')->default(0);
+            $table->boolean('is_habitual')->default(0);
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products');
