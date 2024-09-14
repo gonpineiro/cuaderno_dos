@@ -335,7 +335,7 @@ class PriceQuoteController extends Controller
         $vars = [
             'cotizacion' => $order,
             'detail' => PriceQuoteProductResource::formatPdf($detail),
-            'coefs' => $this->get_total_calculadora($detail_lista),
+            'coefs' => $this->get_total_calculadora($order->detail_cotizable),
             'total' => formatoMoneda($total),
             'type' => $request->type,
             'is_contado' => $is_contado
@@ -350,21 +350,23 @@ class PriceQuoteController extends Controller
     {
         $coefs = Coeficiente::where('show', true)->orderBy('position', 'asc')->get()->toArray();
 
-        return array_map(function ($coef) use ($detail_lista) {
+        $calculadora =  array_map(function ($coef) use ($detail_lista) {
 
             $multiplo = $coef['coeficiente'] * $coef['value'];
             $total = 0;
             foreach ($detail_lista as $value) {
-                $total += redondearNumero($value['unit_price'] * $multiplo) * $value['amount'];
+                $valor = !$coef['cuotas'] ? redondearNumero($value['unit_price'] * $multiplo) : $value['unit_price'] * $multiplo;
+                $total += $valor * $value['amount'];
             }
 
             return [
                 'description' => $coef['description'],
                 'price' => formatoMoneda($total),
                 /* 'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' ' */
-                'valor_cuota' => $coef['cuotas'] ? formatoMoneda(redondearNumero($total / $coef['cuotas'])) : ' '
+                'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas']) : ' '
             ];
         }, $coefs);
+        return $calculadora;
     }
 
     public function update(Request $request, $id)
