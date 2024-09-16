@@ -31,6 +31,7 @@ class Product extends Model
         'is_special',
 
         'brand_id',
+        'product_brand_id',
         'provider_id',
         'state_id',
 
@@ -108,6 +109,11 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function product_brand()
+    {
+        return $this->belongsTo(ProductBrand::class);
     }
 
     public function getUbicationAttribute()

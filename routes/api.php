@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CoeficienteController;
+use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\VehiculoController;
 
@@ -36,6 +37,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cliente', ClientController::class)->except(['show']);
 
     Route::resource('marca', BrandController::class);
+    Route::resource('product_marca', ProductBrandController::class);
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
     Route::post('producto/borrar', [ProductController::class, 'delete']);
