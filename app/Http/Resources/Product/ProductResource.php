@@ -17,6 +17,7 @@ class ProductResource extends JsonResource
     {
         $array = parent::toArray($request);
         $array['providers'] = $this->product_providers;
+        $array['provider'] = (isset($this->provider) && $this->provider) ? $this->provider->name : null;
         $array['brand'] = $this->brand ? $this->brand->name : null;
         $array['product_brand'] = $this->product_brand ? $this->product_brand->name : null;
         $array['ubication'] = $this->ubication;
