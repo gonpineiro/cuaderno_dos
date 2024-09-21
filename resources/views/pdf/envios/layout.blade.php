@@ -74,42 +74,42 @@
         <table>
             <tr>
                 <td colspan="3">
-                    <h1>Número de envío: {{$cotizacion->id}}</h1>
+                    <h1>Número de envío: {{$shipment->id}}</h1>
                 </td>
             </tr>
             <hr>
             <tr>
                 <td class="bold">Cliente:</td>
-                <td>{{$cotizacion->client->name}}</td>
+                <td>{{$shipment->client->name}}</td>
             </tr>
             {{-- <tr>
                 <td class="bold">Fecha:</td>
-                <td>{{date("d/m/Y", strtotime($cotizacion->created_at))}}</td>
+                <td>{{date("d/m/Y", strtotime($shipment->created_at))}}</td>
             </tr> --}}
             <tr>
                 <td class="bold">Dirección:</td>
-                <td>{{$cotizacion->send_adress}}</td>
+                <td>{{$shipment->send_adress}}</td>
             </tr>
             <tr>
                 <td class="bold">Ciudad:</td>
-                <td>{{$cotizacion->client->city->name}}</td>
+                <td>{{$shipment->client->city->name}}</td>
             </tr>
             <tr>
                 <td class="bold">Teléfono:</td>
-                <td>{{$cotizacion->client->phone}}</td>
+                <td>{{$shipment->client->phone}}</td>
             </tr>
             <tr>
                 <td class="bold">Forma de pago:</td>
-                <td>{{$cotizacion->payment_method->description}}</td>
+                <td>{{$shipment->payment_method->description}}</td>
             </tr>
             <tr>
                 <td class="bold">Bultos:</td>
-                <td>{{$cotizacion->bultos}}</td>
+                <td>{{$shipment->bultos}}</td>
             </tr>
         </table>
         <hr>
         <h3>Observaciones</h3>
-        <p>{{$cotizacion->observation}}</p>
+        <p>{{$shipment->observation}}</p>
     </div>
     @endif
 

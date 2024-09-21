@@ -132,4 +132,23 @@ class PurchaseOrderController extends Controller
             return sendResponse(null, $e->getMessage(), 300, $request->all());
         }
     }
+
+    public function delete(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $to_ask = ToAsk::find($request->id);
+
+            $to_ask->delete();
+
+            DB::commit();
+
+            return sendResponse($to_ask);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
 }

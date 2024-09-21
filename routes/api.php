@@ -112,6 +112,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ordenes_compra/producto_generar_pedir', [PurchaseOrderController::class, 'producto_generar_pedir']);
     Route::post('ordenes_compra/producto_modificar_pedir', [PurchaseOrderController::class, 'producto_modificar_pedir']);
     Route::get('ordenes_compra/pedir', [PurchaseOrderController::class, 'pedir']);
+    Route::post('ordenes_compra/borrar', [PurchaseOrderController::class, 'delete']);
     Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
     Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);
     Route::resource('ordenes_compra', PurchaseOrderController::class);

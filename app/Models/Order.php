@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Traits\LogsActivity;
-use Spatie\Activitylog\Models\Activity;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -110,7 +109,7 @@ class Order extends Model
 
     public function activities()
     {
-        return $this->morphMany(Activity::class, 'subject');
+        return $this->morphMany(Activity::class, 'subject')->with('causer');
     }
 
     public function getUserCompleteAttribute()

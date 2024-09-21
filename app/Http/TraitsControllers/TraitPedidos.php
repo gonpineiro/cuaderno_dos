@@ -105,7 +105,7 @@ trait TraitPedidos
             activity("pedido.$estado->value")
                 ->performedOn($order)
                 ->withProperties(['state_id' => $request->state_id])
-                ->log("Pedido $estado->value");
+                ->log($request->motivo ? $request->motivo : "Pedido $estado->value");
 
             $order = Order::find($request->order_id);
 

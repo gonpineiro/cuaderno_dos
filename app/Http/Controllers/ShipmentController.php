@@ -195,7 +195,7 @@ class ShipmentController extends Controller
         $total = get_total_price($detail);
 
         $vars = [
-            'cotizacion' => $shipment,
+            'shipment' => $shipment,
             'detail' => ShipmentResource::formatPdf($detail),
             'total' => formatoMoneda($total),
             'type' => $request->type,

@@ -62,6 +62,7 @@ class OrderResource extends JsonResource
 
         $array['detail'] = OrderProductResource::collection($this->detail);
 
+        $array['activity'] =$this->activities;
         return $array;
     }
 

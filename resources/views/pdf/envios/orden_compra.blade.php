@@ -24,8 +24,14 @@
     @endforeach
 </table>
 
-
+<hr>
 <p class="w-100 importe">
-    TOTAL A PAGAR CONTADO: <span class="total">{{$total}}</span>
+    @if ($shipment->payment_method && $shipment->payment_method->value === 'online')
+    PAGADO ONLINE:
+    @else
+    TOTAL A PAGAR CONTADO:
+    @endif
+
+    <span class="total">{{$total}}</span>
 </p>
 @endsection
