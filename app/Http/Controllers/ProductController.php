@@ -349,6 +349,9 @@ class ProductController extends \App\Http\Controllers\Controller
                 return sendResponse($product);
             } else {
                 // Borrado definitivo (hard delete)
+                $product->product_providers->map(function($pp){
+                    $pp->delete();
+                });
                 $product->forceDelete();
                 return sendResponse("DELETED");
             }
