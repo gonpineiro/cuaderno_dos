@@ -32,6 +32,8 @@ class Product extends Model
 
         'brand_id',
         'product_brand_id',
+        'rubro',
+        'subrubro',
         'provider_id',
         'state_id',
 
@@ -59,12 +61,11 @@ class Product extends Model
         return $this->belongsTo(Provider::class);
     }
 
-    public function getProviderAttribute()
+    /* public function getProviderAttribute()
     {
-        //return $this->belongsTo(Provider::class);
         $provider = $this->providers()->where('is_habitual', 1)->first();
         return $provider;
-    }
+    } */
 
     public function providers()
     {

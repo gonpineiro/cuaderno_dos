@@ -37,7 +37,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cliente', ClientController::class)->except(['show']);
 
     Route::resource('marca', BrandController::class);
-    Route::resource('product_marca', ProductBrandController::class);
+
+    Route::post('product_marca/borrar', [ProductBrandController::class, 'delete']);
+    Route::post('product_marca/update', [ProductBrandController::class, 'update']);
+    Route::resource('product_marca', ProductBrandController::class)->except(['update', 'delete']);
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
     Route::post('producto/borrar', [ProductController::class, 'delete']);
