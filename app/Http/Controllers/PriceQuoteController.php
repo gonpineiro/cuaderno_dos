@@ -271,27 +271,27 @@ class PriceQuoteController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $priceQuote = PriceQuote::findOrFail($id);
+            $priceQuote = PriceQuote::findOrFail($request->id);
 
             if ($priceQuote->order_id) {
                 throw new \Exception('Existe un pedido generado desde esta cotización');
             }
 
             $priceQuote->delete();
-            PriceQuoteProduct::where('price_quote_id', $id)->delete();
+            PriceQuoteProduct::where('price_quote_id', $request->id)->delete();
 
             DB::commit();
 
-            return sendResponse($id);
+            return sendResponse(new PriceQuoteResource($priceQuote));
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return sendResponse(null, $e->getMessage(), 300, $id);
+            return sendResponse(null, $e->getMessage(), 300, $request->id);
         }
     }
 
