@@ -13,7 +13,8 @@ class ComboProduct extends Model
     protected $table = 'combo_products';
 
     protected $fillable = [
-        'name',
+        'combo_id',
+        'product_id',
     ];
 
     protected $hidden = [

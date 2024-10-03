@@ -22,11 +22,13 @@ class Combo extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'combo_products')->withTrashed();
+        return $this->belongsToMany(Product::class, 'combo_products')
+                    ->whereNull('combo_products.deleted_at');
     }
 
     public function detail()
     {
         return $this->hasMany(ComboProduct::class);
     }
+
 }
