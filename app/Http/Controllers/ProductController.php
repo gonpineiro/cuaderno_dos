@@ -10,6 +10,7 @@ use App\Http\Requests\Product\StoreProductSpecialRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
+use App\Http\Resources\Product\FueraCatalogoResource;
 use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Order;
@@ -25,9 +26,23 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = ProductResource::collection(Product::all());
+        if ($request->type == 'fuera_catalogo') {
+            $products = Product::where(function ($query) {
+                $query->whereNull('ship')
+                    ->orWhereNull('module')
+                    ->orWhereNull('side')
+                    ->orWhereNull('column')
+                    ->orWhereNull('row');
+            })
+                ->where('is_special', 0)
+                ->get();
+
+                $products = FueraCatalogoResource::collection($products);
+        } else {
+            $products = ProductResource::collection(Product::all());
+        }
         return sendResponse($products);
     }
 
@@ -349,7 +364,7 @@ class ProductController extends \App\Http\Controllers\Controller
                 return sendResponse($product);
             } else {
                 // Borrado definitivo (hard delete)
-                $product->product_providers->map(function($pp){
+                $product->product_providers->map(function ($pp) {
                     $pp->delete();
                 });
                 $product->forceDelete();

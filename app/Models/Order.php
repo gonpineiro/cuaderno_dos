@@ -71,6 +71,13 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class, 'order_id');
     }
 
+    public function detail_()
+    {
+        return $this->hasMany(OrderProduct::class)->whereHas('state', function ($query) {
+            $query->where('value', '!=', 'cancelado');
+        });
+    }
+
     public function client()
 
     {

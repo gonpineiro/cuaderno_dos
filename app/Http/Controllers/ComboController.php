@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
+use App\Http\Resources\Product\ComboProductResource;
 use App\Models\Combo;
 use App\Models\ComboProduct;
-use Illuminate\Http\Request;
 
 class ComboController extends \App\Http\Controllers\Controller
 {
@@ -12,12 +14,11 @@ class ComboController extends \App\Http\Controllers\Controller
     {
         try {
             if ($request->id) {
-                $combos = Combo::where('id', $request->id)                    
-                    ->with('products')
-                    ->withCount(['products as cantidad'])
-                    ->first();
+                $combos = Combo::where('id', $request->id)->first();
+                $combos = new ComboProductResource($combos);
             } else {
-                $combos = Combo::with('products')->withCount(['products as cantidad'])->get();
+                $combos = Combo::all();
+                $combos = ComboProductResource::collection($combos);
             }
             return sendResponse($combos);
         } catch (\Exception $e) {
@@ -38,8 +39,8 @@ class ComboController extends \App\Http\Controllers\Controller
                     'product_id' => $comboProduct['id']
                 ]);
             }
-            
-            return sendResponse($combo);
+
+            return sendResponse(new ComboProductResource($combo));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());
         }
@@ -62,12 +63,9 @@ class ComboController extends \App\Http\Controllers\Controller
                 ]);
             }
 
-            $combo = Combo::where('id', $request->id)                    
-                    ->with('products')
-                    ->withCount(['products as cantidad'])
-                    ->first();
+            $combo = Combo::find( $request->id);
 
-            return sendResponse($combo);
+            return sendResponse(new ComboProductResource($combo));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage());
         }
@@ -77,6 +75,6 @@ class ComboController extends \App\Http\Controllers\Controller
     {
         $combo = Combo::findOrFail($request->id);
         $combo->delete();
-        return sendResponse($combo);
+        return sendResponse(new ComboProductResource($combo));
     }
 }

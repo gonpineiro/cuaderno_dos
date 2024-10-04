@@ -78,7 +78,7 @@ class PriceQuoteController extends Controller
 
             DB::commit();
 
-            return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
+            return sendResponse(new PriceQuoteResource($price_quote));
         } catch (\Exception $e) {
             DB::rollBack();
 

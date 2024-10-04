@@ -84,6 +84,10 @@
                 <td>Vendedor:</td>
                 <td>{{$pedido->user->name}}</td>
             </tr>
+            <tr>
+                <td>Fecha:</td>
+                <td>{{$fecha}}</td>
+            </tr>
         </table>
         <hr>
         <h3>Observaciones</h3>

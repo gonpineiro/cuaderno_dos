@@ -14,7 +14,7 @@ class CityController extends \App\Http\Controllers\Controller
     public function index()
     {
         $ciudades = City::all();
-        return sendResponse(CityResource::collection($ciudades));
+        return sendResponse([]);
     }
 
     public function search(Request $request)

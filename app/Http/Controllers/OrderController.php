@@ -132,11 +132,12 @@ class OrderController extends \App\Http\Controllers\Controller
         $order = Order::find($id);
         $order->client;
         $order->user;
-        $detail = OrderProductResource::pdfArray($order->detail);
+        $detail = OrderProductResource::pdfArray($order->detail_);
 
         $total = get_total_price($detail);
 
-       $a =  $order->payment_method->value;
+        $a =  $order->payment_method->value;
+        $fecha = \Carbon\Carbon::parse($order->created_at)->format('d/m/Y');
         $data = [
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
@@ -144,6 +145,7 @@ class OrderController extends \App\Http\Controllers\Controller
             'deposit' => isset($order->deposit) ? formatoMoneda($order->deposit) : null,
             'diferencia' => isset($order->deposit) ? formatoMoneda($total - $order->deposit) : null,
             'total' => formatoMoneda($total),
+            'fecha' => $fecha
         ];
 
         $pdf = Pdf::loadView('pdf.pedido', $data);
