@@ -121,6 +121,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Combs */
     Route::get('combos', [ComboController::class, 'index']);
+    Route::post('combos/borrar', [ComboController::class, 'destroy']);
     Route::post('combos', [ComboController::class, 'store']);
     Route::post('combos/update', [ComboController::class, 'update']);
 

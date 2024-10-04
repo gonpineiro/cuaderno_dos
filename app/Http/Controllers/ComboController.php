@@ -71,7 +71,7 @@ class ComboController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function destroy($request)
+    public function destroy(Request $request)
     {
         $combo = Combo::findOrFail($request->id);
         $combo->delete();
