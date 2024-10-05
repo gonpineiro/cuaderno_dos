@@ -29,7 +29,7 @@ class ProductController extends \App\Http\Controllers\Controller
     public function index(Request $request)
     {
         if ($request->type == 'fuera_catalogo') {
-            $products = Product::where(function ($query) {
+            /* $products = Product::where(function ($query) {
                 $query->whereNull('ship')
                     ->orWhereNull('module')
                     ->orWhereNull('side')
@@ -37,9 +37,22 @@ class ProductController extends \App\Http\Controllers\Controller
                     ->orWhereNull('row');
             })
                 ->where('is_special', 0)
+                ->get(); */
+
+            $products = Product::whereNull('ship')
+                ->whereNull('module')
+                ->whereNull('side')
+                ->whereNull('column')
+                ->whereNull('row')
+                ->whereNull('provider_code')
+                ->whereNull('factory_code')
+                ->whereNull('equivalence')
+                ->whereNull('model')
+                ->whereNull('observation')
+                ->where('is_special', 0)
                 ->get();
 
-                $products = FueraCatalogoResource::collection($products);
+            $products = FueraCatalogoResource::collection($products);
         } else {
             $products = ProductResource::collection(Product::all());
         }
@@ -230,7 +243,14 @@ class ProductController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         try {
+
             DB::beginTransaction();
+            $product = Product::where('code', $request->code)->first();
+
+            if ($product) {
+                return sendResponse(null, 'Ya existeun producto con el código: ' . $request->code);
+            }
+
             $body = $request->all();
             $product = Product::create($body);
 

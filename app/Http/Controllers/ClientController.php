@@ -57,13 +57,13 @@ class ClientController extends Controller
                 if (is_string($value)) {
                     // Para cadenas de texto, usar 'like' para búsqueda parcial
                     $query->orWhere($column, 'like', "%$value%");
-                } else if($value) {
+                } else if ($value) {
                     // Para otros tipos de datos, buscar coincidencia exacta
                     $query->where($column, $value);
                 }
             }
         }
-       // $query->where($column, 'like', "%$value%");
+        // $query->where($column, 'like', "%$value%");
 
         // Obtén los resultados
         $results = $query->get();
@@ -100,11 +100,16 @@ class ClientController extends Controller
         return sendResponse(null, 'Ciente no encontrado', 404);
     }
 
-    public function update(UpdateClientRequest $request, $id)
+    public function update(UpdateClientRequest $request)
     {
-        $client = Client::findOrFail($id);
-        $client->fill($request->all())->save();
-        return new ClientResource($client, 'complete');
+        try {
+            $client = Client::findOrFail($request->id);
+            $client->fill($request->all())->save();
+
+            return sendResponse(new ClientResource($client, 'complete'));
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 301);
+        }
     }
 
     public function destroy($id)

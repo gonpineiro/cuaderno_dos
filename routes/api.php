@@ -35,7 +35,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
-    Route::resource('cliente', ClientController::class)->except(['show']);
+    Route::post('cliente/update', [ClientController::class, 'update']);
+    Route::resource('cliente', ClientController::class)->except(['show', 'update']);
 
     Route::resource('marca', BrandController::class);
 
