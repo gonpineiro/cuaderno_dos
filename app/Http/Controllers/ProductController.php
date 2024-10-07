@@ -334,7 +334,7 @@ class ProductController extends \App\Http\Controllers\Controller
         try {
             DB::beginTransaction();
             $product = Product::findOrFail($id);
-            $product->fill($request->all())->save();
+            $product->update($request->all());
 
             if ($request->product_providers) {
                 foreach ($request->product_providers as $product_provider) {
