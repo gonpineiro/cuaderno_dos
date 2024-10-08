@@ -17,7 +17,7 @@ class ComboController extends \App\Http\Controllers\Controller
                 $combos = Combo::where('id', $request->id)->first();
                 $combos = new ComboProductResource($combos);
             } else {
-                $combos = Combo::all();
+                $combos = Combo::orderBy('id', 'desc')->get();
                 $combos = ComboProductResource::collection($combos);
             }
             return sendResponse($combos);
