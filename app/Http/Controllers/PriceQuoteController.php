@@ -78,7 +78,7 @@ class PriceQuoteController extends Controller
 
             DB::commit();
 
-            return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
+            return sendResponse(new PriceQuoteResource($price_quote));
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -149,15 +149,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveSiniestroOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -197,15 +198,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveOnlineOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -245,15 +247,16 @@ class PriceQuoteController extends Controller
             $order = OrderController::saveClienteOrder($request);
 
             $priceQuote->order_id = $order->id;
-            $priceQuote->save();
 
             if ($request->envio) {
+                $order->payment_method_id = $request->envio['payment_method_id'];
                 $shipment = ShipmentController::storeShipment($request->envio, $order);
                 $order->shipment_id = $shipment->id;
                 $order->save();
 
                 $order->setShipmentState();
             }
+            $priceQuote->save();
 
             DB::commit();
 
@@ -268,27 +271,27 @@ class PriceQuoteController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $priceQuote = PriceQuote::findOrFail($id);
+            $priceQuote = PriceQuote::findOrFail($request->id);
 
             if ($priceQuote->order_id) {
                 throw new \Exception('Existe un pedido generado desde esta cotización');
             }
 
             $priceQuote->delete();
-            PriceQuoteProduct::where('price_quote_id', $id)->delete();
+            PriceQuoteProduct::where('price_quote_id', $request->id)->delete();
 
             DB::commit();
 
-            return sendResponse($id);
+            return sendResponse(new PriceQuoteResource($priceQuote));
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return sendResponse(null, $e->getMessage(), 300, $id);
+            return sendResponse(null, $e->getMessage(), 300, $request->id);
         }
     }
 
@@ -322,15 +325,17 @@ class PriceQuoteController extends Controller
         $is_contado = $order->type_price->value == 'contado';
 
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
-        $detail = PriceQuoteProductResource::pdfArray($order->detail, $contado_deb);
-        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail);
+
+        $truncate = $request->type === 'interno' ? 44 : 59;
+        $detail = PriceQuoteProductResource::pdfArray($order->detail_cotizable, $contado_deb,  $truncate);
+        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
 
         $total = get_total_price($detail);
 
         $vars = [
             'cotizacion' => $order,
             'detail' => PriceQuoteProductResource::formatPdf($detail),
-            'coefs' => $this->get_total_calculadora($detail_lista),
+            'coefs' => $this->get_total_calculadora($order->detail_cotizable),
             'total' => formatoMoneda($total),
             'type' => $request->type,
             'is_contado' => $is_contado
@@ -345,20 +350,23 @@ class PriceQuoteController extends Controller
     {
         $coefs = Coeficiente::where('show', true)->orderBy('position', 'asc')->get()->toArray();
 
-        return array_map(function ($coef) use ($detail_lista) {
+        $calculadora =  array_map(function ($coef) use ($detail_lista) {
 
             $multiplo = $coef['coeficiente'] * $coef['value'];
             $total = 0;
             foreach ($detail_lista as $value) {
-                $total += (int) redondearNumero($value['unit_price'] * $multiplo) * $value['amount'];
+                $valor = !$coef['cuotas'] ? redondearNumero($value['unit_price'] * $multiplo) : $value['unit_price'] * $multiplo;
+                $total += $valor * $value['amount'];
             }
 
             return [
                 'description' => $coef['description'],
                 'price' => formatoMoneda($total),
-                'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' '
+                /* 'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas'], 2) : ' ' */
+                'valor_cuota' => $coef['cuotas'] ? formatoMoneda($total / $coef['cuotas']) : ' '
             ];
         }, $coefs);
+        return $calculadora;
     }
 
     public function update(Request $request, $id)
@@ -396,13 +404,18 @@ class PriceQuoteController extends Controller
                     'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
                 ];
 
-                PriceQuoteProduct::updateOrInsert(
-                    [
+                $priceQuoteProduct = PriceQuoteProduct::where('price_quote_id', $price_quote->id)
+                    ->where('product_id', $item['product']['id'])
+                    ->first();
+
+                if ($priceQuoteProduct) {
+                    $priceQuoteProduct->update($price_quoteProductData);
+                } else {
+                    PriceQuoteProduct::create(array_merge([
                         'price_quote_id' => $price_quote->id,
                         'product_id' => $item['product']['id'],
-                    ],
-                    $price_quoteProductData
-                );
+                    ], $price_quoteProductData));
+                }
             }
 
             DB::commit();
@@ -422,7 +435,7 @@ class PriceQuoteController extends Controller
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 
-        $price_quote->fill($request->all())->save();
+        $price_quote->update($request->all());
 
         return sendResponse(new PriceQuoteResource($price_quote, 'complete'));
     }

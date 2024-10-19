@@ -25,19 +25,22 @@ if (!function_exists('isEven')) {
 if (!function_exists('redondearNumero')) {
     function redondearNumero($numero)
     {
+        $numero = round($numero);
         $residuo = $numero % 100;
         if ($residuo >= 50) {
-            return (int) ($numero + (100 - $residuo));
+            $n =  $numero + (100 - $residuo);
         } else {
-            return (int) $numero - $residuo;
+            $n = $numero - $residuo;
         }
+
+        return $n;
     }
 }
 
 if (!function_exists('formatoMoneda')) {
     function formatoMoneda($number, $decimals = 0, $dec_point = ',', $thousands_sep = '.')
     {
-        if (!$number) {
+        if (!isset($number)) {
             return '$ ' . number_format(0, $decimals, $dec_point, $thousands_sep);
         }
         return '$ ' . number_format($number, $decimals, $dec_point, $thousands_sep);

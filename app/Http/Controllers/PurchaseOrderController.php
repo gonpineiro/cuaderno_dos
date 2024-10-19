@@ -35,9 +35,29 @@ class PurchaseOrderController extends Controller
 
     public function producto_generar_pedir(Request $request)
     {
-        $toAsk =ToAsk::create($request->all());
+        $toAsk = ToAsk::create($request->all());
 
         return new PedirResource($toAsk);
+    }
+
+    public function producto_modificar_pedir(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $to_ask = ToAsk::find($request->id);
+
+            $to_ask->provider_id = $request->provider_id;
+            $to_ask->amount = $request->amount;
+
+            $to_ask->save();
+
+            DB::commit();
+            return $this->pedir();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return sendResponse(null, $e->getMessage());
+        }
     }
 
     public function pedir()
@@ -106,6 +126,25 @@ class PurchaseOrderController extends Controller
             DB::commit();
 
             return sendResponse(new PurchaseOrderResource($purchaseOrder, 'complete'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $to_ask = ToAsk::find($request->id);
+
+            $to_ask->delete();
+
+            DB::commit();
+
+            return sendResponse($to_ask);
         } catch (\Exception $e) {
             DB::rollBack();
 

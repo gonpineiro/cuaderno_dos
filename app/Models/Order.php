@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\LogsActivity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'user_id',
@@ -54,7 +55,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasManyThrough(Product::class, OrderProduct::class);
     }
 
     public function detailPending()
@@ -68,6 +69,13 @@ class Order extends Model
     public function detail()
     {
         return $this->hasMany(OrderProduct::class, 'order_id');
+    }
+
+    public function detail_()
+    {
+        return $this->hasMany(OrderProduct::class)->whereHas('state', function ($query) {
+            $query->where('value', '!=', 'cancelado');
+        });
     }
 
     public function client()
@@ -104,6 +112,23 @@ class Order extends Model
     public function price_quote()
     {
         return $this->belongsTo(PriceQuote::class);
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject')->with('causer');
+    }
+
+    public function getUserCompleteAttribute()
+    {
+        $log = $this->activities()->where('log_name', 'like', 'pedido.%')->orderBy('id', 'DESC')->first();
+        if (!$log) return null;
+
+        return  [
+            'user' => User::find($log->causer_id),
+            'description' => $log->description,
+            'date' => $log->created_at,
+        ];
     }
 
     public function setShipmentState()
@@ -166,6 +191,16 @@ class Order extends Model
 
     public function getGeneralState()
     {
+        if ($shipment = $this->shipment) {
+            return (object) [
+                'value' => 'envio',
+                'description' => 'ENVÍO',
+                'background_color' => '#0d6efd',
+                'hover' => strtoupper($shipment->getGeneralState()->description),
+                //'className' => 'primary',
+                'url' =>  "/envios/$shipment->id",
+            ];
+        }
         $type = $this->type->value;
 
         if ($type == 'online') {

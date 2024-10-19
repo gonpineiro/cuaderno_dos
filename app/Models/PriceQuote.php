@@ -27,6 +27,20 @@ class PriceQuote extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected static $logAttributes = [
+        'user_id',
+        'client_id',
+
+        'year',
+        'chasis',
+        'contacto',
+        'vehiculo_id',
+
+        'information_source_id',
+        'type_price_id',
+        'observation',
+    ];
+
     protected $hidden = [
         'user_id',
         'client_id',
@@ -40,13 +54,20 @@ class PriceQuote extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withTrashed();
     }
 
     public function detail()
     {
         $productos = $this->hasMany(PriceQuoteProduct::class);
         return $productos;
+    }
+
+    public function detail_cotizable()
+    {
+        return $this->hasMany(PriceQuoteProduct::class)->whereHas('state', function ($query) {
+            $query->where('name', 'price_quote_state')->where('value', 'cotizar');
+        });
     }
 
     public function client()

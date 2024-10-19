@@ -26,7 +26,7 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules()
     {
-        $type = Table::find($this->type_id);
+        /* $type = Table::find($this->type_id);
 
         $com = [
             'client_id' => 'required',
@@ -46,7 +46,7 @@ class UpdateOrderRequest extends FormRequest
             $com['remito'] = 'required';
             $com['workshop'] = 'required';
             return $com;
-        }
+        } */
 
         return [];
     }

@@ -16,8 +16,10 @@ class ProductResource extends JsonResource
     public function toArray($request)
     {
         $array = parent::toArray($request);
+        $array['providers'] = $this->product_providers;
         $array['provider'] = (isset($this->provider) && $this->provider) ? $this->provider->name : null;
         $array['brand'] = $this->brand ? $this->brand->name : null;
+        $array['product_brand'] = $this->product_brand ? $this->product_brand->name : null;
         $array['ubication'] = $this->ubication;
         $array['description'] = $this->description;
 
@@ -29,19 +31,14 @@ class ProductResource extends JsonResource
             $array['state'] = $this->state ? $this->state->value : null;
         }
 
-        /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
-
-        if ($request->query('ordenes') == "true") {
-            $array['ordenes'] = count($this->orders) > 0 ? $this->orders : null;
-        }
-
         return $array;
     }
 
     public static function complete(Product $product)
     {
-        $product->provider;
+        $product->providers;
         $product->brand;
+        $product->product_brand;
         $product->state;
         /* $product->orders;
         $product->price_quotes; */
@@ -65,5 +62,26 @@ class ProductResource extends JsonResource
         /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
 
         return $product;
+    }
+
+    public static function order(Product $product, $order_product)
+    {
+        $array = $product->toArray();
+        $array['order_product_id'] = $order_product->id;
+        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
+        $array['brand'] = $product->brand ? $product->brand->name : null;
+        $array['ubication'] = $product->ubication;
+        $array['description'] = $product->description;
+
+        if ($product->is_special) {
+            $array['state'] = 'is_special';
+        } else if (!$product->ubication) {
+            $array['state'] = 'is_simple';
+        } else {
+            $array['state'] = $product->state ? $product->state->value : null;
+        }
+
+        $array['order_state'] = $order_product->order->getGeneralState();
+        return $array;
     }
 }

@@ -48,6 +48,9 @@ class ClientResource extends JsonResource
     private function complete($array)
     {
         $array['city'] = new CityResource($this->city);
+
+        $this->vehiculo && $this->vehiculo->brand;
+        $array['vehiculo'] = $this->vehiculo;
         return $array;
     }
 

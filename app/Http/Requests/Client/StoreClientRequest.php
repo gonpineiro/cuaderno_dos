@@ -29,25 +29,26 @@ class StoreClientRequest extends FormRequest
     {
         if ($this->input('is_insurance')) {
             return [
-                'name' => 'required|max:35',
+                'name' => 'required|max:255',
                 'cuit' => 'required|max:11|min:11|unique:clients',
             ];
         }
 
         if ($this->input('is_company')) {
             return [
-                'name' => 'required|max:35',
+                'name' => 'required|max:255',
                 'cuit' => 'required|max:11|min:11|unique:clients',
-                'email' => 'required|email|max:100|unique:clients',
-                'phone' => 'required|max:35',
+                'email' => 'required|email|max:255|unique:clients',
+                'phone' => 'required|max:255',
             ];
         }
 
         return [
-            'name' => 'required|max:35',
-            'dni' => 'required|max:8|min:8|unique:clients',
-            'email' => 'required|email|max:100|unique:clients',
-            'phone' => 'required|max:35',
+            'name' => 'required|max:255',
+            /* 'dni' => 'required|max:8|min:8|unique:clients', */
+            'dni' => 'max:8',
+            'email' => 'required|email|max:255|unique:clients',
+            'phone' => 'required|max:150',
             'city_id' => 'required',
         ];
     }
@@ -65,10 +66,10 @@ class StoreClientRequest extends FormRequest
             ];
         }
         return [
-            'dni.required' => 'Documento es requerido',
+            /* 'dni.required' => 'Documento es requerido', */
             'dni.max' => 'Formato del documento es invalido',
-            'dni.min' => 'Formato del documento es invalido',
-            'dni.unique' => 'Documento ya se encuentra registrado',
+            /* 'dni.min' => 'Formato del documento es invalido', */
+           /*  'dni.unique' => 'Documento ya se encuentra registrado', */
 
             'name.required' => 'Nombre es requerido',
             'name.max' => 'Nombre no debe superar los 35 caracteres',

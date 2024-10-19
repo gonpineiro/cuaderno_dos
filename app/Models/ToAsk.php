@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ToAsk extends Model
 {
+    use SoftDeletes;
     protected $table = 'to_ask';
 
     public $timestamps = false;
@@ -27,7 +29,7 @@ class ToAsk extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function order_product()

@@ -26,7 +26,7 @@ class UpdateProviderRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:25',
+            'name' => 'required|max:255',
             'email' => 'required|max:255',
         ];
     }
@@ -35,7 +35,7 @@ class UpdateProviderRequest extends FormRequest
     {
         return [
             'name.required' => 'Nombre es requerido',
-            'name.max' => 'Nombre no debe superar el maximo de 25 caracteres',
+            'name.max' => 'Nombre no debe superar el maximo de 255 caracteres',
 
             'email.required' => 'Email es requerido',
             'email.max' => 'Email no debe superar el maximo de 255 caracteres',

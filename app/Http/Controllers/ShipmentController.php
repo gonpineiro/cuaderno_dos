@@ -21,9 +21,18 @@ class ShipmentController extends Controller
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $shipment = Shipment::all();
+        $shipments = Shipment::orderBy('created_at')->get();
 
-        return sendResponse(ShipmentResource::collection($shipment));
+        $shipments = $shipments->sortBy(function ($shipment) {
+            return [
+                'pendiente' => 1,
+                'listo_enviar' => 2,
+                'despachado' => 3,
+                'contrareemboldo' => 4,
+            ][$shipment->getGeneralState()->value];
+        });
+
+        return sendResponse(ShipmentResource::collection($shipments));
     }
 
     public function store(StoreShipmentRequest $request)
@@ -84,7 +93,7 @@ class ShipmentController extends Controller
         } else if ($order_type == 'cliente') {
             $state = Table::where('name', 'order_cliente_state')->where('value', 'retirar')->first();
         } else if ($order_type == 'siniestro') {
-            $state = Table::where('name', 'order_siniestro_state')->where('value', 'retirar')->first();
+            $state = Table::where('name', 'order_siniestro_state')->where('value', 'completo')->first();
         }
 
         foreach ($detail as $orderProduct) {
@@ -123,7 +132,7 @@ class ShipmentController extends Controller
             'payment_method_id' => $envio['payment_method_id'],
             'transport' => isset($envio['transport']) ? $envio['transport'] : null,
             'invoice_number' => isset($envio['invoice_number']) ? $envio['invoice_number'] : null,
-            'nro_guia' => $envio["nro_gruia"],
+            'nro_guia' => isset($envio["nro_guia"]) ? $envio["nro_guia"] : null,
             'bultos' => $envio['bultos'],
             'send_adress' => $envio['send_adress'],
         ]);
@@ -181,12 +190,12 @@ class ShipmentController extends Controller
         $shipment = Shipment::find($id);
         $shipment->client;
 
-        $detail = ShipmentResource::pdfArray($shipment->detail);
+        $detail = ShipmentResource::pdfArray($shipment->detail, 42);
 
         $total = get_total_price($detail);
 
         $vars = [
-            'cotizacion' => $shipment,
+            'shipment' => $shipment,
             'detail' => ShipmentResource::formatPdf($detail),
             'total' => formatoMoneda($total),
             'type' => $request->type,

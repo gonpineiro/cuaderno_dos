@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'code',
@@ -31,6 +32,44 @@ class Product extends Model
         'is_special',
 
         'brand_id',
+        'product_brand_id',
+        'rubro',
+        'subrubro',
+        'provider_id',
+        'state_id',
+
+        'ship',
+        'module',
+        'side',
+        'column',
+        'row',
+    ];
+
+
+    protected static $logAttributes = [
+        'code',
+        'provider_code',
+        'factory_code',
+        'equivalence',
+
+        'description',
+        'model',
+        'engine',
+        'observation',
+
+        'ship',
+        'module',
+        'side',
+        'column',
+        'row',
+
+        'verified',
+        'is_special',
+
+        'brand_id',
+        'product_brand_id',
+        'rubro',
+        'subrubro',
         'provider_id',
         'state_id',
 
@@ -56,6 +95,22 @@ class Product extends Model
     public function provider()
     {
         return $this->belongsTo(Provider::class);
+    }
+
+    /* public function getProviderAttribute()
+    {
+        $provider = $this->providers()->where('is_habitual', 1)->first();
+        return $provider;
+    } */
+
+    public function providers()
+    {
+        return $this->belongsToMany(Provider::class);
+    }
+
+    public function product_providers()
+    {
+        return $this->hasMany(ProductProvider::class);
     }
 
     public function state()
@@ -91,6 +146,11 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function product_brand()
+    {
+        return $this->belongsTo(ProductBrand::class);
     }
 
     public function getUbicationAttribute()

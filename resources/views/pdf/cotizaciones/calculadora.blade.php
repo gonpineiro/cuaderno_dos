@@ -19,4 +19,7 @@
     @endforeach
 </table>
 
+<h3 class="importe">
+    <b> No trabajamos Confiable, Crediguia y Credicom </b>
+</h3>
 @endsection

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\{StoreClientRequest, UpdateClientRequest};
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
-use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -19,7 +21,11 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         $body = $request->all();
+
         $client = Client::create($body);
+        /*  $client->update(['reference_id', "ID" . $client->id]); */
+        $client->reference_id = "ID" . $client->id;
+        $client->save();
         return new ClientResource($client, 'complete');
     }
 
@@ -29,7 +35,43 @@ class ClientController extends Controller
         return sendResponse(new ClientResource($client, 'complete'));
     }
 
-    public function search(Request $request)
+    public function search(Request $request/* , Model $model */)
+    {
+        // Obtén los datos de la solicitud
+        $data = $request->all();
+
+        // Obtén los atributos del modelo
+        $model = new Client();
+        $table = $model->getTable();
+        $columns = Schema::getColumnListing($table);
+
+        // Comienza la consulta base
+        $query = $model->newQuery();
+
+        // Agrega condiciones según los parámetros presentes y las columnas del modelo
+        foreach ($columns as $column) {
+            if (isset($data[$column])) {
+                $value = $data[$column];
+
+                // Ajustar las condiciones para diferentes tipos de datos
+                if (is_string($value)) {
+                    // Para cadenas de texto, usar 'like' para búsqueda parcial
+                    $query->orWhere($column, 'like', "%$value%");
+                } else if ($value) {
+                    // Para otros tipos de datos, buscar coincidencia exacta
+                    $query->where($column, $value);
+                }
+            }
+        }
+        // $query->where($column, 'like', "%$value%");
+
+        // Obtén los resultados
+        $results = $query->get();
+
+        // Devuelve los resultados, podrías usar Resource para formatear la respuesta
+        return sendResponse(ClientResource::collection($results));
+    }
+    /* public function search(Request $request)
     {
         $model = new Client();
 
@@ -47,22 +89,27 @@ class ClientController extends Controller
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
         return sendResponse(ClientResource::collection($results));
-    }
+    } */
 
     public function getByReference(Request $request)
     {
-        $client = Client::where('reference_id', $request->id)->first();
+        $client = Client::where('reference_id', "ID" . $request->id)->first();
         if ($client) {
             return sendResponse(new ClientResource($client, 'complete'));
         }
         return sendResponse(null, 'Ciente no encontrado', 404);
     }
 
-    public function update(UpdateClientRequest $request, $id)
+    public function update(UpdateClientRequest $request)
     {
-        $client = Client::findOrFail($id);
-        $client->fill($request->all())->save();
-        return new ClientResource($client, 'complete');
+        try {
+            $client = Client::findOrFail($request->id);
+            $client->fill($request->all())->save();
+
+            return sendResponse(new ClientResource($client, 'complete'));
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 301);
+        }
     }
 
     public function destroy($id)

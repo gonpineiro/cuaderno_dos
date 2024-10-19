@@ -2,7 +2,6 @@
 
 namespace App\Models\Traits;
 
-use Spatie\Activitylog\LogOptions;
 
 trait LogsActivity
 {
@@ -16,13 +15,11 @@ trait LogsActivity
         return "Este modelo ha sido {$rta}";
     }
 
-    public function getActivitylogOptions(): LogOptions
+    /* public function getActivitylogOptions(): LogOptions
     {
-        $config = LogOptions::defaults();
-        $config->logOnlyDirty();
-        $config->logExcept(['created_at', 'updated_at']);
-        $config->logOnly(['*']);
-
-        return $config;
-    }
+        return LogOptions::defaults()
+            ->logOnlyDirty()  // Solo guarda cambios de los atributos que hayan cambiado
+            ->setDescriptionForEvent(fn(string $eventName) => $this->getDescriptionForEvent($eventName))
+            ->logAll();  // Registra todos los atributos
+    } */
 }

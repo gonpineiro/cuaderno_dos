@@ -6,13 +6,34 @@ use App\Models\City;
 use App\Http\Requests\City\StoreCityRequest;
 use App\Http\Requests\City\UpdateCityRequest;
 use App\Http\Resources\CityResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class CityController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
         $ciudades = City::all();
-        return sendResponse(CityResource::collection($ciudades));
+        return sendResponse([]);
+    }
+
+    public function search(Request $request)
+    {
+        $model = new City();
+
+        $query = $model->newQuery();
+
+        if ($request->name) {
+            $query->orWhere('name', 'like', "%$request->name%");
+        }
+        if ($request->province_id) {
+            $query->where('province_id', $request->province_id);
+        }
+
+        $results = $query->get();
+
+        // Devuelve los resultados, podrías usar Resource para formatear la respuesta
+        return sendResponse(CityResource::collection($results));
     }
 
     public function store(StoreCityRequest $request)

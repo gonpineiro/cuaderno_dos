@@ -16,6 +16,7 @@ class Provider extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+        'pivot',
     ];
 
     public function products()

@@ -28,13 +28,14 @@ class OrderResource extends JsonResource
                 break;
         }
         $array['estado_general'] = $this->getGeneralState();
-        $array['estado_shipment'] = $this->shipment ? strtoupper($this->shipment->getGeneralState()->description) : null;
+        $array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
 
         return $array;
     }
 
     private function complete($array)
     {
+        $array['type_price'] = $this->price_quote->type_price;
         $array['user'] = $this->user;
 
         $this->client->city;
@@ -43,6 +44,7 @@ class OrderResource extends JsonResource
         $this->payment_method && $array['payment_method'] = $this->payment_method;
 
         $array['type'] = $this->type;
+        $array['user_complete'] = $this->user_complete;
 
         $array['init_state'] = null;
         if ($this->type->value == 'online') {
@@ -60,6 +62,7 @@ class OrderResource extends JsonResource
 
         $array['detail'] = OrderProductResource::collection($this->detail);
 
+        $array['activity'] =$this->activities;
         return $array;
     }
 
@@ -70,9 +73,42 @@ class OrderResource extends JsonResource
         $array['user'] = $this->user->name;
         $array['client'] = $this->client;
         $array['type'] = $this->type->value;
+        $array['type_price'] = $this->price_quote->type_price;
         $this->payment_method && $array['payment_method'] = $this->payment_method->description;
         $array['vehiculo'] = $this->vehiculo;
 
         return $array;
+    }
+
+    public static function toForm($order)
+    {
+        $base = [
+            'id' => $order->id,
+            'client_id' => $order->client_id,
+            'type_id' => $order->type_id,
+            'brand_id' => $order->vehiculo->brand_id,
+            'vehiculo_id' => $order->vehiculo_id,
+            'chasis' => $order->chasis,
+            'contacto' => $order->contacto,
+            'year' => $order->year,
+
+            /* Pedidos General */
+            'payment_method_id' => $order->payment_method_id,
+            'invoice_number' => $order->invoice_number,
+
+            /* Pedidos Unicos */
+            'deposit' => $order->deposit,
+            'estimated_date' => $order->estimated_date,
+
+            /* Pedidos siniestro */
+            'remito' => $order->remito,
+            'workshop' => $order->workshop,
+
+            /* 'type_price_id' => $order->type_price_id,
+            'information_source_id' => $order->information_source_id, */
+            'observation' => $order->observation,
+        ];
+
+        return $base;
     }
 }

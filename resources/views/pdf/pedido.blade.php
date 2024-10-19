@@ -84,6 +84,10 @@
                 <td>Vendedor:</td>
                 <td>{{$pedido->user->name}}</td>
             </tr>
+            <tr>
+                <td>Fecha:</td>
+                <td>{{$fecha}}</td>
+            </tr>
         </table>
         <hr>
         <h3>Observaciones</h3>
@@ -114,8 +118,23 @@
     </table>
     <hr>
     <p class="w-100 importe">
-        IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}: <span class="total">{{$total}}</span>
+        @if ($pedido->payment_method && $pedido->payment_method->value === 'online')
+        PAGADO ONLINE:
+        @else
+        IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}:
+        @endif
+
+        <span class="total">{{$total}}</span>
     </p>
+    @if (isset($pedido->deposit))
+
+    <p class="">
+        SEÑA: <span class="total">{{$deposit}}</span>
+    </p>
+    <p class="">
+        DIFERENCIA: <span class="total">{{$diferencia}}</span>
+    </p>
+    @endif
 </body>
 
 </html>

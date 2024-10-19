@@ -8,7 +8,6 @@ use App\Models\Province;
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,7 +28,7 @@ class ApiController extends \App\Http\Controllers\Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password)
         ]);
 
         return response()->json([
@@ -71,10 +70,7 @@ class ApiController extends \App\Http\Controllers\Controller
 
         \Tymon\JWTAuth\Facades\JWTAuth::invalidate($request->token);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User has been logged out'
-        ]);
+        return sendResponse('Afuera!!');
     }
 
     public function get_user()
@@ -97,7 +93,7 @@ class ApiController extends \App\Http\Controllers\Controller
     protected function respondWithToken($token)
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
-        $user =User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
         $user->roles;
 
         $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();

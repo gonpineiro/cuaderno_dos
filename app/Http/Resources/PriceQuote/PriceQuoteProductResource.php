@@ -27,7 +27,7 @@ class PriceQuoteProductResource extends JsonResource
         return $array;
     }
 
-    public static function pdfArray($detail, Coeficiente $coef = null)
+    public static function pdfArray($detail, Coeficiente $coef = null, $truncate_int)
     {
         $array = [];
 
@@ -37,7 +37,7 @@ class PriceQuoteProductResource extends JsonResource
 
             $array[] = [
                 'code' => $value->product->code,
-                'description' => truncateString($value->product->description, 50),
+                'description' => truncateString($value->product->description, $truncate_int),
                 'amount' => $value->amount,
                 'unit_price' => $unitario,
                 'total' => $unitario * $value->amount,

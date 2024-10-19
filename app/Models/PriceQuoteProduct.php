@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Models\{Table, Product, ProductOther};
+use App\Models\{Table, Product};
 use App\Models\Traits\LogsActivity;
 
 class PriceQuoteProduct extends Model
@@ -13,6 +13,16 @@ class PriceQuoteProduct extends Model
     use SoftDeletes, LogsActivity;
 
     protected $fillable = [
+        'price_quote_id',
+        'state_id',
+        'product_id',
+        'provider_id',
+        'amount',
+        'unit_price',
+        'quote',
+    ];
+
+    protected static $logAttributes = [
         'price_quote_id',
         'state_id',
         'product_id',
@@ -50,7 +60,7 @@ class PriceQuoteProduct extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function price_quote()

@@ -15,6 +15,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CoeficienteController;
+use App\Http\Controllers\ComboController;
+use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\VehiculoController;
 
@@ -28,16 +30,23 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
+    Route::post('ciudad/buscar', [CityController::class, 'search']);
     Route::resource('ciudad', CityController::class);
     Route::resource('vehiculo', VehiculoController::class);
 
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
-    Route::get('cliente/buscar', [ClientController::class, 'search']);
-    Route::resource('cliente', ClientController::class)->except(['show']);
+    Route::post('cliente/buscar', [ClientController::class, 'search']);
+    Route::post('cliente/update', [ClientController::class, 'update']);
+    Route::resource('cliente', ClientController::class)->except(['show', 'update']);
 
     Route::resource('marca', BrandController::class);
 
+    Route::post('product_marca/borrar', [ProductBrandController::class, 'delete']);
+    Route::post('product_marca/update', [ProductBrandController::class, 'update']);
+    Route::resource('product_marca', ProductBrandController::class)->except(['update', 'delete']);
+
     Route::get('producto/buscar', [ProductController::class, 'search']);
+    Route::post('producto/borrar', [ProductController::class, 'delete']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);
@@ -89,8 +98,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('update_envio_product', [ShipmentController::class, 'update_envio_product']);
 
     /* Cotizaciones */
-    Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show', 'destroy']);
+    Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show']);
     Route::put('cotizacion/{id}', [PriceQuoteController::class, 'updateCotizacion']);
+    Route::post('cotizacion/borrar', [PriceQuoteController::class, 'destroy']);
     Route::put('cotizacion/{id}/update-productos', [PriceQuoteController::class, 'update']);
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
@@ -104,10 +114,19 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Ordenes de compra */
     Route::post('ordenes_compra/generar_pedir', [PurchaseOrderController::class, 'generar_pedir']);
     Route::post('ordenes_compra/producto_generar_pedir', [PurchaseOrderController::class, 'producto_generar_pedir']);
+    Route::post('ordenes_compra/producto_modificar_pedir', [PurchaseOrderController::class, 'producto_modificar_pedir']);
     Route::get('ordenes_compra/pedir', [PurchaseOrderController::class, 'pedir']);
+    Route::post('ordenes_compra/borrar', [PurchaseOrderController::class, 'delete']);
     Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
     Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);
     Route::resource('ordenes_compra', PurchaseOrderController::class);
+
+    /* Combs */
+    Route::get('combos', [ComboController::class, 'index']);
+    Route::post('combos/borrar', [ComboController::class, 'destroy']);
+    Route::post('combos', [ComboController::class, 'store']);
+    Route::post('combos/update', [ComboController::class, 'update']);
+
 
     /* Coeficientes */
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);

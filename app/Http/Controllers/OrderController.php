@@ -19,8 +19,10 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
-
-    use TraitPedidosOnline, TraitPedidosCliente, TraitPedidos, TraitPedidosSiniestro;
+    use TraitPedidosOnline/* Ver si no se usa mas */,
+        TraitPedidosCliente/* Ver si no se usa mas */,
+        TraitPedidos,
+        TraitPedidosSiniestro;
 
     private function hayDuplicados($productos)
     {
@@ -67,7 +69,7 @@ class OrderController extends \App\Http\Controllers\Controller
                     'provider_id' => $item['provider'] ? $item['provider']['id'] : null,
                     'amount' => $item['amount'],
                     'unit_price' => $item['unit_price'],
-                    'description' => $item['description'],
+                    /* 'description' => $item['description'], */
                     'state_id' => $item['state']['id'],
                 ];
 
@@ -130,15 +132,20 @@ class OrderController extends \App\Http\Controllers\Controller
         $order = Order::find($id);
         $order->client;
         $order->user;
-        $detail = OrderProductResource::pdfArray($order->detail);
+        $detail = OrderProductResource::pdfArray($order->detail_);
 
         $total = get_total_price($detail);
 
+        $a =  $order->payment_method->value;
+        $fecha = \Carbon\Carbon::parse($order->created_at)->format('d/m/Y');
         $data = [
             'pedido' => $order,
             'cotizacion' => $order->price_quote,
             'detail' => OrderProductResource::formatPdf($detail),
+            'deposit' => isset($order->deposit) ? formatoMoneda($order->deposit) : null,
+            'diferencia' => isset($order->deposit) ? formatoMoneda($total - $order->deposit) : null,
             'total' => formatoMoneda($total),
+            'fecha' => $fecha
         ];
 
         $pdf = Pdf::loadView('pdf.pedido', $data);
