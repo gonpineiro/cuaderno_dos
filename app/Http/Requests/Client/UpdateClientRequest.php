@@ -80,7 +80,7 @@ class UpdateClientRequest extends FormRequest
             'email.required' => 'Correo electronico es requerido',
             'email.max' => 'Correo electronico no debe superar los 100 caracteres',
             'email.email' => 'Correo electronico invalido',
-            'email.unique' => 'Correo electronico ya existente',
+            /* 'email.unique' => 'Correo electronico ya existente', */
 
             'city_id.required' => 'La ciudad es requerida',
         ];
