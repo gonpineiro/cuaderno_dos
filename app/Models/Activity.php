@@ -11,6 +11,6 @@ class Activity extends \Spatie\Activitylog\Models\Activity
         'causer_type',
         /* 'created_at', */
         'updated_at',
-        'properties',
+        /* 'properties', */
     ];
 }

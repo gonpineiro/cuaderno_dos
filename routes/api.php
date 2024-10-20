@@ -56,6 +56,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Route::post('producto/guardar-simple', [ProductController::class, 'storeIsSimple']); */
     /* Route::post('producto/guardar-unico', [ProductController::class, 'storeIsSpecial']); */
 
+    Route::get('producto/audit', [ProductController::class, 'audit']);
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
     Route::get('producto/{id}/pedidos', [ProductController::class, 'pedidos']);

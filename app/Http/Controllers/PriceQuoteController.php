@@ -67,6 +67,7 @@ class PriceQuoteController extends Controller
 
             $data = $request->all();
             $data['user_id'] = $user->id;
+            unset($data['created_at']);
 
             $price_quote = PriceQuote::create($data);
 
@@ -328,7 +329,7 @@ class PriceQuoteController extends Controller
 
         $truncate = $request->type === 'interno' ? 44 : 59;
         $detail = PriceQuoteProductResource::pdfArray($order->detail_cotizable, $contado_deb,  $truncate);
-        $detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
+        //$detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
 
         $total = get_total_price($detail);
 
@@ -355,7 +356,8 @@ class PriceQuoteController extends Controller
             $multiplo = $coef['coeficiente'] * $coef['value'];
             $total = 0;
             foreach ($detail_lista as $value) {
-                $valor = !$coef['cuotas'] ? redondearNumero($value['unit_price'] * $multiplo) : $value['unit_price'] * $multiplo;
+                //$valor = !$coef['cuotas'] ? redondearNumero($value['unit_price'] * $multiplo) : $value['unit_price'] * $multiplo;
+                $valor = redondearNumero($value['unit_price'] * $multiplo);
                 $total += $valor * $value['amount'];
             }
 

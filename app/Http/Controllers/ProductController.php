@@ -13,6 +13,7 @@ use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Http\Resources\Product\FueraCatalogoResource;
 use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductResource;
+use App\Models\Activity;
 use App\Models\Order;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
@@ -395,5 +396,16 @@ class ProductController extends \App\Http\Controllers\Controller
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage(), 500);
         }
+    }
+
+    public function audit()
+    {
+        $logs = Activity::with(['causer', 'subject']) // Incluye las relaciones causer y subject
+            ->where('subject_type', 'App\Models\Product') // Filtra por el modelo Product
+            ->latest() // Ordena por los más recientes
+            ->limit(500) // Limita a los últimos 500 registros
+            ->get();
+
+        return  sendResponse($logs);
     }
 }

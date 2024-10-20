@@ -46,6 +46,7 @@ class PriceQuoteResource extends JsonResource
         $array['vehiculo'] = $this->vehiculo;
 
         $array['observation'] = $this->observation;
+        $array['created_at'] = $this->created_at->format('Y-m-d');
         if ($this->order) {
 
             $this->order->type;
@@ -75,6 +76,7 @@ class PriceQuoteResource extends JsonResource
         $array['client']['phone'] = $this->client->phone;
         $array['state'] = $this->state;
         $array['vehiculo'] = $this->vehiculo;
+        $array['created_at'] = $this->created_at->format('Y-m-d');
 
         return $array;
     }
@@ -92,6 +94,7 @@ class PriceQuoteResource extends JsonResource
             'type_price_id' => $priceQuote->type_price_id,
             'information_source_id' => $priceQuote->information_source_id,
             'observation' => $priceQuote->observation,
+            'created_at' => $priceQuote->created_at->format('Y-m-d'),
         ];
     }
 

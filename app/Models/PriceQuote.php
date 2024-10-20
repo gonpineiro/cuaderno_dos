@@ -23,6 +23,7 @@ class PriceQuote extends Model
         'information_source_id',
         'type_price_id',
         'observation',
+        'created_at'
     ];
 
     protected $dates = ['deleted_at'];

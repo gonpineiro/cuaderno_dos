@@ -34,10 +34,11 @@
     <div class="etiqueta">
         <table>
             <tr>
-                <td class="cliente">{{$shipment->client->name}}</td>
+                <td>{{$shipment->client->name}}</td>
+                <td class="r">{{$shipment->transport}}</td>
             </tr>
             <tr>
-                <td class="cliente">{{$shipment->client->adress}}</td>
+                <td>{{$shipment->client->adress}}</td>
                 <td class="r">{{$total}}</td>
             </tr>
             <tr>
@@ -46,6 +47,10 @@
             </tr>
             <tr>
                 <td>{{$shipment->client->city->province->name}}</td>
+            </tr>
+            <tr>
+                <td>{{$shipment->client->phone}}</td>
+                <td>{{$shipment->observation}}</td>
             </tr>
         </table>
     </div>
