@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\StoreProductSimpleRequest;
+use App\Http\Resources\Product\AuditResource;
 use App\Http\Resources\Product\ProductCotizacionesResource;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
@@ -398,14 +399,15 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function audit()
+    public function audit(Request $request)
     {
-        $logs = Activity::with(['causer', 'subject']) // Incluye las relaciones causer y subject
-            ->where('subject_type', 'App\Models\Product') // Filtra por el modelo Product
-            ->latest() // Ordena por los más recientes
-            ->limit(500) // Limita a los últimos 500 registros
+        /* $logs = Activity::where('subject_type', 'App\Models\Product') */
+        $logs = Activity::where('subject_type', $request->subject_type)
+            ->where('log_name', $request->log_name)
+            ->latest()
+            ->limit(500)
             ->get();
 
-        return  sendResponse($logs);
+        return sendResponse(AuditResource::collection($logs));
     }
 }
