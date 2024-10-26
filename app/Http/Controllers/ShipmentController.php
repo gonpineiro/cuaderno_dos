@@ -193,7 +193,7 @@ class ShipmentController extends Controller
         $detail = ShipmentResource::pdfArray($shipment->detail, 42);
 
         $isOnline = $shipment->payment_method->value === 'online';
-        $total = $isOnline ? 0 : get_total_price($detail);
+        $total = $isOnline && $request->type === 'etiqueta' ? 0 : get_total_price($detail);
 
         $vars = [
             'shipment' => $shipment,
