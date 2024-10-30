@@ -129,8 +129,8 @@ class Shipment extends Model
             return  $a->state->value == 'despachado';
         });
 
-        $contrareemboldo = $detail->sum(function ($a) {
-            return  $a->state->value == 'contrareemboldo';
+        $contrareembolso = $detail->sum(function ($a) {
+            return  $a->state->value == 'contrareembolso';
         });
 
         $cancelado = $detail->sum(function ($a) {
@@ -145,8 +145,8 @@ class Shipment extends Model
             $estadoGeneral = 'listo_enviar';
         } else if ($despachado > 0) {
             $estadoGeneral = 'despachado';
-        } else if ($contrareemboldo > 0) {
-            $estadoGeneral = 'contrareemboldo';
+        } else if ($contrareembolso > 0) {
+            $estadoGeneral = 'contrareembolso';
         } else if ($cancelado > 0) {
             $estadoGeneral = 'cancelado';
         }

@@ -28,7 +28,8 @@ class ShipmentController extends Controller
                 'pendiente' => 1,
                 'listo_enviar' => 2,
                 'despachado' => 3,
-                'contrareemboldo' => 4,
+                'contrareembolso' => 4,
+                'cancelado' => 5,
             ][$shipment->getGeneralState()->value];
         });
 

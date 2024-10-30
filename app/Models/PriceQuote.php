@@ -160,9 +160,15 @@ class PriceQuote extends Model
 
     public function getToAsignAttribute()
     {
+        $no_cotizable = Table::where('name', 'price_quote_state')->where('value', 'no cotizar')->first();
+        $hasSpecialProducts = $this->detail()->with('product')->get()
+            ->contains(function ($item) use ($no_cotizable) {
+                return $item->product->is_special && $item->state_id !== $no_cotizable->id;
+            });
+
         if ($this->client->is_insurance) {
             return Table::where('name', 'order_type')->where('value', 'siniestro')->first();
-        } else if ($this->products->contains('is_special', true)) {
+        } else if ($hasSpecialProducts) {
             return Table::where('name', 'order_type')->where('value', 'cliente')->first();
         } else {
             return Table::where('name', 'order_type')->where('value', 'online')->first();
