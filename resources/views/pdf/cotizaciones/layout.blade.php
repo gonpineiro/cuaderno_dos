@@ -47,12 +47,12 @@
 
 <body>
     @if ($type != 'interno')
-    {{-- <div class="images">
+    <div class="images">
         <img src="{{ public_path('assets/images/logoallende.png') }}" style="width: 40%; margin-right: 50px">
         <img src="{{ public_path('assets/images/fiat.png') }}" style="width: 8%; margin-right: 20px">
         <img src="{{ public_path('assets/images/peugeot.png') }}" style="width: 13%; margin-right: 20px">
         <img src="{{ public_path('assets/images/renault.png') }}" style="width: 15%; margin-right: 20px">
-    </div> --}}
+    </div>
     <hr>
     <table>
         <tr>
