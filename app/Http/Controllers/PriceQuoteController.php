@@ -151,14 +151,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -200,14 +194,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -249,14 +237,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -269,6 +251,19 @@ class PriceQuoteController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    private function save_shipment(Request $request, $order)
+    {
+        if ($request->envio) {
+            $shipment = ShipmentController::storeShipment($request->envio, $order);
+
+            $order->payment_method_id = $request->envio['payment_method_id'];
+            $order->shipment_id = $shipment->id;
+            $order->save();
+
+            $order->setShipmentState();
         }
     }
 
