@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\PriceQuote;
 
+use App\Http\Resources\ClientResource;
 use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -86,6 +87,7 @@ class PriceQuoteResource extends JsonResource
         return [
             'id' => $priceQuote->id,
             'client_id' => $priceQuote->client_id,
+            'client' =>  new ClientResource($priceQuote->client, 'complete'),
             'brand_id' => $priceQuote->vehiculo->brand_id,
             'vehiculo_id' => $priceQuote->vehiculo_id,
             'chasis' => $priceQuote->chasis,

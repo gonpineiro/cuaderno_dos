@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\ClientResource;
 use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -85,6 +86,7 @@ class OrderResource extends JsonResource
         $base = [
             'id' => $order->id,
             'client_id' => $order->client_id,
+            'client' =>  new ClientResource($order->client, 'complete'),
             'type_id' => $order->type_id,
             'brand_id' => $order->vehiculo->brand_id,
             'vehiculo_id' => $order->vehiculo_id,

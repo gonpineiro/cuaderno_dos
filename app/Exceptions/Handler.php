@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
 
         /** Ocuerre un error en la base de datos */
         $this->renderable(function (\Illuminate\Database\QueryException $e) {
-            return sendResponse(null, 'No es posible realizar esta operación', 301);
+            return sendResponse(null, $e->getMessage(), 301);
         });
 
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
