@@ -13,6 +13,7 @@ use App\Http\Requests\PriceQuote\UpdatePriceQuoteRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
+use App\Models\Client;
 use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\PriceQuote;
@@ -75,6 +76,15 @@ class PriceQuoteController extends Controller
             if (!$this->storePriceQuoteProduct($request, $price_quote->id)) {
                 DB::rollBack();
                 return sendResponse(null, 'No se pudieron guardar los productos de la orden');
+            }
+
+            /* Actualizamos los datos del cliente con informacion de la cotizacion */
+            $client = Client::find($price_quote->client_id);
+            if (!$client->is_company && !$client->is_insurance) {
+                $client->vehiculo_id = $price_quote->vehiculo_id;
+                $client->chasis = $price_quote->chasis;
+                $client->year = $price_quote->year;
+                $client->save();
             }
 
             DB::commit();

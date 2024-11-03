@@ -18,20 +18,61 @@ trait TraitPedidos
     public function index(): \Illuminate\Http\JsonResponse
     {
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
-        $pedidos = Order::where('type_id', '!=', $siniestro->id)->orderBy('estimated_date')->get();
 
+        // Traer todos los pedidos que no sean de tipo "siniestro" ordenados por `estimated_date`
+        $pedidos = Order::where('type_id', '!=', $siniestro->id)->get();
+
+        // Ordenar los pedidos de acuerdo a las reglas específicas de cada estado
         $pedidos = $pedidos->sortBy(function ($order) {
             return [
                 'incompleto' => 1,
                 'pendiente' => 2,
                 'retirar' => 3,
                 'entregado' => 4,
-                'cancelado' => 5,
-                'envio' => 6,
+                'envio' => 4,
+                'cancelado' => 4,
             ][$order->getGeneralState()->value];
+        })->groupBy(function ($order) {
+            // Agrupar los pedidos por el estado general
+            return $order->getGeneralState()->value;
         });
 
-        $pedidos = OrderResource::collection($pedidos);
+        // Aplicar el orden específico dentro de cada grupo de estado
+        $pedidosOrdenados = collect();
+
+        // Incompletos: Ordenados por fecha estimada, de más reciente a más antigua
+        if ($pedidos->has('incompleto')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['incompleto']->sortByDesc('estimated_date')
+            );
+        }
+
+        // Pendientes: Ordenados por fecha de creación, de más antigua a más reciente
+        if ($pedidos->has('pendiente')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['pendiente']->sortBy('created_at')
+            );
+        }
+
+        // Listo para retirar: Ordenados por fecha de creación, de más antigua a más reciente
+        if ($pedidos->has('retirar')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['retirar']->sortBy('created_at')
+            );
+        }
+
+        // Entregados, Cancelados y Envíos: Ordenados por fecha de creación, de más reciente a más antigua
+        $estadosFinales = ['entregado', 'cancelado', 'envio'];
+        foreach ($estadosFinales as $estado) {
+            if ($pedidos->has($estado)) {
+                $pedidosOrdenados = $pedidosOrdenados->concat(
+                    $pedidos[$estado]->sortByDesc('created_at')
+                );
+            }
+        }
+
+        // Convertir los pedidos ordenados a un recurso de colección
+        $pedidos = OrderResource::collection($pedidosOrdenados);
 
         return sendResponse($pedidos);
     }

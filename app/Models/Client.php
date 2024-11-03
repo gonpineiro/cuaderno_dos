@@ -22,6 +22,7 @@ class Client extends Model
         'is_company',
         'reference_id',
         'year',
+        'chasis',
         'vehiculo_id',
         'observation',
     ];
@@ -60,4 +61,5 @@ class Client extends Model
             }
         });
     }
+
 }
