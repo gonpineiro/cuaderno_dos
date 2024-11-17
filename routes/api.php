@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientChasisController;
 use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +35,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('ciudad', CityController::class);
     Route::resource('vehiculo', VehiculoController::class);
 
+    /* Clientes */
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
     Route::post('cliente/update', [ClientController::class, 'update']);
     Route::resource('cliente', ClientController::class)->except(['show', 'update']);
+
+    /* Cliente Chasis */
+    Route::post('cliente_chasis/update', [ClientChasisController::class, 'cliente_chasis_update']);
 
     Route::resource('marca', BrandController::class);
 

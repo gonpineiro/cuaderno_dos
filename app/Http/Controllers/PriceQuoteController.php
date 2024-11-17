@@ -14,6 +14,7 @@ use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Models\Client;
+use App\Models\ClientChasis;
 use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\PriceQuote;
@@ -71,6 +72,8 @@ class PriceQuoteController extends Controller
             unset($data['created_at']);
 
             $price_quote = PriceQuote::create($data);
+
+            ClientChasis::updateElement($price_quote);
 
             /* Intentamos guardar lss price_quotenes productos */
             if (!$this->storePriceQuoteProduct($request, $price_quote->id)) {

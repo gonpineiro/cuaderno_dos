@@ -49,8 +49,11 @@ class ClientResource extends JsonResource
     {
         $array['city'] = new CityResource($this->city);
 
-        $this->vehiculo && $this->vehiculo->brand;
-        $array['vehiculo'] = $this->vehiculo;
+        /* $this->vehiculo && $this->vehiculo->brand;
+        $array['vehiculo'] = $this->vehiculo; */
+
+        $this->vehiculos->load('vehiculo.brand');
+        $array['vehiculos'] = $this->vehiculos;
         return $array;
     }
 

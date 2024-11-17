@@ -174,4 +174,14 @@ class PriceQuote extends Model
             return Table::where('name', 'order_type')->where('value', 'online')->first();
         }
     }
+
+    public function getClientChasisAttribute()
+    {
+        return [
+            'client_id' => $this->client_id,
+            'chasis' => $this->chasis,
+            'vehiculo_id' => $this->vehiculo_id,
+            'year' => $this->year,
+        ];
+    }
 }
