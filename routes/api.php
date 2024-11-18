@@ -108,6 +108,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show']);
     Route::put('cotizacion/{id}', [PriceQuoteController::class, 'updateCotizacion']);
     Route::post('cotizacion/borrar', [PriceQuoteController::class, 'destroy']);
+    Route::post('cotizacion/search', [PriceQuoteController::class, 'search']);
     Route::put('cotizacion/{id}/update-productos', [PriceQuoteController::class, 'update']);
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);

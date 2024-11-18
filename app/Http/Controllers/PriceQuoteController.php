@@ -54,6 +54,42 @@ class PriceQuoteController extends Controller
         return sendResponse(PriceQuoteResource::collection($priceQuote));
     }
 
+    public function search(Request $request)
+    {
+        $query = PriceQuote::query();
+
+        foreach ($request->all() as $key => $value) {
+            if (!$value) {
+                continue; // Ignorar valores vacíos o nulos
+            }
+
+            switch ($key) {
+                case 'client':
+                    $query->whereHas('client', function ($q) use ($value) {
+                        $q->where('name', 'LIKE', '%' . $value . '%');
+                    });
+                    break;
+
+                case 'vehiculo':
+                    $query->whereHas('vehiculo', function ($q) use ($value) {
+                        $q->where('name', 'LIKE', '%' . $value . '%');
+                    });
+                    break;
+                case 'user':
+                    $query->whereHas('user', function ($q) use ($value) {
+                        $q->where('name', 'LIKE', '%' . $value . '%');
+                    });
+                    break;
+
+                default:
+                    $query->where($key, 'LIKE', '%' . $value . '%');
+                    break;
+            }
+        }
+
+        return sendResponse(PriceQuoteResource::collection($query->get()));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
