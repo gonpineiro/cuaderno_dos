@@ -306,7 +306,7 @@ class ProductController extends \App\Http\Controllers\Controller
         if (!$products) {
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
-        return sendResponse(new ProductResource($products));
+        return sendResponse(ProductResource::complete($products));
     }
 
     public function search(Request $request)

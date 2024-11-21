@@ -171,4 +171,9 @@ class Product extends Model
 
         return $this->ship . $this->module . $this->side . $column . $row;
     }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject')->orderBy('created_at', 'desc');;
+    }
 }

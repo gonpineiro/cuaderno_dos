@@ -34,7 +34,7 @@ class AuditResource extends JsonResource
             'id' => $this->id,
             'causer' => $this->causer->name,
             'log_name' => $this->log_name,
-            'ads' => $this->get_properties_updated(),
+            'updated' => $this->get_properties_updated(),
 
             'subject' => $product ? [
                 'id' => $product->id,
@@ -54,7 +54,6 @@ class AuditResource extends JsonResource
 
     private function get_properties_updated()
     {
-
         if ($this->log_name != 'updated') {
             return null;
         }
