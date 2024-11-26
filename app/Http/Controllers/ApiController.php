@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CoeficienteResource;
 use App\Models\Coeficiente;
+use App\Models\Provider;
 use App\Models\Province;
 use App\Models\Table;
 use App\Models\User;
@@ -101,6 +102,7 @@ class ApiController extends \App\Http\Controllers\Controller
             'user' => $user,
             'coeficientes' => CoeficienteResource::collection($coeficientes),
             'provinces' => Province::all(),
+            'providers' => Provider::all(),
             'access_token' => $token,
             'tables' => Table::all(),
         ];
