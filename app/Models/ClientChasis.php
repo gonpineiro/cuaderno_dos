@@ -35,7 +35,16 @@ class ClientChasis extends Model
 
     public static function updateElement($data)
     {
-        $a = $data->client_chasis;
+        $client = Client::find($data->client_id);
+        if ($client->reference_id === 'ID362') {
+            return false;
+        }
+
+        $information_source = Table::find($data->information_source_id);
+        if ($information_source->value === 'wap-mecanicos') {
+            return false;
+        }
+
         /* Cuando se envia chasis */
         if (!$data->chasis) {
             $cc = self::where('client_id', $data->client_id)

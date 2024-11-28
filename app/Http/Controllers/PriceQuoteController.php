@@ -23,6 +23,7 @@ use App\Models\Shipment;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PriceQuoteController extends Controller
 {
@@ -58,38 +59,71 @@ class PriceQuoteController extends Controller
 
     public function search(Request $request)
     {
-        $query = PriceQuote::query();
+        try {
+            $query = PriceQuote::query();
 
-        foreach ($request->all() as $key => $value) {
-            if (!$value) {
-                continue; // Ignorar valores vacíos o nulos
+            foreach ($request->all() as $key => $value) {
+                if (!$value) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'client':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'vehiculo':
+                        $query->whereHas('vehiculo', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'user':
+                        $query->whereHas('user', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'created_at':
+                        try {
+                            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
+                                // Formato dd/mm/yyyy
+                                $formattedDate = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+                                $query->whereDate('created_at', $formattedDate);
+                            } elseif (preg_match('/^\d{2}\/\d{4}$/', $value)) {
+                                // Formato mm/yyyy
+                                $formattedDate = Carbon::createFromFormat('m/Y', $value)->startOfMonth()->format('Y-m-d');
+                                $query->whereBetween('created_at', [
+                                    Carbon::createFromFormat('m/Y', $value)->startOfMonth(),
+                                    Carbon::createFromFormat('m/Y', $value)->endOfMonth()
+                                ]);
+                            } elseif (preg_match('/^\d{4}$/', $value)) {
+                                // Formato yyyy (año completo)
+                                $year = (int)$value;
+                                $query->whereBetween('created_at', [
+                                    Carbon::createFromFormat('Y', $year)->startOfYear(),
+                                    Carbon::createFromFormat('Y', $year)->endOfYear()
+                                ]);
+                            } else {
+                                // Si el formato no coincide, lanza una excepción
+                                throw new \Exception("Formato de fecha no válido");
+                            }
+                        } catch (\Exception $e) {
+                            // Manejo del error si el formato es inválido
+                            throw new \InvalidArgumentException("El formato de la fecha es inválido. Usa dd/mm/yyyy o mm/yyyy.");
+                        }
+                        break;
+
+                    default:
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        break;
+                }
             }
 
-            switch ($key) {
-                case 'client':
-                    $query->whereHas('client', function ($q) use ($value) {
-                        $q->where('name', 'LIKE', '%' . $value . '%');
-                    });
-                    break;
-
-                case 'vehiculo':
-                    $query->whereHas('vehiculo', function ($q) use ($value) {
-                        $q->where('name', 'LIKE', '%' . $value . '%');
-                    });
-                    break;
-                case 'user':
-                    $query->whereHas('user', function ($q) use ($value) {
-                        $q->where('name', 'LIKE', '%' . $value . '%');
-                    });
-                    break;
-
-                default:
-                    $query->where($key, 'LIKE', '%' . $value . '%');
-                    break;
-            }
+            return sendResponse(PriceQuoteResource::collection($query->get()));
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 301);
         }
-
-        return sendResponse(PriceQuoteResource::collection($query->get()));
     }
 
     /**
@@ -382,7 +416,7 @@ class PriceQuoteController extends Controller
         $vars = [
             'cotizacion' => $order,
             'detail' => PriceQuoteProductResource::formatPdf($detail),
-            'coefs' => $this->get_total_calculadora($order->detail_cotizable, $contado_deb),
+            'coefs' => $this->get_total_calculadora($order->detail_cotizable/* , $contado_deb */),
             'total' => formatoMoneda($total),
             'type' => $request->type,
             'is_contado' => $is_contado
