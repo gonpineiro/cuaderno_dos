@@ -69,6 +69,7 @@ class ProductResource extends JsonResource
         $array = $product->toArray();
         $array['order_product_id'] = $order_product->id;
         $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
+        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
         $array['brand'] = $product->brand ? $product->brand->name : null;
         $array['ubication'] = $product->ubication;
         $array['description'] = $product->description;
