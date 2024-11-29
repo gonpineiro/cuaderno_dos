@@ -61,7 +61,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Route::post('producto/guardar-simple', [ProductController::class, 'storeIsSimple']); */
     /* Route::post('producto/guardar-unico', [ProductController::class, 'storeIsSpecial']); */
 
-    Route::get('producto/audit', [ProductController::class, 'audit']);
+    Route::get('producto/audit', [ProductController::class, 'audit'])->middleware('permission:audit.product.view');
 
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
@@ -147,5 +147,3 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('permissions/save_element', [PermissionController::class, 'save_element']);
     Route::post('permissions/change_role_permission', [PermissionController::class, 'change_role_permission']);
 });
-
-/* php artisan make:model Api/Product -rcmfsR */

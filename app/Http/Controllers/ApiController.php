@@ -95,7 +95,9 @@ class ApiController extends \App\Http\Controllers\Controller
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
         $user = User::find(auth()->user()->id);
-        $user->roles;
+        $user->roles->map(function($r) {
+            $r->permissions;
+        });
 
         $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
         $data = [

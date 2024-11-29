@@ -49,5 +49,9 @@ class Handler extends ExceptionHandler
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
             return sendResponse(null, $e->getMessage(), 302);
         });
+
+        $this->renderable(function (\Spatie\Permission\Exceptions\UnauthorizedException $e) {
+            return sendResponse(null, $e->getMessage(), 401);
+        });
     }
 }
