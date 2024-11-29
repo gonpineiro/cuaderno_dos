@@ -43,7 +43,7 @@ trait TraitPedidos
         // Incompletos: Ordenados por fecha estimada, de más reciente a más antigua
         if ($pedidos->has('incompleto')) {
             $pedidosOrdenados = $pedidosOrdenados->concat(
-                $pedidos['incompleto']->sortByDesc('estimated_date')
+                $pedidos['incompleto']->sortBy('estimated_date')
             );
         }
 

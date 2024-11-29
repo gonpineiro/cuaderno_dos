@@ -65,6 +65,7 @@ class ProductResource extends JsonResource
         $array['brand'] = $product->brand ? $product->brand->name : null;
         $array['ubication'] = $product->ubication;
         $array['description'] = $product->description;
+        $array['activities'] = AuditResource::collection($product->activities);
 
         if ($product->is_special) {
             $array['state'] = 'is_special';
