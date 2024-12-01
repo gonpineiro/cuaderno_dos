@@ -98,6 +98,7 @@ class ShipmentResource extends JsonResource
             $array[] = [
                 'amount' => $value->amount,
                 'code' => $value->product->code,
+                'ubication' => $value->product->ubication,
                 'description' => truncateString($value->product->description, $truncate_int),
                 'unit_price' =>  $value->unit_price,
                 'total' =>  $value->unit_price * $value->amount,

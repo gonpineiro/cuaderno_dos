@@ -51,6 +51,12 @@ trait TraitPedidos
                         });
                         break;
 
+                    case 'vehiculo':
+                        $query->whereHas('vehiculo', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
                     case 'estimated_date':
                         applyDateFilter($query, 'estimated_date', $value);
                         break;
@@ -85,9 +91,9 @@ trait TraitPedidos
                 'incompleto' => 1,
                 'pendiente' => 2,
                 'retirar' => 3,
-                'entregado' => 4,
-                'envio' => 4,
-                'cancelado' => 4,
+                'entregado' => null,
+                'envio' => null,
+                'cancelado' => null,
             ][$order->getGeneralState()->value];
         })->groupBy(function ($order) {
             // Agrupar los pedidos por el estado general
@@ -118,14 +124,17 @@ trait TraitPedidos
             );
         }
 
-        // Entregados, Cancelados y Envíos: Ordenados por fecha de creación, de más reciente a más antigua
-        $estadosFinales = ['entregado', 'cancelado', 'envio'];
-        foreach ($estadosFinales as $estado) {
+        // Agrupar entregados, cancelados y envíos en un solo grupo y ordenarlos por fecha de creación (descendente)
+        $estadosFinales = collect();
+        foreach (['entregado', 'cancelado', 'envio'] as $estado) {
             if ($pedidos->has($estado)) {
-                $pedidosOrdenados = $pedidosOrdenados->concat(
-                    $pedidos[$estado]->sortByDesc('created_at')
-                );
+                $estadosFinales = $estadosFinales->concat($pedidos[$estado]);
             }
+        }
+        if ($estadosFinales->isNotEmpty()) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $estadosFinales->sortByDesc('created_at')
+            );
         }
 
         return $pedidosOrdenados;

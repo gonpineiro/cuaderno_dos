@@ -82,6 +82,10 @@
                 <td class="bold">Cliente:</td>
                 <td>{{$shipment->client->name}}</td>
             </tr>
+            <tr>
+                <td class="bold">Vehículo:</td>
+                <td>{{$shipment->vehiculo->name}}</td>
+            </tr>
             {{-- <tr>
                 <td class="bold">Fecha:</td>
                 <td>{{date("d/m/Y", strtotime($shipment->created_at))}}</td>

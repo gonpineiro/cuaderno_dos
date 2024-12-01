@@ -80,7 +80,7 @@ class OrderResource extends JsonResource
         $array['created_at'] = $this->created_at->format('Y-m-d');
         /* $array['type'] = $this->type->value; */
         /* $array['type_price'] = $this->price_quote->type_price; */
-        /* $array['vehiculo'] = $this->vehiculo; */
+        $array['vehiculo'] = $this->vehiculo;
 
         return $array;
     }
