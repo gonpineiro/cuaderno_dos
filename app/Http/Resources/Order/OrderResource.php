@@ -72,11 +72,15 @@ class OrderResource extends JsonResource
         unset($array['observation']);
         unset($array['detail']);
         $array['user'] = $this->user->name;
-        $array['client'] = $this->client;
-        $array['type'] = $this->type->value;
-        $array['type_price'] = $this->price_quote->type_price;
+        $array['client']['id'] = $this->client->id;
+        $array['client']['name'] = $this->client->name;
+        $array['client']['phone'] = $this->client->phone;
         $this->payment_method && $array['payment_method'] = $this->payment_method->description;
-        $array['vehiculo'] = $this->vehiculo;
+        $array['estimated_date'] = $this->estimated_date;
+        $array['created_at'] = $this->created_at->format('Y-m-d');
+        /* $array['type'] = $this->type->value; */
+        /* $array['type_price'] = $this->price_quote->type_price; */
+        /* $array['vehiculo'] = $this->vehiculo; */
 
         return $array;
     }

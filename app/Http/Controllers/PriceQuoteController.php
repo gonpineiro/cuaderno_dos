@@ -85,33 +85,7 @@ class PriceQuoteController extends Controller
                         });
                         break;
                     case 'created_at':
-                        try {
-                            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
-                                // Formato dd/mm/yyyy
-                                $formattedDate = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
-                                $query->whereDate('created_at', $formattedDate);
-                            } elseif (preg_match('/^\d{2}\/\d{4}$/', $value)) {
-                                // Formato mm/yyyy
-                                $formattedDate = Carbon::createFromFormat('m/Y', $value)->startOfMonth()->format('Y-m-d');
-                                $query->whereBetween('created_at', [
-                                    Carbon::createFromFormat('m/Y', $value)->startOfMonth(),
-                                    Carbon::createFromFormat('m/Y', $value)->endOfMonth()
-                                ]);
-                            } elseif (preg_match('/^\d{4}$/', $value)) {
-                                // Formato yyyy (año completo)
-                                $year = (int)$value;
-                                $query->whereBetween('created_at', [
-                                    Carbon::createFromFormat('Y', $year)->startOfYear(),
-                                    Carbon::createFromFormat('Y', $year)->endOfYear()
-                                ]);
-                            } else {
-                                // Si el formato no coincide, lanza una excepción
-                                throw new \Exception("Formato de fecha no válido");
-                            }
-                        } catch (\Exception $e) {
-                            // Manejo del error si el formato es inválido
-                            throw new \InvalidArgumentException("El formato de la fecha es inválido. Usa dd/mm/yyyy o mm/yyyy.");
-                        }
+                        applyDateFilter($query, 'created_at', $value);
                         break;
 
                     default:

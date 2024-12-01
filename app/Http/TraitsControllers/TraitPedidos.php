@@ -77,6 +77,73 @@ trait TraitPedidos
         return sendResponse($pedidos);
     }
 
+    public function search(Request $request)
+    {
+        try {
+            $query = Order::query();
+
+            /* lient_name
+:
+"515"
+client_phone
+:
+"51"
+created_at
+:
+"155"
+estimated_date
+:
+"15"
+id
+:
+"5145"
+payment_method
+:
+"15" */
+
+            foreach ($request->all() as $key => $value) {
+                if (!$value) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'client_name':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'client_phone':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('phone', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'estimated_date':
+                        applyDateFilter($query, 'estimated_date', $value);
+                        break;
+                    case 'payment_method':
+                        $query->whereHas('payment_method', function ($q) use ($value) {
+                            $q->where('description', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'created_at':
+                        applyDateFilter($query, 'created_at', $value);
+                        break;
+
+                    default:
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        break;
+                }
+            }
+
+            return sendResponse(OrderResource::collection($query->get()));
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 301);
+        }
+    }
+
+
     public static function saveOrder(Request $request)
     {
         $user = auth()->user();

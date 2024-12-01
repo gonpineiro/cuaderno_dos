@@ -80,6 +80,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Clientes */
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
+
+    Route::post('pedido/search', [OrderController::class, 'search']);
     Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
     Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
     Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
