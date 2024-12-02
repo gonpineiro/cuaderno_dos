@@ -51,7 +51,7 @@ class PriceQuoteController extends Controller
                 ->take(1000)
                 ->get();
         } else {
-            $priceQuote = PriceQuote::orderByDesc('created_at')->take(1000)->get();
+            $priceQuote = PriceQuote::orderByDesc('created_at')->take(500)->get();
         }
 
         return sendResponse(PriceQuoteResource::collection($priceQuote));

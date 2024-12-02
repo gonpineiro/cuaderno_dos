@@ -20,7 +20,7 @@ trait TraitPedidos
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
 
         // Traer todos los pedidos que no sean de tipo "siniestro" ordenados por `estimated_date`
-        $pedidos = Order::where('type_id', '!=', $siniestro->id)->get();
+        $pedidos = Order::where('type_id', '!=', $siniestro->id)->take(500)->get();
 
         // Convertir los pedidos ordenados a un recurso de colección
         $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos));
