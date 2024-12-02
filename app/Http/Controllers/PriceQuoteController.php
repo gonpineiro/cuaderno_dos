@@ -94,7 +94,7 @@ class PriceQuoteController extends Controller
                 }
             }
 
-            return sendResponse(PriceQuoteResource::collection($query->get()));
+            return sendResponse(PriceQuoteResource::collection($query->orderByDesc('created_at')->get()));
         } catch (\Exception $th) {
             return sendResponse(null, $th->getMessage(), 301);
         }
