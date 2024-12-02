@@ -18,22 +18,126 @@ trait TraitPedidos
     public function index(): \Illuminate\Http\JsonResponse
     {
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
-        $pedidos = Order::where('type_id', '!=', $siniestro->id)->orderBy('estimated_date')->get();
 
+        // Traer todos los pedidos que no sean de tipo "siniestro" ordenados por `estimated_date`
+        $pedidos = Order::where('type_id', '!=', $siniestro->id)->get();
+
+        // Convertir los pedidos ordenados a un recurso de colección
+        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos));
+
+        return sendResponse($pedidos);
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $query = Order::query();
+
+            foreach ($request->all() as $key => $value) {
+                if (!$value) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'client_name':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'client_phone':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('phone', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'vehiculo':
+                        $query->whereHas('vehiculo', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'estimated_date':
+                        applyDateFilter($query, 'estimated_date', $value);
+                        break;
+                    case 'payment_method':
+                        $query->whereHas('payment_method', function ($q) use ($value) {
+                            $q->where('description', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'created_at':
+                        applyDateFilter($query, 'created_at', $value);
+                        break;
+
+                    default:
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        break;
+                }
+            }
+
+            $pedidos = $query->get();
+
+
+            return sendResponse(OrderResource::collection($this->ordenarPedidos($pedidos)));
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 301);
+        }
+    }
+
+    private function ordenarPedidos($pedidos)
+    {
         $pedidos = $pedidos->sortBy(function ($order) {
             return [
                 'incompleto' => 1,
                 'pendiente' => 2,
                 'retirar' => 3,
-                'entregado' => 4,
-                'cancelado' => 5,
-                'envio' => 6,
+                'entregado' => null,
+                'envio' => null,
+                'cancelado' => null,
             ][$order->getGeneralState()->value];
+        })->groupBy(function ($order) {
+            // Agrupar los pedidos por el estado general
+            return $order->getGeneralState()->value;
         });
 
-        $pedidos = OrderResource::collection($pedidos);
+        // Aplicar el orden específico dentro de cada grupo de estado
+        $pedidosOrdenados = collect();
 
-        return sendResponse($pedidos);
+        // Incompletos: Ordenados por fecha estimada, de más reciente a más antigua
+        if ($pedidos->has('incompleto')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['incompleto']->sortBy('estimated_date')
+            );
+        }
+
+        // Pendientes: Ordenados por fecha de creación, de más antigua a más reciente
+        if ($pedidos->has('pendiente')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['pendiente']->sortBy('created_at')
+            );
+        }
+
+        // Listo para retirar: Ordenados por fecha de creación, de más antigua a más reciente
+        if ($pedidos->has('retirar')) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $pedidos['retirar']->sortBy('created_at')
+            );
+        }
+
+        // Agrupar entregados, cancelados y envíos en un solo grupo y ordenarlos por fecha de creación (descendente)
+        $estadosFinales = collect();
+        foreach (['entregado', 'cancelado', 'envio'] as $estado) {
+            if ($pedidos->has($estado)) {
+                $estadosFinales = $estadosFinales->concat($pedidos[$estado]);
+            }
+        }
+        if ($estadosFinales->isNotEmpty()) {
+            $pedidosOrdenados = $pedidosOrdenados->concat(
+                $estadosFinales->sortByDesc('created_at')
+            );
+        }
+
+        return $pedidosOrdenados;
     }
 
     public static function saveOrder(Request $request)

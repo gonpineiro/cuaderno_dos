@@ -1,5 +1,8 @@
 <?php
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+
 if (!function_exists('sendResponse')) {
     function sendResponse($data, $error = null, $status = 200, $params = null): \Illuminate\Http\JsonResponse
     {
@@ -79,5 +82,37 @@ if (!function_exists('truncateString')) {
         }
         // Si no es mayor, devuelve la cadena original
         return $string;
+    }
+}
+
+if (!function_exists('applyDateFilter')) {
+    function applyDateFilter(Builder $query, string $field, string $value): void
+    {
+        try {
+            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
+                // Formato dd/mm/yyyy
+                $formattedDate = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+                $query->whereDate($field, $formattedDate);
+            } elseif (preg_match('/^\d{2}\/\d{4}$/', $value)) {
+                // Formato mm/yyyy
+                $formattedDate = Carbon::createFromFormat('m/Y', $value)->startOfMonth()->format('Y-m-d');
+                $query->whereBetween($field, [
+                    Carbon::createFromFormat('m/Y', $value)->startOfMonth(),
+                    Carbon::createFromFormat('m/Y', $value)->endOfMonth()
+                ]);
+            } elseif (preg_match('/^\d{4}$/', $value)) {
+                // Formato yyyy (año completo)
+                $year = (int)$value;
+                $query->whereBetween($field, [
+                    Carbon::createFromFormat('Y', $year)->startOfYear(),
+                    Carbon::createFromFormat('Y', $year)->endOfYear()
+                ]);
+            } else {
+                // Si el formato no coincide, lanza una excepción
+                throw new \Exception("Formato de fecha no válido");
+            }
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException("El formato de la fecha es inválido. Usa dd/mm/yyyy, mm/yyyy o yyyy.");
+        }
     }
 }

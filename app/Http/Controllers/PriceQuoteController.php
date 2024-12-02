@@ -13,6 +13,8 @@ use App\Http\Requests\PriceQuote\UpdatePriceQuoteRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteProductResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
+use App\Models\Client;
+use App\Models\ClientChasis;
 use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\PriceQuote;
@@ -21,6 +23,7 @@ use App\Models\Shipment;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PriceQuoteController extends Controller
 {
@@ -28,7 +31,7 @@ class PriceQuoteController extends Controller
     {
 
         if ($request->type === 'pendiente') {
-            $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->get();
+            $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->take(1000)->get();
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
                 ->whereHas('order', function ($query) {
@@ -36,6 +39,7 @@ class PriceQuoteController extends Controller
                 })
                 ->whereNotNull('order_id')
                 ->orderByDesc('created_at')
+                ->take(1000)
                 ->get();
         } else if ($request->type === 'siniestro') {
             $priceQuote = PriceQuote::with('order')
@@ -44,12 +48,56 @@ class PriceQuoteController extends Controller
                 })
                 ->whereNotNull('order_id')
                 ->orderByDesc('created_at')
+                ->take(1000)
                 ->get();
         } else {
-            $priceQuote = PriceQuote::orderByDesc('created_at')->get();
+            $priceQuote = PriceQuote::orderByDesc('created_at')->take(1000)->get();
         }
 
         return sendResponse(PriceQuoteResource::collection($priceQuote));
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $query = PriceQuote::query();
+
+            foreach ($request->all() as $key => $value) {
+                if (!$value) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'client':
+                        $query->whereHas('client', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'vehiculo':
+                        $query->whereHas('vehiculo', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'user':
+                        $query->whereHas('user', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+                    case 'created_at':
+                        applyDateFilter($query, 'created_at', $value);
+                        break;
+
+                    default:
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        break;
+                }
+            }
+
+            return sendResponse(PriceQuoteResource::collection($query->get()));
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 301);
+        }
     }
 
     /**
@@ -71,10 +119,21 @@ class PriceQuoteController extends Controller
 
             $price_quote = PriceQuote::create($data);
 
+            ClientChasis::updateElement($price_quote);
+
             /* Intentamos guardar lss price_quotenes productos */
             if (!$this->storePriceQuoteProduct($request, $price_quote->id)) {
                 DB::rollBack();
                 return sendResponse(null, 'No se pudieron guardar los productos de la orden');
+            }
+
+            /* Actualizamos los datos del cliente con informacion de la cotizacion */
+            $client = Client::find($price_quote->client_id);
+            if (!$client->is_company && !$client->is_insurance) {
+                $client->vehiculo_id = $price_quote->vehiculo_id;
+                $client->chasis = $price_quote->chasis;
+                $client->year = $price_quote->year;
+                $client->save();
             }
 
             DB::commit();
@@ -151,14 +210,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -200,14 +253,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -249,14 +296,8 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            if ($request->envio) {
-                $order->payment_method_id = $request->envio['payment_method_id'];
-                $shipment = ShipmentController::storeShipment($request->envio, $order);
-                $order->shipment_id = $shipment->id;
-                $order->save();
+            $this->save_shipment($request, $order);
 
-                $order->setShipmentState();
-            }
             $priceQuote->save();
 
             DB::commit();
@@ -269,6 +310,19 @@ class PriceQuoteController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    private function save_shipment(Request $request, $order)
+    {
+        if ($request->envio) {
+            $shipment = ShipmentController::storeShipment($request->envio, $order);
+
+            $order->payment_method_id = $request->envio['payment_method_id'];
+            $order->shipment_id = $shipment->id;
+            $order->save();
+
+            $order->setShipmentState();
         }
     }
 
@@ -336,7 +390,7 @@ class PriceQuoteController extends Controller
         $vars = [
             'cotizacion' => $order,
             'detail' => PriceQuoteProductResource::formatPdf($detail),
-            'coefs' => $this->get_total_calculadora($order->detail_cotizable, $contado_deb),
+            'coefs' => $this->get_total_calculadora($order->detail_cotizable/* , $contado_deb */),
             'total' => formatoMoneda($total),
             'type' => $request->type,
             'is_contado' => $is_contado

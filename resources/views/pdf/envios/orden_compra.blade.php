@@ -9,8 +9,9 @@
         <th style="width: 7%">Cant.</th>
         <th style="width: 10%">Código</th>
         <th>Descripción</th>
-        <th style="width: 11%">Precio U.</th>
-        <th style="width: 15%">Total</th>
+        <th style="width: 10%">Ubi.</th>
+        <th style="width: 13%">Precio U.</th>
+        <th style="width: 13%">Total</th>
     </tr>
 
     @foreach ($detail as $item)
@@ -18,6 +19,7 @@
         <td>{{$item['amount']}}</td>
         <td>{{$item['code']}} </td>
         <td>{{$item['description'] }}</td>
+        <td>{{$item['ubication'] }}</td>
         <td>{{$item['unit_price']}}</td>
         <td>{{$item['total']}} </td>
     </tr>

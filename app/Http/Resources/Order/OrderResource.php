@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\ClientResource;
 use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -71,10 +72,14 @@ class OrderResource extends JsonResource
         unset($array['observation']);
         unset($array['detail']);
         $array['user'] = $this->user->name;
-        $array['client'] = $this->client;
-        $array['type'] = $this->type->value;
-        $array['type_price'] = $this->price_quote->type_price;
+        $array['client']['id'] = $this->client->id;
+        $array['client']['name'] = $this->client->name;
+        $array['client']['phone'] = $this->client->phone;
         $this->payment_method && $array['payment_method'] = $this->payment_method->description;
+        $array['estimated_date'] = $this->estimated_date;
+        $array['created_at'] = $this->created_at->format('Y-m-d');
+        /* $array['type'] = $this->type->value; */
+        /* $array['type_price'] = $this->price_quote->type_price; */
         $array['vehiculo'] = $this->vehiculo;
 
         return $array;
@@ -85,6 +90,7 @@ class OrderResource extends JsonResource
         $base = [
             'id' => $order->id,
             'client_id' => $order->client_id,
+            'client' =>  new ClientResource($order->client, 'complete'),
             'type_id' => $order->type_id,
             'brand_id' => $order->vehiculo->brand_id,
             'vehiculo_id' => $order->vehiculo_id,

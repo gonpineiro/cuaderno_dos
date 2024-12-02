@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientChasisController;
 use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +35,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('ciudad', CityController::class);
     Route::resource('vehiculo', VehiculoController::class);
 
+    /* Clientes */
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
     Route::post('cliente/update', [ClientController::class, 'update']);
     Route::resource('cliente', ClientController::class)->except(['show', 'update']);
+
+    /* Cliente Chasis */
+    Route::post('cliente_chasis/update', [ClientChasisController::class, 'cliente_chasis_update']);
 
     Route::resource('marca', BrandController::class);
 
@@ -56,7 +61,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Route::post('producto/guardar-simple', [ProductController::class, 'storeIsSimple']); */
     /* Route::post('producto/guardar-unico', [ProductController::class, 'storeIsSpecial']); */
 
-    Route::get('producto/audit', [ProductController::class, 'audit']);
+    Route::get('producto/audit', [ProductController::class, 'audit'])->middleware('permission:audit.product.view');
 
     Route::resource('producto', ProductController::class)->except(['destroy']);
 
@@ -75,6 +80,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Clientes */
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
+
+    Route::post('pedido/search', [OrderController::class, 'search']);
     Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
     Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
     Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
@@ -103,6 +110,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('cotizacion', PriceQuoteController::class)->only(['index', 'store', 'show']);
     Route::put('cotizacion/{id}', [PriceQuoteController::class, 'updateCotizacion']);
     Route::post('cotizacion/borrar', [PriceQuoteController::class, 'destroy']);
+    Route::post('cotizacion/search', [PriceQuoteController::class, 'search']);
     Route::put('cotizacion/{id}/update-productos', [PriceQuoteController::class, 'update']);
 
     Route::post('cotizacion/asignar/siniestro', [PriceQuoteController::class, 'asignarSiniestro']);
@@ -141,5 +149,3 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('permissions/save_element', [PermissionController::class, 'save_element']);
     Route::post('permissions/change_role_permission', [PermissionController::class, 'change_role_permission']);
 });
-
-/* php artisan make:model Api/Product -rcmfsR */

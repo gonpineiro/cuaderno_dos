@@ -21,6 +21,7 @@ class ProductCotizacionesResource extends JsonResource
         $array['product_brand'] = $this->product_brand ? $this->product_brand->name : null;
         $array['ubication'] = $this->ubication;
         $array['description'] = $this->description;
+        $array['activities'] = AuditResource::collection($this->activities);
 
         if ($this->is_special) {
             $array['state'] = 'is_special';

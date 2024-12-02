@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
         $array['product_brand'] = $this->product_brand ? $this->product_brand->name : null;
         $array['ubication'] = $this->ubication;
         $array['description'] = $this->description;
+        $array['activities'] = AuditResource::collection($this->activities);
 
         if ($this->is_special) {
             $array['state'] = 'is_special';
@@ -36,32 +37,24 @@ class ProductResource extends JsonResource
 
     public static function complete(Product $product)
     {
-        $product->providers;
-        $product->brand;
-        $product->product_brand;
-        $product->state;
-        /* $product->orders;
-        $product->price_quotes; */
+        $array = $product->toArray();
+        $array['providers'] = $product->product_providers;
+        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
+        $array['brand'] = $product->brand ? $product->brand->name : null;
+        $array['product_brand'] = $product->product_brand ? $product->product_brand->name : null;
+        $array['ubication'] = $product->ubication;
+        $array['description'] = $product->description;
+        $array['activities'] = AuditResource::collection($product->activities);
 
-        $product['ubication'] =  $product->ubication;
-
-        /*  $array = parent::toArray($product);
-        $array['provider'] = (isset($this->provider) && $this->provider) ? $this->provider->name : null;
-        $array['brand'] = $this->brand ? $this->brand->name : null;
-        $array['ubication'] = $this->ubication;
-        $array['description'] = $this->description;
-
-        if ($this->is_special) {
+        if ($product->is_special) {
             $array['state'] = 'is_special';
-        } else if (!$this->ubication) {
+        } else if (!$product->ubication) {
             $array['state'] = 'is_simple';
         } else {
-            $array['state'] = $this->state ? $this->state->value : null;
-        } */
+            $array['state'] = $product->state ? $product->state->value : null;
+        }
 
-        /* $array['cantidad_cotizaciones'] = $this->price_quotes->count(); */
-
-        return $product;
+        return $array;
     }
 
     public static function order(Product $product, $order_product)
@@ -73,6 +66,7 @@ class ProductResource extends JsonResource
         $array['brand'] = $product->brand ? $product->brand->name : null;
         $array['ubication'] = $product->ubication;
         $array['description'] = $product->description;
+        $array['activities'] = AuditResource::collection($product->activities);
 
         if ($product->is_special) {
             $array['state'] = 'is_special';
@@ -85,4 +79,6 @@ class ProductResource extends JsonResource
         $array['order_state'] = $order_product->order->getGeneralState();
         return $array;
     }
+
+
 }

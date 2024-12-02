@@ -301,14 +301,12 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function show($id)
     {
-        $products = Product::where(function ($query) use ($id) {
-            $query->where('id', $id);
-        })->first();
+        $products = Product::withTrashed()->find($id);
 
         if (!$products) {
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
-        return sendResponse(new ProductResource($products));
+        return sendResponse(ProductResource::complete($products));
     }
 
     public function search(Request $request)
@@ -403,7 +401,7 @@ class ProductController extends \App\Http\Controllers\Controller
     {
         /* $logs = Activity::where('subject_type', 'App\Models\Product') */
         $logs = Activity::where('subject_type', $request->subject_type)
-            ->where('log_name', $request->log_name)
+            /* ->where('log_name', $request->log_name) */
             ->latest()
             ->limit(500)
             ->get();

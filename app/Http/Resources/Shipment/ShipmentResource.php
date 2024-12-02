@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Shipment;
 
+use App\Http\Resources\ClientResource;
 use App\Models\Table;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,6 +40,9 @@ class ShipmentResource extends JsonResource
         $this->client->city;
         $array['client'] = $this->client;
 
+        $this->vehiculo->brand;
+        $array['vehiculo'] = $this->vehiculo;
+
         $this->payment_method && $array['payment_method'] = $this->payment_method;
 
         $this->order->type;
@@ -69,6 +73,13 @@ class ShipmentResource extends JsonResource
     {
         return [
             'id' => $shipment->id,
+            'client_id' => $shipment->client_id,
+            'client' =>  new ClientResource($shipment->client, 'complete'),
+            'brand_id' => $shipment->vehiculo->brand_id,
+            'vehiculo_id' => $shipment->vehiculo_id,
+            'chasis' => $shipment->chasis,
+            'contacto' => $shipment->contacto,
+            'year' => $shipment->year,
             'payment_method_id' => $shipment->payment_method_id,
             'transport' => $shipment->transport,
             'invoice_number' => $shipment->invoice_number,
@@ -87,6 +98,7 @@ class ShipmentResource extends JsonResource
             $array[] = [
                 'amount' => $value->amount,
                 'code' => $value->product->code,
+                'ubication' => $value->product->ubication,
                 'description' => truncateString($value->product->description, $truncate_int),
                 'unit_price' =>  $value->unit_price,
                 'total' =>  $value->unit_price * $value->amount,

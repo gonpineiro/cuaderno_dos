@@ -13,6 +13,13 @@ class Shipment extends Model
         'user_id',
         'order_id',
         'client_id',
+
+        /* Generales */
+        'year',
+        'chasis',
+        'contacto',
+        'vehiculo_id',
+
         'payment_method_id',
 
         'transport',
@@ -56,10 +63,16 @@ class Shipment extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function vehiculo()
+    {
+        return $this->belongsTo(Vehiculo::class);
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
+
     public function price_quote()
     {
         return $this->belongsTo(PriceQuote::class, 'order_id', 'order_id');
