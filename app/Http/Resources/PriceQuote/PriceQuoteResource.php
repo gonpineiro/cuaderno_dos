@@ -76,8 +76,13 @@ class PriceQuoteResource extends JsonResource
         $array['client']['name'] = $this->client->name;
         $array['client']['phone'] = $this->client->phone;
         $array['state'] = $this->state;
-        $array['vehiculo'] = $this->vehiculo;
+        $array['vehiculo'] = $this->vehiculo->name;
         $array['created_at'] = $this->created_at->format('Y-m-d');
+
+        unset($array['order_id']);
+        unset($array['year']);
+        unset($array['chasis']);
+        unset($array['deleted_at']);
 
         return $array;
     }
