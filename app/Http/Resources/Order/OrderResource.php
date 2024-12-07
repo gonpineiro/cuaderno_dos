@@ -85,6 +85,12 @@ class OrderResource extends JsonResource
         $array['vehiculo'] = $this->vehiculo->name;
         unset($array['shipment']);
         unset($array['type']);
+        unset($array['shipment_id']);
+        unset($array['invoice_number']);
+        unset($array['deposit']);
+        unset($array['remito']);
+        unset($array['workshop']);
+        unset($array['user']);
         return $array;
     }
 
