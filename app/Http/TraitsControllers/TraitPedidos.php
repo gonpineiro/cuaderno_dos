@@ -15,17 +15,40 @@ use Illuminate\Support\Facades\DB;
 
 trait TraitPedidos
 {
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
 
         // Traer todos los pedidos que no sean de tipo "siniestro" ordenados por `estimated_date`
-        $pedidos = Order::where('type_id', '!=', $siniestro->id)->take(500)->get();
+        $query = Order::where('type_id', '!=', $siniestro->id);
 
-        // Convertir los pedidos ordenados a un recurso de colección
+        if ($request->last_id) {
+            $pedidos = $query->where('id', '>', (int)$request->last_id)
+                ->orderByDesc('id')->take(500)->get();
+
+            $odernados = $this->ordenarPedidos($this->getPedidos());
+            $ids = array_values($odernados->pluck('id')->toArray());
+            return sendResponse([
+                "pedidos" => OrderResource::collection($pedidos),
+                "order" => $ids
+            ]);
+        }
+
+        $pedidos = $this->getPedidos();
         $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos));
 
         return sendResponse($pedidos);
+    }
+
+    private function getPedidos()
+    {
+        $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
+
+        $query = Order::where('type_id', '!=', $siniestro->id);
+
+        $pedidos = $query->take(500)->get();
+
+        return $pedidos;
     }
 
     public function search(Request $request)

@@ -29,7 +29,7 @@ class OrderResource extends JsonResource
                 break;
         }
         $array['estado_general'] = $this->getGeneralState();
-        $array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
+        //$array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
 
         return $array;
     }
@@ -63,7 +63,9 @@ class OrderResource extends JsonResource
 
         $array['detail'] = OrderProductResource::collection($this->detail);
 
-        $array['activity'] =$this->activities;
+        $array['activity'] = $this->activities;
+
+        $array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
         return $array;
     }
 
@@ -80,8 +82,9 @@ class OrderResource extends JsonResource
         $array['created_at'] = $this->created_at->format('Y-m-d');
         /* $array['type'] = $this->type->value; */
         /* $array['type_price'] = $this->price_quote->type_price; */
-        $array['vehiculo'] = $this->vehiculo;
-
+        $array['vehiculo'] = $this->vehiculo->name;
+        unset($array['shipment']);
+        unset($array['type']);
         return $array;
     }
 

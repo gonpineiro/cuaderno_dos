@@ -72,7 +72,7 @@ class PriceQuoteResource extends JsonResource
     private function default($array)
     {
         $array['user'] = $this->user->name;
-        $array['client']['id'] = $this->client->id;
+        /* $array['client']['id'] = $this->client->id; */
         $array['client']['name'] = $this->client->name;
         $array['client']['phone'] = $this->client->phone;
         $array['state'] = $this->state;

@@ -29,8 +29,7 @@ class PriceQuoteController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
-        if ($request->type === 'pendiente') {
+        /*  if ($request->type === 'pendiente') {
             $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->take(1000)->get();
         } else if ($request->type === 'pedido') {
             $priceQuote = PriceQuote::with('order')
@@ -52,7 +51,13 @@ class PriceQuoteController extends Controller
                 ->get();
         } else {
             $priceQuote = PriceQuote::orderByDesc('created_at')->take(500)->get();
+        } */
+
+        if ($request->last_id) {
+            $priceQuote = PriceQuote::where('id', '>', (int)$request->last_id)->orderByDesc('created_at')->get();
+            return sendResponse(PriceQuoteResource::collection($priceQuote));
         }
+        $priceQuote = PriceQuote::orderByDesc('created_at')->take(500)->get();
 
         return sendResponse(PriceQuoteResource::collection($priceQuote));
     }
