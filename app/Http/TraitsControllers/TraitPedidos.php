@@ -24,7 +24,7 @@ trait TraitPedidos
 
         if ($request->last_id) {
             $pedidos = $query->where('id', '>', (int)$request->last_id)
-                ->orderByDesc('id')->take(500)->get();
+                ->orderByDesc('id')->get();
 
             $odernados = $this->ordenarPedidos($this->getPedidos());
             $ids = array_values($odernados->pluck('id')->toArray());
@@ -44,9 +44,9 @@ trait TraitPedidos
     {
         $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
 
-        $query = Order::where('type_id', '!=', $siniestro->id);
+        $query = Order::where('type_id', '!=', $siniestro->id)->orderByDesc('created_at');
 
-        $pedidos = $query->take(500)->get();
+        $pedidos = $query->take(300)->get();
 
         return $pedidos;
     }

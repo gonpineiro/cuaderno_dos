@@ -57,7 +57,7 @@ class PriceQuoteController extends Controller
             $priceQuote = PriceQuote::where('id', '>', (int)$request->last_id)->orderByDesc('created_at')->get();
             return sendResponse(PriceQuoteResource::collection($priceQuote));
         }
-        $priceQuote = PriceQuote::orderByDesc('created_at')->take(1000)->get();
+        $priceQuote = PriceQuote::orderByDesc('created_at')->take(300)->get();
 
         return sendResponse(PriceQuoteResource::collection($priceQuote));
     }
