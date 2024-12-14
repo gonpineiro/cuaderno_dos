@@ -36,7 +36,22 @@ class ClientChasis extends Model
     public static function updateElement($data)
     {
         $client = Client::find($data->client_id);
-        if ($client->reference_id === 'ID362') {
+        if (
+            $client->reference_id === 'ID362' ||
+            $client->reference_id === 'ID5397' ||
+            $client->reference_id === 'ID985' ||
+            $client->reference_id === 'ID107' ||
+            $client->reference_id === 'ID999' ||
+            $client->reference_id === 'ID145' ||
+            $client->reference_id === 'ID4824' ||
+            $client->reference_id === 'ID9279' ||
+            $client->reference_id === 'ID8600' ||
+            $client->reference_id === 'ID7516' ||
+            $client->reference_id === 'ID709' ||
+            $client->reference_id === 'ID2932' ||
+            $client->reference_id === 'ID1732'
+        ) {
+            /*  5397, 985, 107, 999, 145, 4824, 9279, 8600, 7516, 709, 2932, 1732 */
             return false;
         }
 

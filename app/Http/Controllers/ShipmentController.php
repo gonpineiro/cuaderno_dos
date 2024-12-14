@@ -194,6 +194,7 @@ class ShipmentController extends Controller
     {
         $shipment = Shipment::find($id);
         $shipment->client;
+        $shipment->user;
 
         $detail = ShipmentResource::pdfArray($shipment->detail, 42);
 

@@ -79,6 +79,10 @@
             </tr>
             <hr>
             <tr>
+                <td class="bold">DNI:</td>
+                <td>{{$shipment->client->dni}}</td>
+            </tr>
+            <tr>
                 <td class="bold">Cliente:</td>
                 <td>{{$shipment->client->name}}</td>
             </tr>
@@ -109,6 +113,10 @@
             <tr>
                 <td class="bold">Bultos:</td>
                 <td>{{$shipment->bultos}}</td>
+            </tr>
+            <tr>
+                <td class="bold">Vendedor:</td>
+                <td>{{$shipment->user->name}}</td>
             </tr>
         </table>
         <hr>
