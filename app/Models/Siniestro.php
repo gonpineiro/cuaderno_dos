@@ -23,6 +23,9 @@ class Siniestro extends Order
         'contacto',
         'vehiculo_id',
 
+        'version',
+        'patente',
+
         'remito',
         'workshop',
 

@@ -19,6 +19,8 @@ class Shipment extends Model
         'chasis',
         'contacto',
         'vehiculo_id',
+        'version',
+        'patente',
 
         'payment_method_id',
 

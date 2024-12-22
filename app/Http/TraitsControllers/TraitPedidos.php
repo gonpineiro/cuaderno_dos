@@ -33,9 +33,10 @@ trait TraitPedidos
                 "pedidos" => OrderResource::collection($pedidos),
                 "order" => $ids
             ]);
+        } else {
+            $pedidos = $this->getPedidos();
         }
 
-        $pedidos = $this->getPedidos();
         $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos));
 
         return sendResponse($pedidos);
@@ -55,7 +56,8 @@ trait TraitPedidos
     public function search(Request $request)
     {
         try {
-            $query = Order::query();
+            $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
+            $query = Order::where('type_id', '!=', $siniestro->id);
 
             foreach ($request->all() as $key => $value) {
                 if (!$value) {

@@ -111,6 +111,16 @@
                 <td class="bold">Vehículo:</td>
                 <td>{{$cotizacion->vehiculo->name}}</td>
             </tr>
+            @if (!!$cotizacion->client->is_insurance)
+            <tr>
+                <td class="bold">Version:</td>
+                <td>{{$cotizacion->version}}</td>
+            </tr>
+            <tr>
+                <td class="bold">Patente:</td>
+                <td>{{$cotizacion->patente}}</td>
+            </tr>
+            @endif
             <tr>
                 <td class="bold">Tipo Precio:</td>
                 <td>{{$cotizacion->type_price->value == 'contado' ? 'Contado / debito /

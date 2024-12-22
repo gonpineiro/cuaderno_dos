@@ -132,6 +132,8 @@ class ShipmentController extends Controller
             'client_id' => $order->client_id,
             'year' => $order->year,
             'chasis' => $order->chasis,
+            'version' => $order->version,
+            'patente' => $order->patente,
             'contacto' => $order->contacto,
             'vehiculo_id' => $order->vehiculo_id,
             'payment_method_id' => $envio['payment_method_id'],

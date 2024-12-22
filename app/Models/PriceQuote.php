@@ -17,6 +17,8 @@ class PriceQuote extends Model
 
         'year',
         'chasis',
+        'version',
+        'patente',
         'contacto',
         'vehiculo_id',
 
