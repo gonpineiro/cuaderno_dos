@@ -4,6 +4,7 @@ namespace App\Http\TraitsControllers;
 
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
@@ -259,5 +260,124 @@ trait TraitPedidos
 
         $pedido->fill($request->all())->save();
         return sendResponse(OrderResource::toForm($pedido));
+    }
+
+    public function productos(Request $request)
+    {
+        $products = OrderProduct::with(['product', 'order'])->take(1000)->get()
+            ->map(function ($orderProduct) {
+                return ProductResource::order($orderProduct->product, $orderProduct);
+            });
+
+        $products = $products->sortBy(function ($product) {
+            return [
+                'incompleto' => 1,
+                'pendiente' => 2,
+                'retirar' => 3,
+                'entregado' => 4,
+                'cancelado' => 5,
+                'envio' => 6,
+            ][$product['order_state']->value];
+        })->values();
+
+        return sendResponse($products);
+    }
+
+    public function productos_search(Request $request)
+    {
+        try {
+            $query = OrderProduct::with(['product', 'order']);
+            foreach ($request->all() as $key => $value) {
+                if (!$value) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'brand':
+                        $query->whereHas('product.brand', function ($q) use ($value) {
+                            $q->where('name', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'engine':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('engine', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'description':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('description', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'equivalence':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('equivalence', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'factory_code':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('factory_code', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'model':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('model', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'provider_code':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('provider_code', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case '_id':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->where('code', 'LIKE', '%' . $value . '%');
+                        });
+                        break;
+
+                    case 'ubication':
+                        $query->whereHas('product', function ($q) use ($value) {
+                            $q->whereRaw(
+                                "CONCAT(ship, module, side, LPAD(`column`, 2, '0'), LPAD(`row`, 2, '0')) LIKE ?",
+                                ['%' . $value . '%']
+                            );
+                        });
+                        break;
+
+                    case 'order_date':
+                        applyDateFilter($query, 'created_at', $value);
+                        break;
+
+                    default:
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        break;
+                }
+            }
+
+            $products = $query->get()->map(function ($orderProduct) {
+                return ProductResource::order($orderProduct->product, $orderProduct);
+            });
+
+            $products = $products->sortBy(function ($product) {
+                return [
+                    'incompleto' => 1,
+                    'pendiente' => 2,
+                    'retirar' => 3,
+                    'entregado' => 4,
+                    'cancelado' => 5,
+                    'envio' => 6,
+                ][$product['order_state']->value];
+            })->values();
+
+            return sendResponse($products);
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 301);
+        }
     }
 }
