@@ -121,8 +121,7 @@ class PriceQuoteController extends Controller
             $data = $request->all();
             $data['user_id'] = $user->id;
             unset($data['created_at']);
-            $type = Table::where('name', 'order_type')->where('value', $request->type)->first();
-            $data['type_id'] = $type->id;
+
             $price_quote = PriceQuote::create($data);
 
             ClientChasis::updateElement($price_quote);

@@ -98,10 +98,13 @@
                 <td class="bold">Dirección:</td>
                 <td>{{$shipment->send_adress}}</td>
             </tr>
+            @if ($shipment->client->city)
             <tr>
                 <td class="bold">Ciudad:</td>
                 <td>{{$shipment->client->city->name}}</td>
             </tr>
+            @endif
+
             <tr>
                 <td class="bold">Teléfono:</td>
                 <td>{{$shipment->client->phone}}</td>
@@ -117,6 +120,10 @@
             <tr>
                 <td class="bold">Vendedor:</td>
                 <td>{{$shipment->user->name}}</td>
+            </tr>
+            <tr>
+                <td class="bold">Fecha:</td>
+                <td>{{date("d/m/Y", strtotime($shipment->created_at))}}</td>
             </tr>
         </table>
         <hr>
