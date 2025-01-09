@@ -19,6 +19,7 @@ class PriceQuoteProduct extends Model
         'provider_id',
         'amount',
         'unit_price',
+        'description',
         'quote',
     ];
 
@@ -28,6 +29,7 @@ class PriceQuoteProduct extends Model
         'product_id',
         'provider_id',
         'amount',
+        'description',
         'unit_price',
         'quote',
     ];
