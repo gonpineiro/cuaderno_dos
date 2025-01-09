@@ -139,7 +139,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('combos', [ComboController::class, 'store']);
     Route::post('combos/update', [ComboController::class, 'update']);
 
-
     /* Coeficientes */
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 

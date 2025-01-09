@@ -24,6 +24,7 @@ class Client extends Model
         'year',
         'chasis',
         'vehiculo_id',
+        'is_sin_vehiculo',
         'observation',
     ];
 
@@ -66,5 +67,4 @@ class Client extends Model
             }
         });
     }
-
 }
