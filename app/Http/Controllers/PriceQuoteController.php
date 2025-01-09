@@ -464,7 +464,7 @@ class PriceQuoteController extends Controller
                     'product_id' => $item['product']['id'],
                     'amount' => $item['amount'],
                     'unit_price' => $item['unit_price'],
-                    /* 'description' => $item['description'], */
+                    'description' => $item['description'],
                     'state_id' => $item['state']['id'],
                     'provider_id' => isset($item['provider']) ? $item['provider']['id'] : null,
                 ];
