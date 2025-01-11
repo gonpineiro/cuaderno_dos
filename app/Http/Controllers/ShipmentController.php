@@ -116,6 +116,7 @@ class ShipmentController extends Controller
             $data['amount'] = $item['amount'];
             $data['unit_price'] = $item['unit_price'];
             $data['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
+            $data['description'] = $item['description'];
 
             if (!ShipmentProduct::create($data)) {
                 throw new \Exception("No se pudo crear un detalle de la orden");

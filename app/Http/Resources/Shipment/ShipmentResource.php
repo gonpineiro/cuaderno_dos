@@ -95,11 +95,12 @@ class ShipmentResource extends JsonResource
 
         foreach ($detail as $value) {
 
+            $desc = $value->description ? $value->description : $value->product->description;
             $array[] = [
                 'amount' => $value->amount,
                 'code' => $value->product->code,
                 'ubication' => $value->product->ubication,
-                'description' => truncateString($value->product->description, $truncate_int),
+                'description' => truncateString($desc, $truncate_int),
                 'unit_price' =>  $value->unit_price,
                 'total' =>  $value->unit_price * $value->amount,
             ];

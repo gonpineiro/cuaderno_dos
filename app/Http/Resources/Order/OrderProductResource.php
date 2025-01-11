@@ -32,10 +32,11 @@ class OrderProductResource extends JsonResource
 
         foreach ($detail as $value) {
 
+            $desc = $value->description ? $value->description : $value->product->description;
             $array[] = [
                 'code' => $value->product->code,
                 'ubication' => $value->product->ubication,
-                'description' => truncateString($value->product->description, 50),
+                'description' => truncateString( $desc, 50),
                 'amount' => $value->amount,
                 'unit_price' => $value->unit_price,
                 'total' => $value->unit_price * $value->amount,

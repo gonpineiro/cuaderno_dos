@@ -17,6 +17,7 @@ class ShipmentProduct extends Model
 
         'amount',
         'unit_price',
+        'description',
     ];
 
     protected $dates = ['deleted_at'];
