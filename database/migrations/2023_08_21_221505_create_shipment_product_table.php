@@ -23,6 +23,7 @@ class CreateShipmentProductTable extends Migration
 
             $table->integer('amount');
             $table->float('unit_price');
+            $table->string('description')->nullable();
 
             $table->softDeletes();
 

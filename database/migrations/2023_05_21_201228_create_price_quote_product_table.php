@@ -25,7 +25,6 @@ class CreatePriceQuoteProductTable extends Migration
             /* Detalle del pedido */
             $table->integer('amount');
             $table->float('unit_price');
-            $table->boolean('quote')->default(1);
             $table->string('description')->nullable();
 
             $table->softDeletes();
