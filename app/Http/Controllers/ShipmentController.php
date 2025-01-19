@@ -27,10 +27,12 @@ class ShipmentController extends Controller
             return [
                 'pendiente' => 1,
                 'listo_enviar' => 2,
-                'despachado' => 3,
-                'contrareembolso' => 4,
-                'cancelado' => 5,
-            ][$shipment->getGeneralState()->value];
+                'despachado_contrareembolso' => 3,
+                'contrareembolso_pago' => 4,
+                'despachado_online' => 5,
+                'contrareembolso' => 6,
+                'cancelado' => 7,
+            ][$shipment->getEstadoSearch()];
         });
 
         return sendResponse(ShipmentResource::collection($shipments));

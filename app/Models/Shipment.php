@@ -174,4 +174,27 @@ class Shipment extends Model
 
         return $estado;
     }
+
+    public function getEstadoSearch()
+    {
+        $estado = $this->getGeneralState()->value;
+
+        if ($estado === 'pendiente' || $estado === 'listo_enviar' || $estado === 'cancelado') {
+            return $estado;
+        }
+
+        if ($estado === 'despachado' && $this->payment_method->value === 'contrareembolso') {
+            return 'despachado_contrareembolso';
+        }
+
+        if ($estado !== 'despachado' && $this->payment_method->value === 'contrareembolso') {
+            return 'contrareembolso_pago';
+        }
+
+        if ($estado === 'despachado' && $this->payment_method->value === 'online') {
+            return 'despachado_online';
+        }
+
+        return $estado;
+    }
 }

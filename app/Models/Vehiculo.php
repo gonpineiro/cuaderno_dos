@@ -25,4 +25,9 @@ class Vehiculo extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(PriceQuote::class);
+    }
 }
