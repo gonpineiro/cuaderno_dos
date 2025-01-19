@@ -31,7 +31,8 @@ class ShipmentController extends Controller
                 'contrareembolso_pago' => 4,
                 'despachado_online' => 5,
                 'contrareembolso' => 6,
-                'cancelado' => 7,
+                'despachado' => 7,
+                'cancelado' => 8,
             ][$shipment->getEstadoSearch()];
         });
 
