@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(\App\Services\JazzService::class, function ($app) {
+            return new \App\Services\JazzService();
+        });
     }
 
     /**

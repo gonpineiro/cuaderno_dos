@@ -17,6 +17,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CoeficienteController;
 use App\Http\Controllers\ComboController;
+use App\Http\Controllers\JazzController;
 use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\VehiculoController;
@@ -149,4 +150,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('permissions/change_user_permissions', [PermissionController::class, 'change_user_permissions']);
     Route::post('permissions/save_element', [PermissionController::class, 'save_element']);
     Route::post('permissions/change_role_permission', [PermissionController::class, 'change_role_permission']);
+
+
+    Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 });

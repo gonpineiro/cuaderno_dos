@@ -266,7 +266,7 @@ trait TraitPedidos
 
     public function productos(Request $request)
     {
-        $products = OrderProduct::with(['product', 'order'])->take(1000)->get()
+        $products = OrderProduct::with(['product', 'order'])->get()
             ->map(function ($orderProduct) {
                 return ProductResource::order($orderProduct->product, $orderProduct);
             });
@@ -281,6 +281,8 @@ trait TraitPedidos
                 'envio' => 6,
             ][$product['order_state']->value];
         })->values();
+
+        $products = $products->take(1000);
 
         return sendResponse($products);
     }
