@@ -135,15 +135,20 @@ class ProductController extends \App\Http\Controllers\Controller
                     $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
                 });
             })
+                ->withCount(['price_quotes as cantidad_cotizaciones' => function ($query) use ($request) {
+                    $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                        $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                    });
+                }])
                 ->distinct();
         }
 
         $products = $products->get();
 
         $col = ProductCotizacionesResource::collection($products);
-        $col = $col->sortByDesc(function ($producto) {
+        /* $col = $col->sortByDesc(function ($producto) {
             return $producto->cantidad_cotizaciones;
-        });
+        }); */
 
         $col = $col->values();
 

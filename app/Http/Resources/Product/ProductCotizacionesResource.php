@@ -31,7 +31,7 @@ class ProductCotizacionesResource extends JsonResource
             $array['state'] = $this->state ? $this->state->value : null;
         }
 
-        $array['cantidad_cotizaciones'] = count($this->price_quotes) > 0 ? count($this->price_quotes) : 0;
+       // $array['cantidad_cotizaciones'] = count($this->price_quotes) > 0 ? count($this->price_quotes) : 0;
 
         return $array;
     }
