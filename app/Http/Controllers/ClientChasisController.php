@@ -36,7 +36,7 @@ class ClientChasisController extends Controller
                         ]);
                 } else {
                     $exists = ClientChasis::where('chasis', $item['chasis'])->exists();
-                    if ($exists) {
+                    if ($exists && $item['chasis']) {
                         throw new \Exception("El chasis '{$item['chasis']}' ya existe.");
                     }
                     // Crear nuevos elementos
@@ -58,6 +58,5 @@ class ClientChasisController extends Controller
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage(), 301);
         }
-
     }
 }

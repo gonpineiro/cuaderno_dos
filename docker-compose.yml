@@ -1,0 +1,67 @@
+services:
+    server:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - 8000:80
+        networks:
+            - app-network
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/ # Monta la configuración de nginx en el contenedor
+        depends_on:
+            - app
+
+    db:
+        image: mysql:5.7.33
+        restart: unless-stopped
+        ports:
+            - 3307:3306
+        environment:
+            MYSQL_DATABASE: $DB_DATABASE
+            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+            MYSQL_USER: $DB_USERNAME # Agrega un nuevo usuario
+            MYSQL_PASSWORD: $DB_PASSWORD # Establece una contraseña para el nuevo usuario
+        networks:
+            - app-network
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile # Usa un Dockerfile específico para app (PHP)
+        restart: unless-stopped
+        networks:
+            - app-network
+        volumes:
+            - ./:/var/www # Monta el proyecto en el contenedor
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: unless-stopped
+        ports:
+            - 8080:80 # Acceso a phpMyAdmin en el puerto 8080
+        environment:
+            PMA_HOST: db # Nombre del servicio de base de datos
+            PMA_USER: root # Usuario por defecto
+            PMA_PASSWORD: $DB_PASSWORD # Contraseña del usuario
+        networks:
+            - app-network
+
+    node:
+        image: node:15-alpine
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - /var/www/node_modules
+        command: sh /var/www/node_start.sh
+        depends_on:
+            - app
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    dbdata:
