@@ -326,7 +326,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
         }
 
-        $results = $products->get();
+        $results = $products->orderBy('factory_code', 'asc')->get();
 
         if (!$results) {
             return sendResponse(null, 'No se encontro un resultado de busqueda');

@@ -25,6 +25,8 @@ use App\Http\Controllers\VehiculoController;
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
 
+Route::GET('chasis', [ClientChasisController::class, 'index']);
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('logout', [ApiController::class, 'logout']);
     Route::post('refresh', [ApiController::class, 'refresh']);

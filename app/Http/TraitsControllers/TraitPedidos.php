@@ -37,7 +37,7 @@ trait TraitPedidos
             $pedidos = $this->getPedidos();
         }
 
-        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos));
+        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos)->take(500));
 
         return sendResponse($pedidos);
     }
@@ -48,7 +48,7 @@ trait TraitPedidos
 
         $query = Order::where('type_id', '!=', $siniestro->id)->orderByDesc('created_at');
 
-        $pedidos = $query->take(300)->get();
+        $pedidos = $query->take(1000)->get();
 
         return $pedidos;
     }

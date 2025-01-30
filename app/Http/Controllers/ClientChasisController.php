@@ -5,11 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ClientChasisResource;
 use App\Models\ClientChasis;
 use Illuminate\Support\Facades\DB;
 
 class ClientChasisController extends Controller
 {
+    public function index()
+    {
+        $chasis  = ClientChasis::with(['client', 'vehiculo'])->get();
+        return sendResponse(ClientChasisResource::collection($chasis));
+    }
+
     public function cliente_chasis_update(Request $request)
     {
         $data = $request->input('data');
