@@ -25,7 +25,7 @@ use App\Http\Controllers\VehiculoController;
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
 
-Route::GET('chasis', [ClientChasisController::class, 'index']);
+Route::get('chasis', [ClientChasisController::class, 'index']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('logout', [ApiController::class, 'logout']);
@@ -46,6 +46,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Cliente Chasis */
     Route::post('cliente_chasis/update', [ClientChasisController::class, 'cliente_chasis_update']);
+    Route::get('chasis', [ClientChasisController::class, 'index']);
 
     Route::resource('marca', BrandController::class);
 
