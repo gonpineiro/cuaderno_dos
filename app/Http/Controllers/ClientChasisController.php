@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class ClientChasisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $chasis  = ClientChasis::with(['client', 'vehiculo'])->get();
+        $chasis  = ClientChasis::with(['client', 'vehiculo'])->where('vehiculo_id', $request->vehiculo_id)->get();
         return sendResponse(ClientChasisResource::collection($chasis));
     }
 
