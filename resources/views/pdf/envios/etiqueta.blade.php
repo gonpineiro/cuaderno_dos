@@ -42,7 +42,7 @@
                 <td class="r">{{$total}}</td>
             </tr>
             <tr>
-                <td>{{$shipment->client->city->name}}</td>
+                <td>{{$shipment->send_adress}}</td>
                 <td class="r">{{$shipment->bultos}}</td>
             </tr>
             <tr>
