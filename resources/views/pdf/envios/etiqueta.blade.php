@@ -38,11 +38,11 @@
                 <td class="r">{{$shipment->transport}}</td>
             </tr>
             <tr>
-                <td>{{$shipment->client->adress}}</td>
+                <td>{{$shipment->send_adress}}</td>
                 <td class="r">{{$total}}</td>
             </tr>
             <tr>
-                <td>{{$shipment->send_adress}}</td>
+                <td>{{$shipment->client->city->name}}</td>
                 <td class="r">{{$shipment->bultos}}</td>
             </tr>
             <tr>
