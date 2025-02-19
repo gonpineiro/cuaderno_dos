@@ -67,6 +67,10 @@ class PriceQuoteController extends Controller
         try {
             $query = PriceQuote::query();
 
+            if (empty($request->all())) {
+                return $this->index($request);
+            }
+
             foreach ($request->all() as $key => $value) {
                 if (!$value) {
                     continue;
