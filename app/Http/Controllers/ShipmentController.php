@@ -158,6 +158,7 @@ class ShipmentController extends Controller
         DB::beginTransaction();
 
         try {
+
             $detail = ShipmentProduct::where('shipment_id', $request->shipment_id)->get();
 
             $cacelado = Table::where('name', 'order_envio_state')->where('value', 'cancelado')->first();
@@ -170,6 +171,13 @@ class ShipmentController extends Controller
             }
 
             $shipment = Shipment::find($request->shipment_id);
+
+            $estado = Table::find($request->state_id);
+            activity("envio.$estado->value")
+                ->performedOn($shipment)
+                ->withProperties(['state_id' => $request->state_id])
+                ->log($request->motivo ? $request->motivo : "Envio $estado->value");
+
 
             DB::commit();
 
