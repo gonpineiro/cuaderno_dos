@@ -53,6 +53,7 @@ class ShipmentResource extends JsonResource
         $array['init_state'] = Table::where('name', 'order_envio_state')->where('value', 'pendiente')->first();
 
         $array['detail'] = ShipmentProductResource::collection($this->detail);
+        $array['activity'] = $this->activities;
         /* $array['percentages'] = $this->getPercentages(); */
 
         return $array;

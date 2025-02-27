@@ -85,6 +85,12 @@ class Shipment extends Model
         return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject')->with('causer');
+    }
+
     /* public function getPercentages()
     {
 
