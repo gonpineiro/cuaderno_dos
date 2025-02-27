@@ -59,6 +59,10 @@ trait TraitPedidos
             $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
             $query = Order::where('type_id', '!=', $siniestro->id);
 
+            if (empty($request->all())) {
+                return $this->index($request);
+            }
+
             foreach ($request->all() as $key => $value) {
                 if (!$value) {
                     continue;
