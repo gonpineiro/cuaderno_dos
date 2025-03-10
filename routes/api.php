@@ -71,6 +71,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
 
     Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
+    Route::post('pedido/borrar', [OrderController::class, 'destroy']);
     Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
 
     /* Clientes */

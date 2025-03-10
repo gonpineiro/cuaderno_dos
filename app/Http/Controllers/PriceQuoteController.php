@@ -21,13 +21,16 @@ use App\Models\PriceQuote;
 use App\Models\PriceQuoteProduct;
 use App\Models\Shipment;
 use App\Models\Table;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
+use Spatie\Permission\PermissionRegistrar;
+
 class PriceQuoteController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request)
     {
         /*  if ($request->type === 'pendiente') {
             $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->take(1000)->get();
@@ -334,6 +337,13 @@ class PriceQuoteController extends Controller
     public function destroy(Request $request)
     {
         DB::beginTransaction();
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions(); 
+
+        $user = User::find(auth()->user()->id);
+        if (!$user->can('cotizacion.delete')) {
+            return sendResponse(null, "Acción no autorizada");
+        }
 
         try {
             $priceQuote = PriceQuote::findOrFail($request->id);

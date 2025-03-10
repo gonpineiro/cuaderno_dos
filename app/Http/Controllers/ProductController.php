@@ -16,6 +16,7 @@ use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Activity;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
 use App\Models\ProductProvider;
@@ -25,6 +26,7 @@ use App\Models\Table;
 use App\Models\ToAsk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -369,6 +371,14 @@ class ProductController extends \App\Http\Controllers\Controller
     public function delete(Request $request)
     {
         try {
+
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            $user = User::find(auth()->user()->id);
+            if (!$user->can('product.delete')) {
+                return sendResponse(null, "Acción no autorizada");
+            }
+
             $productId = $request->id;
 
             // Verificar si el producto está relacionado con alguna operación
