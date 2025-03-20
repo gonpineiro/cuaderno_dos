@@ -2,12 +2,12 @@
 
 @section('content')
 
-<p>Estimado Cliente: <strong> asdasd</strong></p>
+<p>Estimado Cliente: <strong> {{$pedido->client->name}}</strong></p>
 
 <p>HA REALIZADO EL SIGUIENTE PEDIDO EN ALLENDE REPUESTOS: </p>
 
-<p>ID PEDIDO: <strong> asdasd</strong> </p>
-<p>VEHICULO: <strong> asdasd</strong> </p>
+<p>ID PEDIDO: <strong> {{$pedido->id}}</strong> </p>
+<p>VEHICULO: <strong> {{$pedido->vehiculo->name}}</strong> </p>
 
 <br>
 
@@ -18,45 +18,23 @@
         <th>PRECIO UNITARIO</th>
         <th>IMPORTE</th>
     </tr>
+    @foreach ($detail as $item)
     <tr>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
+        <td>{{$item['amount']}}</td>
+        <td>{{$item['description']}}</td>
+        <td>{{$item['unit_price']}}</td>
+        <td>{{$item['total']}} </td>
     </tr>
-    <tr>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-    </tr>
-    <tr>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-        <td class="td">
-            asdasd</td>
-    </tr>
+    @endforeach
 
 </table>
 
 <br>
 
-<p>IMPORTE TOTAL: <strong> asdasd</strong> </p>
-<p>SEÑA: <strong> asdasd</strong> </p>
-<p>RESTA PAGAR: <strong> asdasd</strong> </p>
-<p>FECHA ESTIMADA DE DEMORA: <strong> asdasd</strong> </p>
+<p>IMPORTE TOTAL: <strong> {{$total}}</strong> </p>
+<p>SEÑA: <strong> {{$deposit}}</strong> </p>
+<p>RESTA PAGAR: <strong> {{$resto}}</strong> </p>
+<!-- <p>FECHA ESTIMADA DE DEMORA: <strong> asdasd</strong> </p> -->
 
 <p>NOS PONDREMOS EN CONTACTO CON USTED CUANDO TENGAMOS NOVEDADES DE LOS PRODUCTOS.</p>
 

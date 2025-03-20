@@ -251,6 +251,10 @@ trait TraitPedidos
 
             $order = Order::find($request->order_id);
 
+            if ( $estado->value === 'retirar') {
+                TraitPedidosEmail::pedidoRetirar($order);                
+            }
+
             DB::commit();
 
             return sendResponse(new OrderResource($order, 'complete'));

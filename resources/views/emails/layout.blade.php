@@ -37,6 +37,15 @@
             text-align: left;
             padding: 8px;
         }
+
+    .btn {
+        text-align: center;
+        font-size: 16px;
+        padding: 18px;
+        background-color: #034579;
+    }
+
+
     </style>
 </head>
 

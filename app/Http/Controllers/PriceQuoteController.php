@@ -26,6 +26,8 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
+use App\Http\TraitsControllers\TraitPedidosEmail;
+
 use Spatie\Permission\PermissionRegistrar;
 
 class PriceQuoteController extends Controller
@@ -307,8 +309,11 @@ class PriceQuoteController extends Controller
             $this->save_shipment($request, $order);
 
             $priceQuote->save();
+            
+            TraitPedidosEmail::pedidoProductoUnico($order);
 
             DB::commit();
+
 
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),

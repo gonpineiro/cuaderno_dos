@@ -54,6 +54,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
     Route::post('producto/borrar', [ProductController::class, 'delete']);
+    Route::post('producto/recuperar', [ProductController::class, 'recuperarProducto']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);

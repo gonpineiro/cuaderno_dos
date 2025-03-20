@@ -8,6 +8,7 @@ use App\Http\TraitsControllers\TraitPedidos;
 use App\Http\TraitsControllers\TraitPedidosSiniestro;
 use App\Http\TraitsControllers\TraitPedidosCliente;
 use App\Http\TraitsControllers\TraitPedidosOnline;
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -25,7 +26,8 @@ class OrderController extends \App\Http\Controllers\Controller
     use TraitPedidosOnline/* Ver si no se usa mas */,
         TraitPedidosCliente/* Ver si no se usa mas */,
         TraitPedidos,
-        TraitPedidosSiniestro;
+        TraitPedidosSiniestro,
+        TraitPedidosEmail;
 
     private function hayDuplicados($productos)
     {
@@ -123,17 +125,6 @@ class OrderController extends \App\Http\Controllers\Controller
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 300, $request->id);
         }
-    }
-
-    public function enviarCorreo()
-    {
-
-        // Enviar el correo electrónico
-
-        // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
-
-        // Redireccionar a una página de éxito, por ejemplo
-        return sendResponse(Mail::to('gon.pineiro@gmail.com')->send(new CrearPedidoClienteEmail()));
     }
 
     public function getPdfPedido($id)

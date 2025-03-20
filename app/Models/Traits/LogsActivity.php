@@ -9,7 +9,7 @@ trait LogsActivity
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        $arr = ['updated' => 'actualizado', 'created' => 'creado', 'deleted' => 'eliminado'];
+        $arr = ['updated' => 'actualizado', 'created' => 'creado', 'deleted' => 'eliminado', 'restored' => 'restaurado'];
         $rta = $arr[$eventName];
 
         return "Este modelo ha sido {$rta}";
@@ -29,7 +29,8 @@ trait LogsActivity
         $logNames = [
             'updated' => 'updated',
             'created' => 'created',
-            'deleted' => 'deleted'
+            'deleted' => 'deleted',
+            'restored' => 'restored'
         ];
 
         return $logNames[$eventName] ?? 'default';

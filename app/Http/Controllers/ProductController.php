@@ -368,6 +368,21 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
+    public function recuperarProducto(Request $request) {
+        try {
+
+            $product = Product::withTrashed()->find($request->id);
+
+            if ($product) {
+                $product->restore();
+            }
+
+            return sendResponse(new ProductResource($product));    
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getTrace(), 500);
+        }
+    }
+
     public function delete(Request $request)
     {
         try {
