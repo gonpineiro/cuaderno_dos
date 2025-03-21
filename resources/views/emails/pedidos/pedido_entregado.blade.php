@@ -14,11 +14,31 @@
 
 </h3>
 
-<button class="btn">
-Encuesta de satisfacción
-</button>
+<br>
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td align="center">
+            <a class="btn" href="https://es.surveymonkey.com/r/F7V6SKG">
+                Encuesta de satisfacción
+            </a>
+        </td>
+    </tr>
+</table>
 
-<strong>¡Gracias por su compra!</strong>
+
+<br>
+<br>
+<br>
+
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td align="center">
+            <strong>¡Gracias por su compra!</strong>
+        </td>
+    </tr>
+</table>
+
+
 
 
 @endsection

@@ -20,10 +20,10 @@
     </tr>
     @foreach ($detail as $item)
     <tr>
-        <td>{{$item['amount']}}</td>
-        <td>{{$item['description']}}</td>
-        <td>{{$item['unit_price']}}</td>
-        <td>{{$item['total']}} </td>
+        <td class="td">{{$item['amount']}}</td>
+        <td class="td">{{$item['description']}}</td>
+        <td class="td">{{$item['unit_price']}}</td>
+        <td class="td">{{$item['total']}} </td>
     </tr>
     @endforeach
 
@@ -34,17 +34,8 @@
 <p>IMPORTE TOTAL: <strong> {{$total}}</strong> </p>
 <p>SEÑA: <strong> {{$deposit}}</strong> </p>
 <p>RESTA PAGAR: <strong> {{$resto}}</strong> </p>
-<!-- <p>FECHA ESTIMADA DE DEMORA: <strong> asdasd</strong> </p> -->
+<!-- <p>FECHA ESTIMADA DE DEMORA: <strong></strong> </p> -->
 
 <p>NOS PONDREMOS EN CONTACTO CON USTED CUANDO TENGAMOS NOVEDADES DE LOS PRODUCTOS.</p>
-
-<div class="hr"> </div>
-
-<div class="footer">
-    <a href="http://www.allenderepuestos.com.ar/promociones/" target="_blank">
-        <img src="https://mcusercontent.com/d30eb551b1cbc7139f2bb7691/images/0cc49c36-7530-5dfe-b416-8c4f7f1b2d26.jpg"
-            width="550">
-    </a>
-</div>
 
 @endsection

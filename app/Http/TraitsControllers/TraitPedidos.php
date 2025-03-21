@@ -218,12 +218,12 @@ trait TraitPedidos
 
             $user = User::find(auth()->user()->id);
 
-            if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {               
+            if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {
                 return sendResponse(null, "Acción no autorizada");
-            }else if($estado->value === 'cancelado' && !$user->can('pedido.estado.cancelado')){
+            } else if ($estado->value === 'cancelado' && !$user->can('pedido.estado.cancelado')) {
                 return sendResponse(null, "Acción no autorizada");
             }
-           
+
             $type = $order->type->value;
 
             $general_state = $order->getGeneralState();
@@ -251,8 +251,11 @@ trait TraitPedidos
 
             $order = Order::find($request->order_id);
 
-            if ( $estado->value === 'retirar') {
-                TraitPedidosEmail::pedidoRetirar($order);                
+            /* Envio de email */
+            if ($estado->value === 'retirar') {
+                TraitPedidosEmail::pedidoRetirar($order);
+            } else if ($estado->value === 'entregado') {
+                TraitPedidosEmail::pedidoEntregado($order);
             }
 
             DB::commit();

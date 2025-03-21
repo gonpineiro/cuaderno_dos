@@ -146,7 +146,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Coeficientes */
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
-    Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+
 
     Route::get('permissions', [PermissionController::class, 'index']);
     Route::post('permissions/change_user_role', [PermissionController::class, 'change_user_role']);
@@ -157,3 +157,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 });
+
+
+Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);

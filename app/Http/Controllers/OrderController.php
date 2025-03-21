@@ -12,6 +12,7 @@ use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Shipment;
 use App\Models\ToAsk;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -100,7 +101,7 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         DB::beginTransaction();
 
-        app()[PermissionRegistrar::class]->forgetCachedPermissions(); 
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $user = User::find(auth()->user()->id);
         if (!$user->can('pedido.delete')) {
@@ -195,5 +196,18 @@ class OrderController extends \App\Http\Controllers\Controller
             } */
         }
         return true;
+    }
+
+    public function enviarCorreo(){
+
+        $p = Order::find(41);
+        //return TraitPedidosEmail::pedidoProductoUnico($p);
+
+        // return TraitPedidosEmail::pedidoRetirar($p);
+        $s = Shipment::find(4);
+       // return TraitPedidosEmail::envioDespachado($s);
+
+
+      return TraitPedidosEmail::pedidoEntregado($p);
     }
 }

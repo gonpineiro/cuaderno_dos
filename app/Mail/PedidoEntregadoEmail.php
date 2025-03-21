@@ -10,11 +10,11 @@ use App\Http\Resources\Order\OrderProductResource;
 
 use App\Models\Order;
 
-class CrearPedidoClienteEmail extends Mailable
+class PedidoEntregadoEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $pedido; 
+    public $pedido;
     /**
      * Create a new message instance.
      *
@@ -32,15 +32,8 @@ class CrearPedidoClienteEmail extends Mailable
      */
     public function build()
     {
-        $detail = OrderProductResource::emailPedidoArray($this->pedido->detail);
-        $total = get_total_price($this->pedido->detail);
-
-        return $this->view('emails.pedidos.producto_unico')->with([
+        return $this->view('emails.pedidos.pedido_entregado')->with([
                         'pedido' => $this->pedido,
-                        'detail' =>  OrderProductResource::formatPdf($detail),
-                        'total' =>  formatoMoneda($total),
-                        'deposit' => formatoMoneda($this->pedido->deposit),
-                        'resto' =>formatoMoneda($total - $this->pedido->deposit)
                     ]);
     }
 }
