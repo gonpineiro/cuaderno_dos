@@ -12,6 +12,7 @@ use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\PurchaseOrder;
 use App\Models\Shipment;
 use App\Models\ToAsk;
 use App\Models\User;
@@ -203,7 +204,11 @@ class OrderController extends \App\Http\Controllers\Controller
         $p = Order::find(41);
         //return TraitPedidosEmail::pedidoProductoUnico($p);
 
-         return TraitPedidosEmail::pedidoRetirar($p);
+         //return TraitPedidosEmail::pedidoRetirar($p);
+
+         $oc = PurchaseOrder::find(1);
+
+         return TraitPedidosEmail::ordenCompra($oc);
         return TraitPedidosEmail::pedidoUnicoRetirar($p);
         $s = Shipment::find(4);
         //return TraitPedidosEmail::envioDespachado($s);
