@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Order;
 
-class PedidoEntregadoEmail extends Mailable
+class PedidoUnicoRetirarEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,8 +31,8 @@ class PedidoEntregadoEmail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Pedido entregado - ' . env('APP_NAME'))
-            ->view('emails.pedidos.pedido_entregado')
+            ->subject('Producto Listo para ser Retirado - ' . env('APP_NAME'))
+            ->view('emails.pedidos.pedido_unico_retirar')
             ->with([
                 'pedido' => $this->pedido,
             ]);

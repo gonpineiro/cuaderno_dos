@@ -252,7 +252,9 @@ trait TraitPedidos
             $order = Order::find($request->order_id);
 
             /* Envio de email */
-            if ($estado->value === 'retirar') {
+            if ($estado->value === 'retirar' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoUnicoRetirar($order);
+            } else if ($estado->value === 'retirar' && $type == 'online') {
                 TraitPedidosEmail::pedidoRetirar($order);
             } else if ($estado->value === 'entregado') {
                 TraitPedidosEmail::pedidoEntregado($order);

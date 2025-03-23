@@ -30,7 +30,9 @@ class EnvioDespachadoEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.envios.envio_despachado')
+        return $this
+            ->subject('Producto Despachado - ' . env('APP_NAME'))
+            ->view('emails.envios.envio_despachado')
             ->with([
                 'shipment' => $this->shipment,
             ]);

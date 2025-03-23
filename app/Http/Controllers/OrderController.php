@@ -203,9 +203,11 @@ class OrderController extends \App\Http\Controllers\Controller
         $p = Order::find(41);
         //return TraitPedidosEmail::pedidoProductoUnico($p);
 
-        // return TraitPedidosEmail::pedidoRetirar($p);
+         return TraitPedidosEmail::pedidoRetirar($p);
+        return TraitPedidosEmail::pedidoUnicoRetirar($p);
         $s = Shipment::find(4);
-       // return TraitPedidosEmail::envioDespachado($s);
+        //return TraitPedidosEmail::envioDespachado($s);
+        // return TraitPedidosEmail::pedidoRetirar($p);
 
 
       return TraitPedidosEmail::pedidoEntregado($p);

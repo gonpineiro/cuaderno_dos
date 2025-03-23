@@ -2,27 +2,20 @@
 
 @section('content')
 
-<h1>Nos ponemos en contacto con usted ya que tenemos novedades acerca de su pedido en Allende Repuestos.</h1>
+
+
+<p>Estimado Cliente: {{$pedido->client->name}}</p>
 
 <p>
-    Su pedido {{$pedido->id}} se encuentra disponible en el local de Allende Repuestos para ser retirado.
+    Tenemos listo su pedido para ser <strong>retirado</strong> en el local de Allende Repuestos.
 </p>
 
 <p>
-    Horarios:
+    Podes hacerlo sacando el turno de compras online en nuestro local y retira con el n° de pedido ID: {{$pedido->id}}
+    ,dentro de las 48 hs hábiles.
 </p>
 
-<p>
-    Lunes a Viernes de 9.00 a 18.00 hs.
-</p>
-
-<p>
-    Sábados de 9.00 a 13.00 hs.
-</p>
-
-<p>
-    Dirección: 25 de mayo 373, Cipolletti.
-</p>
+@component('components.email.horarios')@endcomponent
 
 Saludos.
 

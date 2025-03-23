@@ -4,8 +4,8 @@
     <style>
         body {
             font-family: Arial;
-            font: small/1.5 Arial, Helvetica, sans-serif;
-            text-align: center;
+            font: medium Arial, Helvetica, sans-serif;
+            /* text-align: center; */
         }
 
         .container {
@@ -34,6 +34,11 @@
             width: 100%;
         }
 
+        th {
+
+            font-size: small;
+        }
+
         .td {
             border: 1px solid #dddddd !important;
             text-align: left;
@@ -56,6 +61,10 @@
         }
 
         .btn_container {
+            text-align: center;
+        }
+
+        .text-align-center {
             text-align: center;
         }
 
