@@ -309,7 +309,7 @@ class PriceQuoteController extends Controller
             $this->save_shipment($request, $order);
 
             $priceQuote->save();
-            
+
             TraitPedidosEmail::pedidoProductoUnico($order);
 
             DB::commit();
@@ -343,7 +343,7 @@ class PriceQuoteController extends Controller
     {
         DB::beginTransaction();
 
-        app()[PermissionRegistrar::class]->forgetCachedPermissions(); 
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $user = User::find(auth()->user()->id);
         if (!$user->can('cotizacion.delete')) {
@@ -375,7 +375,8 @@ class PriceQuoteController extends Controller
 
         $price_quote = PriceQuote::findOrFail($request->price_quote_id);
 
-        if ($price_quote->order) {
+        $user = auth()->user()->id;
+        if ($price_quote->order && $user->can('pedido.estado.entregado')) {
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 
@@ -456,7 +457,9 @@ class PriceQuoteController extends Controller
         try {
             $price_quote = PriceQuote::findOrFail($id);
 
-            if ($price_quote->order) {
+            $user = User::find(auth()->user()->id);
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            if ($price_quote->order && !$user->can('pedido.estado.entregado')) {
                 return sendResponse(null, 'Existe un pedido generado desde esta cotización');
             }
 
@@ -511,7 +514,9 @@ class PriceQuoteController extends Controller
     {
         $price_quote = PriceQuote::findOrFail($id);
 
-        if ($price_quote->order) {
+        $user = User::find(auth()->user()->id);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        if ($price_quote->order && !$user->can('pedido.estado.entregado')) {
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 
