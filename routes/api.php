@@ -54,6 +54,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
     Route::post('producto/borrar', [ProductController::class, 'delete']);
+    Route::post('producto/recuperar', [ProductController::class, 'recuperarProducto']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('producto/{id}/cotizaciones', [ProductController::class, 'cotizaciones']);
 
     Route::get('pedido/reporte-online', [OrderController::class, 'getReportePedidosOnline']);
+    Route::post('pedido/borrar', [OrderController::class, 'destroy']);
     Route::resource('pedido', OrderController::class)->only(['update', 'destroy']);
 
     /* Clientes */
@@ -144,7 +146,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Coeficientes */
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
-    Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+
 
     Route::get('permissions', [PermissionController::class, 'index']);
     Route::post('permissions/change_user_role', [PermissionController::class, 'change_user_role']);
@@ -155,3 +157,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 });
+
+
+Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);

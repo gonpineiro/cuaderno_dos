@@ -102,6 +102,7 @@ class PriceQuoteResource extends JsonResource
             'information_source_id' => $priceQuote->information_source_id,
             'observation' => $priceQuote->observation,
             'created_at' => $priceQuote->created_at->format('Y-m-d'),
+            'has_pedido' => !!$priceQuote->order
         ];
     }
 

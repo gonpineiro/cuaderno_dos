@@ -4,7 +4,7 @@
     <style>
         body {
             font-family: Arial;
-            font: medium Arial, Helvetica, sans-serif;
+            font: small Arial, Helvetica, sans-serif;
             /* text-align: center; */
         }
 
@@ -88,41 +88,32 @@
 
         <div class="hr"> </div>
 
-        @yield('content')
+
+
+        <p><strong>Estimado, tomar nota del siguiente pedido. Por favor confirmar la recepción del mismo y avisar
+                cualquier
+                novedad al
+                respecto:</strong></p>
+
+        <br>
+
+        <table class="table">
+            <tr>
+                <th>CANTIDAD</th>
+                <th>CÓDIGO</th>
+                <th>DESCRIPCIÓN</th>
+            </tr>
+            @foreach ($oc->detail as $item)
+            <tr>
+                <td class="td">{{$item['amount']}}</td>
+                <td class="td">{{$item['product']['provider_code']}}</td>
+                <td class="td">{{$item['product']['description']}}</td>
+            </tr>
+            @endforeach
+
+        </table>
 
         <div class="hr"> </div>
-
-        <br>
-        <div class="wap_note">
-            <a href="https://api.whatsapp.com/send/?phone=542995935575&text&type=phone_number&app_absent=0"
-                target="_blank">
-                +54 299 593-5575
-                <br>
-                Envianos tus consultas a través de nuestro whatsapp!
-            </a>
-
-        </div>
-
-        <br>
-        <div class="links_container">
-            <a href="http://www.allenderepuestos.com.ar/" class="link_icon">
-                <img src="http://www.allenderepuestos.com.ar/assets/email_images/icon_link_black.png" alt="" width="24"
-                    height="24">
-            </a>
-            <a href="http://www.facebook.com/repuestosallende" class="link_icon">
-                <img src="http://www.allenderepuestos.com.ar/assets/email_images/icon_fb_black.png" alt="" width="24"
-                    height="24">
-            </a>
-            <a href="https://www.instagram.com/allende_repuestos/" class="link_icon">
-                <img src="http://www.allenderepuestos.com.ar/assets/email_images/icon_ins_black.png" alt="" width="24"
-                    height="24">
-            </a>
-            <a href="mailto:contacto@allenderepuestos.com.ar" class="link_icon">
-                <img src="http://www.allenderepuestos.com.ar/assets/email_images/icon_email_black.png" alt="" width="24"
-                    height="24">
-            </a>
-        </div>
-    </div>
 
 </body>
 

@@ -8,21 +8,28 @@ use App\Http\TraitsControllers\TraitPedidos;
 use App\Http\TraitsControllers\TraitPedidosSiniestro;
 use App\Http\TraitsControllers\TraitPedidosCliente;
 use App\Http\TraitsControllers\TraitPedidosOnline;
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\PurchaseOrder;
+use App\Models\Shipment;
 use App\Models\ToAsk;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+
+use Spatie\Permission\PermissionRegistrar;
 
 class OrderController extends \App\Http\Controllers\Controller
 {
     use TraitPedidosOnline/* Ver si no se usa mas */,
         TraitPedidosCliente/* Ver si no se usa mas */,
         TraitPedidos,
-        TraitPedidosSiniestro;
+        TraitPedidosSiniestro,
+        TraitPedidosEmail;
 
     private function hayDuplicados($productos)
     {
@@ -91,40 +98,35 @@ class OrderController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         DB::beginTransaction();
 
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $user = User::find(auth()->user()->id);
+        if (!$user->can('pedido.delete')) {
+            return sendResponse(null, "Acción no autorizada");
+        }
+
         try {
-            $order = Order::findOrFail($id);
-            $entregado = OrderProduct::where('order_id', $id)->where('state_id', 11)->exists();
+            $order = Order::findOrFail($request->id);
+            $entregado = OrderProduct::where('order_id', $request->id)->where('state_id', 11)->exists();
 
             if ($entregado) {
                 throw new \Exception("No se puede eliminar un pedido con un producto entregado");
             }
 
             $order->delete();
-            OrderProduct::where('order_id', $id)->delete();
+            OrderProduct::where('order_id', $request->id)->delete();
 
             DB::commit();
 
-            return sendResponse($id);
+            return sendResponse(new OrderResource($order));
         } catch (\Exception $e) {
             DB::rollBack();
-
-            return sendResponse(null, $e->getMessage(), 300, $id);
+            return sendResponse(null, $e->getMessage(), 300, $request->id);
         }
-    }
-
-    public function enviarCorreo()
-    {
-
-        // Enviar el correo electrónico
-
-        // Opcionalmente, puedes agregar lógica adicional después de enviar el correo
-
-        // Redireccionar a una página de éxito, por ejemplo
-        return sendResponse(Mail::to('gon.pineiro@gmail.com')->send(new CrearPedidoClienteEmail()));
     }
 
     public function getPdfPedido($id)
@@ -195,5 +197,24 @@ class OrderController extends \App\Http\Controllers\Controller
             } */
         }
         return true;
+    }
+
+    public function enviarCorreo(){
+
+        $p = Order::find(41);
+        //return TraitPedidosEmail::pedidoProductoUnico($p);
+
+         //return TraitPedidosEmail::pedidoRetirar($p);
+
+         $oc = PurchaseOrder::find(1);
+
+         return TraitPedidosEmail::ordenCompra($oc);
+        return TraitPedidosEmail::pedidoUnicoRetirar($p);
+        $s = Shipment::find(4);
+        //return TraitPedidosEmail::envioDespachado($s);
+        // return TraitPedidosEmail::pedidoRetirar($p);
+
+
+      return TraitPedidosEmail::pedidoEntregado($p);
     }
 }

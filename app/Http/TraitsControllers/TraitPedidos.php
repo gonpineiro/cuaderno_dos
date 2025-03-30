@@ -11,8 +11,10 @@ use App\Models\PedidoCliente;
 use App\Models\PedidoOnline;
 use App\Models\Siniestro;
 use App\Models\Table;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 
 trait TraitPedidos
 {
@@ -214,6 +216,17 @@ trait TraitPedidos
             if ($order->shipment) {
                 return sendResponse(null, 'Ya existe un envio creado con este pedido', 300);
             }
+            $estado = Table::find($request->state_id);
+
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            $user = User::find(auth()->user()->id);
+
+            if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {
+                return sendResponse(null, "Acción no autorizada");
+            } else if ($estado->value === 'cancelado' && !$user->can('pedido.estado.cancelado')) {
+                return sendResponse(null, "Acción no autorizada");
+            }
 
             $type = $order->type->value;
 
@@ -235,13 +248,21 @@ trait TraitPedidos
                 }
             }
 
-            $estado = Table::find($request->state_id);
             activity("pedido.$estado->value")
                 ->performedOn($order)
                 ->withProperties(['state_id' => $request->state_id])
                 ->log($request->motivo ? $request->motivo : "Pedido $estado->value");
 
             $order = Order::find($request->order_id);
+
+            /* Envio de email */
+            if ($estado->value === 'retirar' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoUnicoRetirar($order);
+            } else if ($estado->value === 'retirar' && $type == 'online') {
+                TraitPedidosEmail::pedidoRetirar($order);
+            } else if ($estado->value === 'entregado') {
+                TraitPedidosEmail::pedidoEntregado($order);
+            }
 
             DB::commit();
 
@@ -272,7 +293,7 @@ trait TraitPedidos
     {
         $products = OrderProduct::with(['product', 'order'])->get()
             ->map(function ($orderProduct) {
-                return ProductResource::order($orderProduct->product, $orderProduct);
+                return ProductResource::order($orderProduct->product, $orderProduct, false);
             });
 
         $products = $products->sortBy(function ($product) {

@@ -57,7 +57,7 @@ class ProductResource extends JsonResource
         return $array;
     }
 
-    public static function order(Product $product, $order_product)
+    public static function order(Product $product, $order_product, $audit = true)
     {
         $array = $product->toArray();
         $array['order_product_id'] = $order_product->id;
@@ -66,7 +66,7 @@ class ProductResource extends JsonResource
         $array['brand'] = $product->brand ? $product->brand->name : null;
         $array['ubication'] = $product->ubication;
         $array['description'] = $product->description;
-        $array['activities'] = AuditResource::collection($product->activities);
+        $array['activities'] = $audit ?  AuditResource::collection($product->activities) : null;
 
         if ($product->is_special) {
             $array['state'] = 'is_special';
@@ -79,6 +79,4 @@ class ProductResource extends JsonResource
         $array['order_state'] = $order_product->order->getGeneralState();
         return $array;
     }
-
-
 }

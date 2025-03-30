@@ -43,7 +43,7 @@ trait TraitPedidosCliente
         $data = $request->all();
         $data['user_id'] = $user->id;
 
-        $order = PedidoCliente::create($data);
+        $order = PedidoCliente::create($data);        
 
         $is_contado = $order->price_quote->type_price->value == 'contado';
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;

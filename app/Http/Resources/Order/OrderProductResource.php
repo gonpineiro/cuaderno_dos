@@ -55,4 +55,22 @@ class OrderProductResource extends JsonResource
 
         return $detail;
     }
+
+    public static function emailPedidoArray($detail)
+    {
+        $array = [];
+
+        foreach ($detail as $value) {
+
+            $desc = $value->description ? $value->description : $value->product->description;
+            $array[] = [
+                'amount' => $value->amount,
+                'description' => truncateString($desc, 50),
+                'unit_price' => $value->unit_price,
+                'total' => $value->unit_price * $value->amount,
+            ];
+        }
+
+        return $array;
+    }
 }
