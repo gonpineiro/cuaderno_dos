@@ -289,7 +289,7 @@ trait TraitPedidos
     {
         $products = OrderProduct::with(['product', 'order'])->get()
             ->map(function ($orderProduct) {
-                return ProductResource::order($orderProduct->product, $orderProduct);
+                return ProductResource::order($orderProduct->product, $orderProduct, false);
             });
 
         $products = $products->sortBy(function ($product) {
