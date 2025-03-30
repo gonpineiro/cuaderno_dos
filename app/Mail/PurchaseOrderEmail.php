@@ -8,7 +8,6 @@ use App\Models\PurchaseOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\Shipment;
 
@@ -38,7 +37,7 @@ class PurchaseOrderEmail extends Mailable
         $filePath = "exports/order_de_compra_{$this->purchase_order->id}.xlsx";
 
         // Guardar temporalmente el archivo en storage
-        Excel::store(new PurchaseOrderExport($this->purchase_order->detail), $filePath, 'local');
+        \Maatwebsite\Excel\Facades\Excel::store(new PurchaseOrderExport($this->purchase_order->detail), $filePath, 'local');
 
         return $this
             ->subject("Pedido {$this->purchase_order->provider->name}")
@@ -46,6 +45,6 @@ class PurchaseOrderEmail extends Mailable
             ->with([
                 'oc' => new PurchaseOrderResource($this->purchase_order, 'complete'),
             ])
-            ->attach(storage_path("app/{$filePath}"));;
+            ->attach(storage_path("app/{$filePath}"));
     }
 }
