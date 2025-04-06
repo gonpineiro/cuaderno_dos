@@ -27,13 +27,16 @@ class PriceQuoteProductResource extends JsonResource
         return $array;
     }
 
-    public static function pdfArray($detail, Coeficiente $coef = null, $truncate_int)
+    public static function pdfArray($detail, Coeficiente $coef = null, $truncate_int, $redondear = true)
     {
         $array = [];
 
         foreach ($detail as $value) {
 
-            $unitario = redondearNumero($coef ? $value->unit_price * $coef->coeficiente * $coef->value : $value->unit_price);
+            $valor = $coef ? $value->unit_price * $coef->coeficiente * $coef->value : $value->unit_price;
+
+
+            $unitario = $redondear ?  redondearNumero($valor) : $valor;
 
             $desc = $value->description ? $value->description : $value->product->description;
             $array[] = [

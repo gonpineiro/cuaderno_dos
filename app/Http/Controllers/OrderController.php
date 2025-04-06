@@ -155,7 +155,7 @@ class OrderController extends \App\Http\Controllers\Controller
         return $pdf->download('informe.pdf');
     }
 
-    private function storeOrderProduct($request, $order_id, $coef = null)
+    private function storeOrderProduct($request, $order_id, $coef = null, $redondear = false)
     {
         $detail = $request->detail;
         $to_ask = $request->to_ask;
@@ -163,7 +163,9 @@ class OrderController extends \App\Http\Controllers\Controller
         foreach ($detail as $item) {
             $item['order_id'] = $order_id;
             $item['state_id'] = $item['state']['id'];
-            $item['unit_price'] = redondearNumero($coef ? $item['unit_price'] * $coef->coeficiente * $coef->value : $item['unit_price']);
+
+            $valor = $coef ? $item['unit_price'] * $coef->coeficiente * $coef->value : $item['unit_price'];
+            $item['unit_price'] = $redondear ?  redondearNumero($valor) : $valor;
 
             $item['provider_id'] = isset($item['provider']) ? $item['provider']['id'] : null;
             $item['product_id'] = $item['product']['id'];
@@ -199,22 +201,23 @@ class OrderController extends \App\Http\Controllers\Controller
         return true;
     }
 
-    public function enviarCorreo(){
+    public function enviarCorreo()
+    {
 
         $p = Order::find(41);
         //return TraitPedidosEmail::pedidoProductoUnico($p);
 
-         //return TraitPedidosEmail::pedidoRetirar($p);
+        //return TraitPedidosEmail::pedidoRetirar($p);
 
-         $oc = PurchaseOrder::find(1);
+        $oc = PurchaseOrder::find(1);
 
-         return TraitPedidosEmail::ordenCompra($oc);
+        return TraitPedidosEmail::ordenCompra($oc);
         return TraitPedidosEmail::pedidoUnicoRetirar($p);
         $s = Shipment::find(4);
         //return TraitPedidosEmail::envioDespachado($s);
         // return TraitPedidosEmail::pedidoRetirar($p);
 
 
-      return TraitPedidosEmail::pedidoEntregado($p);
+        return TraitPedidosEmail::pedidoEntregado($p);
     }
 }

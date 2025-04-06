@@ -22,7 +22,7 @@ class ApiService
     private function authenticate(): string
     {
         return Cache::remember('api_token', 3600, function () {
-            $response = Http::post(config('services.jazz_api.auth_url') . "/Login", [
+            $response = Http::post(config('services.jazz_api.base_url') . "/Auth/Login", [
                 'user' => config('services.jazz_api.username'),
                 'password' => config('services.jazz_api.password'),
             ]);
