@@ -34,13 +34,14 @@ trait TraitPedidosOnline
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
 
         /* Intentamos guardar lss ordernes productos */
-        if (!self::storeOrderProduct($request, $order->id, $contado_deb)) {
+        $redondear = $order->price_quote->type_price->value !== 'lista';
+        if (!self::storeOrderProduct($request, $order->id, $contado_deb, $redondear)) {
             throw new \Exception('No se pudieron guardar los productos del pedido cliente');
         }
 
         return $order;
     }
-    
+
     public function showPedidoOnline($id)
     {
         $order = PedidoOnline::findOrFail($id);

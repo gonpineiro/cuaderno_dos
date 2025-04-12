@@ -57,13 +57,12 @@ class ProductResource extends JsonResource
         return $array;
     }
 
-    public static function order(Product $product, $order_product, $audit = true)
+    public static function order(Product $product, $order_product, $audit = true, $precalculatedState = null)
     {
         $array = $product->toArray();
         $array['order_product_id'] = $order_product->id;
-        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
-        $array['provider'] = (isset($product->provider) && $product->provider) ? $product->provider->name : null;
-        $array['brand'] = $product->brand ? $product->brand->name : null;
+        $array['provider'] = $product->provider->name ?? null;
+        $array['brand'] = $product->brand->name ?? null;
         $array['ubication'] = $product->ubication;
         $array['description'] = $product->description;
         $array['activities'] = $audit ?  AuditResource::collection($product->activities) : null;
@@ -73,10 +72,11 @@ class ProductResource extends JsonResource
         } else if (!$product->ubication) {
             $array['state'] = 'is_simple';
         } else {
-            $array['state'] = $product->state ? $product->state->value : null;
+            $array['state'] = $product->state->value ?? null;
         }
 
-        $array['order_state'] = $order_product->order->getGeneralState();
+        $array['order_state'] = $precalculatedState;
+
         return $array;
     }
 }

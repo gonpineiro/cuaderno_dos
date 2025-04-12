@@ -188,7 +188,7 @@ class Order extends Model
         return $array;
     } */
 
-    public function getGeneralState()
+    /* public function getGeneralState()
     {
         if ($shipment = $this->shipment) {
             return (object) [
@@ -327,5 +327,65 @@ class Order extends Model
         $estado = Table::where('name', 'order_siniestro_state')->where('value', $estadoGeneral)->first();
 
         return $estado;
+    } */
+
+     public function getGeneralState()
+    {
+        if ($shipment = $this->shipment) {
+            return (object) [
+                'value' => 'envio',
+                'description' => 'ENVÍO',
+                'background_color' => '#0d6efd',
+                'hover' => strtoupper($shipment->getGeneralState()->description),
+                'url' =>  "/envios/$shipment->id",
+            ];
+        }
+
+        $type = $this->type->value;
+        switch ($type) {
+            case 'online':
+                return $this->calculateState('order_online_state');
+            case 'cliente':
+                return $this->calculateState('order_cliente_state');
+            case 'siniestro':
+                return $this->calculateState('order_siniestro_state');
+            default:
+                return null;
+        }
     }
+
+    private function calculateState($tableName)
+    {
+        // Cargar todos los detalles con su estado en una sola consulta
+        $detail = $this->detail()->with('state')->get();
+
+        // Agrupar estados y contar ocurrencias
+        $stateCounts = $detail->groupBy('state.value')->map->count();
+
+        // Definir prioridad de estados según el tipo de pedido
+        $priority = [];
+        switch ($tableName) {
+            case 'order_online_state':
+                $priority = ['pendiente', 'retirar', 'entregado', 'cancelado'];
+                break;
+            case 'order_cliente_state':
+                $priority = ['incompleto', 'pendiente', 'retirar', 'entregado', 'cancelado'];
+                break;
+            case 'order_siniestro_state':
+                $priority = ['incompleto', 'completo', 'entregado', 'cancelado'];
+                break;
+        }
+
+        // Encontrar el primer estado que existe en la lista de prioridades
+        $estadoGeneral = null;
+        foreach ($priority as $state) {
+            if (isset($stateCounts[$state])) {
+                $estadoGeneral = $state;
+                break;
+            }
+        }
+
+        return Table::where('name', $tableName)->where('value', $estadoGeneral)->first();
+    }
+
 }

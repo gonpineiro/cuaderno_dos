@@ -26,7 +26,7 @@ if (!function_exists('isEven')) {
 }
 
 if (!function_exists('redondearNumero')) {
-    function redondearNumero($numero)
+    /* function redondearNumero($numero)
     {
         $numero = round($numero);
         $residuo = $numero % 100;
@@ -37,6 +37,18 @@ if (!function_exists('redondearNumero')) {
         }
 
         return $n;
+    } */
+
+    function redondearNumero($numero)
+    {
+        $numero = round($numero);
+        $residuo = $numero % 100;
+
+        if ($residuo === 0) {
+            return $numero;
+        }
+
+        return $numero + (100 - $residuo);
     }
 }
 
