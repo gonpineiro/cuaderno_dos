@@ -218,11 +218,11 @@ trait TraitPedidos
 
             $user = User::find(auth()->user()->id);
 
-            if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {
+            /* if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {
                 return sendResponse(null, "Acción no autorizada");
             } else if ($estado->value === 'cancelado' && !$user->can('pedido.estado.cancelado')) {
                 return sendResponse(null, "Acción no autorizada");
-            }
+            } */
 
             $type = $order->type->value;
 
