@@ -260,8 +260,10 @@ trait TraitPedidos
                 TraitPedidosEmail::pedidoUnicoRetirar($order);
             } else if ($estado->value === 'retirar' && $type == 'online') {
                 TraitPedidosEmail::pedidoRetirar($order);
-            } else if ($estado->value === 'entregado') {
+            } else if ($estado->value === 'entregado' && $type == 'cliente') {
                 TraitPedidosEmail::pedidoEntregado($order);
+            } else if ($estado->value === 'entregado' && $type == 'online') {
+                TraitPedidosEmail::pedidoOnlineEntregado($order);
             }
 
             DB::commit();
@@ -292,41 +294,41 @@ trait TraitPedidos
     public function productos(Request $request)
     {
         // Cargar todas las relaciones necesarias en una sola consulta
-    $orderProducts = OrderProduct::with([
-        'product.provider', 
-        'product.brand', 
-        'product.activities',
-        'order.shipment', 
-        'order.detail.state', 
-        'order.type'
-    ])->get();
+        $orderProducts = OrderProduct::with([
+            'product.provider',
+            'product.brand',
+            'product.activities',
+            'order.shipment',
+            'order.detail.state',
+            'order.type'
+        ])->get();
 
-    // Precalcular el estado general de cada pedido
-    $orderStates = $orderProducts->pluck('order')->unique()->mapWithKeys(function ($order) {
-        return [$order->id => $order->getGeneralState()];
-    });
+        // Precalcular el estado general de cada pedido
+        $orderStates = $orderProducts->pluck('order')->unique()->mapWithKeys(function ($order) {
+            return [$order->id => $order->getGeneralState()];
+        });
 
-    // Mapear productos sin recalcular estados en cada iteración
-    $products = $orderProducts->map(function ($orderProduct) use ($orderStates) {
-        return ProductResource::order($orderProduct->product, $orderProduct, false, $orderStates[$orderProduct->order->id] ?? null);
-    });
-
-
-    $priority = [
-        'incompleto' => 1,
-        'pendiente' => 2,
-        'retirar' => 3,
-        'entregado' => 4,
-        'cancelado' => 5,
-        'envio' => 6,
-    ];
+        // Mapear productos sin recalcular estados en cada iteración
+        $products = $orderProducts->map(function ($orderProduct) use ($orderStates) {
+            return ProductResource::order($orderProduct->product, $orderProduct, false, $orderStates[$orderProduct->order->id] ?? null);
+        });
 
 
-    
-    $products = $products->sortBy(fn($product) => $priority[$product['order_state']->value] ?? 99)->values();
+        $priority = [
+            'incompleto' => 1,
+            'pendiente' => 2,
+            'retirar' => 3,
+            'entregado' => 4,
+            'cancelado' => 5,
+            'envio' => 6,
+        ];
 
 
-       /*  $products = $products->sortBy(function ($product) {
+
+        $products = $products->sortBy(fn($product) => $priority[$product['order_state']->value] ?? 99)->values();
+
+
+        /*  $products = $products->sortBy(function ($product) {
             return [
                 'incompleto' => 1,
                 'pendiente' => 2,

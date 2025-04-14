@@ -12,6 +12,7 @@ use App\Mail\EnvioDespachadoEmail;
 use App\Mail\PurchaseOrderEmail;
 use App\Mail\PedidoRetirarEmail;
 use App\Mail\PedidoEntregadoEmail;
+use App\Mail\PedidoOnlineEntregadoEmail;
 use App\Mail\PedidoUnicoRetirarEmail;
 use App\Models\PurchaseOrder;
 
@@ -48,6 +49,14 @@ trait TraitPedidosEmail
     {
         $correo = new PedidoEntregadoEmail($pedido);
         Mail::to('Nicolasallende90@gmail.com')->send(new PedidoEntregadoEmail($pedido));
+        return $correo->render();
+    }
+
+    /** 5 - Cuando se entrega un pedido */
+    public static function pedidoOnlineEntregado(Order $pedido)
+    {
+        $correo = new PedidoOnlineEntregadoEmail($pedido);
+        Mail::to('Nicolasallende90@gmail.com')->send(new PedidoOnlineEntregadoEmail($pedido));
         return $correo->render();
     }
 
