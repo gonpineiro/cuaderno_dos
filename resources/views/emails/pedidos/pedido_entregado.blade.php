@@ -8,7 +8,7 @@
 </p>
 
 <p>
-    Le dejamos un link para que califique públicamente su experiencia en nuestro local:
+    Le dejamos una breve encuesta de satisfacción que nos ayuda a seguir mejorando en el siguiente botón:
 </p>
 
 <br>
