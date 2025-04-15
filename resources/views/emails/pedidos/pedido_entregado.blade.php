@@ -14,10 +14,6 @@
 <br>
 
 <br>
-@component('components.email.opinar')@endcomponent
-<br>
-<br>
-
-@component('components.email.gracias')@endcomponent
+@component('components.email.encuesta-and-gracias')@endcomponent
 
 @endsection
