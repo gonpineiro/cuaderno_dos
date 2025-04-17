@@ -23,9 +23,9 @@ trait TraitPedidosEmail
     /** 1 - Cuando se crea un pedido con un producto unico */
     public static function pedidoProductoUnico(Order $pedido)
     {
-        //$correo = new CrearPedidoProductoUnicoEmail($pedido);
-        Mail::to('gon.pineiro@gmail.com')->send(new CrearPedidoProductoUnicoEmail($pedido));
-        //return $correo->render();
+        $correo = new CrearPedidoProductoUnicoEmail($pedido);
+        Mail::to($pedido->client->email)->send(new CrearPedidoProductoUnicoEmail($pedido));
+        return $correo->render();
     }
 
     /** 2 - Cuando esta listo para retirar un pedido con producto unico  */
