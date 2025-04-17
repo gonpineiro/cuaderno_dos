@@ -24,7 +24,7 @@ trait TraitPedidosEmail
     public static function pedidoProductoUnico(Order $pedido)
     {
         $correo = new CrearPedidoProductoUnicoEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new CrearPedidoProductoUnicoEmail($pedido));
+        Mail::to($pedido->client->email)->send(new CrearPedidoProductoUnicoEmail($pedido));
         return $correo->render();
     }
 
@@ -32,7 +32,7 @@ trait TraitPedidosEmail
     public static function pedidoUnicoRetirar(Order $pedido)
     {
         $correo = new PedidoUnicoRetirarEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new PedidoUnicoRetirarEmail($pedido));
+        Mail::to($pedido->client->email)->send(new PedidoUnicoRetirarEmail($pedido));
         return $correo->render();
     }
 
@@ -40,7 +40,7 @@ trait TraitPedidosEmail
     public static function pedidoRetirar(Order $pedido)
     {
         $correo = new PedidoRetirarEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new PedidoRetirarEmail($pedido));
+        Mail::to($pedido->client->email)->send(new PedidoRetirarEmail($pedido));
         return $correo->render();
     }
 
@@ -48,7 +48,7 @@ trait TraitPedidosEmail
     public static function pedidoEntregado(Order $pedido)
     {
         $correo = new PedidoEntregadoEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new PedidoEntregadoEmail($pedido));
+        Mail::to($pedido->client->email)->send(new PedidoEntregadoEmail($pedido));
         return $correo->render();
     }
 
@@ -56,7 +56,7 @@ trait TraitPedidosEmail
     public static function pedidoOnlineEntregado(Order $pedido)
     {
         $correo = new PedidoOnlineEntregadoEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new PedidoOnlineEntregadoEmail($pedido));
+        Mail::to($pedido->client->email)->send(new PedidoOnlineEntregadoEmail($pedido));
         return $correo->render();
     }
 
@@ -64,7 +64,7 @@ trait TraitPedidosEmail
     public static function envioDespachado(Shipment $shipment)
     {
         $correo = new EnvioDespachadoEmail($shipment);
-        Mail::to('Nicolasallende90@gmail.com')->send(new EnvioDespachadoEmail($shipment));
+        Mail::to($shipment->client->email)->send(new EnvioDespachadoEmail($shipment));
         return $correo->render();
     }
 
