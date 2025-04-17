@@ -326,7 +326,7 @@ class PriceQuoteController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
+            return sendResponse(null, $e->getMessage(), 300, $e->getTrace());
         }
     }
 
