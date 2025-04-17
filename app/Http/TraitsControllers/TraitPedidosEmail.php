@@ -72,7 +72,7 @@ trait TraitPedidosEmail
     public static function ordenCompra(PurchaseOrder $pedido)
     {
         $correo = new PurchaseOrderEmail($pedido);
-        Mail::to('Nicolasallende90@gmail.com')->send(new PurchaseOrderEmail($pedido));
+        Mail::to($pedido->provider->email)->send(new PurchaseOrderEmail($pedido));
         return $correo->render();
     }
 }
