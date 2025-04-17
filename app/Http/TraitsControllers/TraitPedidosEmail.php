@@ -24,7 +24,7 @@ trait TraitPedidosEmail
     public static function pedidoProductoUnico(Order $pedido)
     {
         $correo = new CrearPedidoProductoUnicoEmail($pedido);
-        Mail::to($pedido->client->email)->send(new CrearPedidoProductoUnicoEmail($pedido));
+        Mail::to($pedido->price_quote->client->email)->send(new CrearPedidoProductoUnicoEmail($pedido));
         return $correo->render();
     }
 
