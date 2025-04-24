@@ -24,6 +24,7 @@ use App\Models\PurchaseOrderProduct;
 use App\Models\ShipmentProduct;
 use App\Models\Table;
 use App\Models\ToAsk;
+use App\Services\JazzServices\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\PermissionRegistrar;
@@ -336,6 +337,21 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(ProductResource::collection($results));
     }
 
+    public function getStock(Request $request)
+    {
+        try {
+            $ps = new ProductService();
+            $stock = $ps->getStock($request->id);
+
+            return sendResponse([
+                'totalStock' => $stock['totalStock'],
+                'totalStockDisponible' => $stock['totalStockDisponible'],
+            ]);
+        } catch (\Exception $th) {
+            return sendResponse(null, $th->getMessage(), 300);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         try {
@@ -368,7 +384,8 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function recuperarProducto(Request $request) {
+    public function recuperarProducto(Request $request)
+    {
         try {
 
             $product = Product::withTrashed()->find($request->id);
@@ -377,7 +394,7 @@ class ProductController extends \App\Http\Controllers\Controller
                 $product->restore();
             }
 
-            return sendResponse(new ProductResource($product));    
+            return sendResponse(new ProductResource($product));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getTrace(), 500);
         }
