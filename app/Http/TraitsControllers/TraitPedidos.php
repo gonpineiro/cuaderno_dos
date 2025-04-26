@@ -5,6 +5,7 @@ namespace App\Http\TraitsControllers;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Product\ProductResource;
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
@@ -264,6 +265,8 @@ trait TraitPedidos
                 TraitPedidosEmail::pedidoEntregado($order);
             } else if ($estado->value === 'entregado' && $type == 'online') {
                 TraitPedidosEmail::pedidoOnlineEntregado($order);
+            } else if ($estado->value === 'cancelado' && $type == 'online') {
+                TraitPedidosEmail::pedidoCancelado($order);
             }
 
             DB::commit();

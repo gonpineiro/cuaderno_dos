@@ -160,4 +160,4 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 
 
-Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+//Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
