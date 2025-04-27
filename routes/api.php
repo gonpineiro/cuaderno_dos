@@ -53,7 +53,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('product_marca', ProductBrandController::class)->except(['update', 'delete']);
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
-    Route::get('producto/stock', [ProductController::class, 'getStock']);
+    Route::get('producto/detalle_jazz', [ProductController::class, 'detalle_jazz']);
     Route::post('producto/borrar', [ProductController::class, 'delete']);
     Route::post('producto/recuperar', [ProductController::class, 'recuperarProducto']);
 

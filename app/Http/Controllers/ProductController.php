@@ -337,15 +337,19 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(ProductResource::collection($results));
     }
 
-    public function getStock(Request $request)
+    public function detalle_jazz(Request $request)
     {
         try {
             $ps = new ProductService();
             $stock = $ps->getStock($request->id);
+            $general = $ps->getProduct($request->id);
 
             return sendResponse([
-                'totalStock' => $stock['totalStock'],
-                'totalStockDisponible' => $stock['totalStockDisponible'],
+                'stock' => [
+                    'totalStock' => $stock['totalStock'],
+                    'totalStockDisponible' => $stock['totalStockDisponible'],
+                ],
+                'general'  => $general
             ]);
         } catch (\Exception $th) {
             return sendResponse(null, $th->getMessage(), 300);
