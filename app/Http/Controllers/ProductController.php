@@ -19,6 +19,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\ProductJazz;
 use App\Models\ProductProvider;
 use App\Models\PurchaseOrderProduct;
 use App\Models\ShipmentProduct;
@@ -336,24 +337,49 @@ class ProductController extends \App\Http\Controllers\Controller
         }
         return sendResponse(ProductResource::collection($results));
     }
-
     public function detalle_jazz(Request $request)
     {
         try {
             $ps = new ProductService();
-            $stock = $ps->getStock($request->id);
-            $general = $ps->getProduct($request->id);
+            //$stock = $ps->getStock($request->id);
+            $product_ = $ps->getProduct($request->id);
 
-            return sendResponse([
-                'stock' => [
-                    'totalStock' => $stock['totalStock'],
-                    'totalStockDisponible' => $stock['totalStockDisponible'],
-                ],
-                'general'  => $general
-            ]);
+            $this->updateProductJazz($product_);
+
+            return sendResponse($product_);
         } catch (\Exception $th) {
             return sendResponse(null, $th->getMessage(), 300);
         }
+    }
+
+    private function updateProductJazz($product)
+    {
+        // Buscar o crear instancia
+        $pj = ProductJazz::firstOrNew(['idProducto' => $product['idProducto']]);
+
+        // Extraer precios
+        $precios = collect($product['precios']);
+
+        $precio2 = $precios->first(function ($precio) {
+            return $precio['idLista'] == 2;
+        });
+        $precio3 = $precios->first(function ($precio) {
+            return $precio['idLista'] == 3;
+        });
+        $precio6 = $precios->first(function ($precio) {
+            return $precio['idLista'] == 6;
+        });
+
+        // Asignar datos comunes
+        $pj->nombre = $product['nombre'];
+        $pj->stock = $product['totalStockFisico'];
+        $pj->fecha_alta = $product['fechaAlta'];
+        $pj->fecha_mod = $product['fechaMod'];
+        $pj->precio_lista_2 = $precio2 ? $precio2['precio'] : null;
+        $pj->precio_lista_3 = $precio3 ? $precio3['precio'] : null;
+        $pj->precio_lista_6 = $precio6 ? $precio6['precio'] : null;
+
+        $pj->save();
     }
 
     public function update(Request $request, $id)

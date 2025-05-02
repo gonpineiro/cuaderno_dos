@@ -97,6 +97,11 @@ class Product extends Model
         return $this->belongsTo(Provider::class);
     }
 
+    public function jazz()
+    {
+        return $this->belongsTo(ProductJazz::class, 'idProducto', 'idProducto');
+    }
+
     /* public function getProviderAttribute()
     {
         $provider = $this->providers()->where('is_habitual', 1)->first();
