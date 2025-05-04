@@ -48,6 +48,13 @@ return [
     */
 
     'channels' => [
+
+        'sync_product_jazz' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sync_product_jazz.log'),
+            'level' => 'info',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

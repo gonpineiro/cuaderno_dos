@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Product\StoreProductSimpleRequest;
 use App\Http\Resources\Product\AuditResource;
 use App\Http\Resources\Product\ProductCotizacionesResource;
 use App\Models\Product;
-use App\Http\Requests\Product\StoreProductRequest;
-use App\Http\Requests\Product\StoreProductSpecialRequest;
-use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Http\Resources\Product\FueraCatalogoResource;
-use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Activity;
-use App\Models\Order;
 use App\Models\User;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
@@ -24,9 +18,9 @@ use App\Models\ProductProvider;
 use App\Models\PurchaseOrderProduct;
 use App\Models\ShipmentProduct;
 use App\Models\Table;
-use App\Models\ToAsk;
 use App\Services\JazzServices\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -344,42 +338,35 @@ class ProductController extends \App\Http\Controllers\Controller
             //$stock = $ps->getStock($request->id);
             $product_ = $ps->getProduct($request->id);
 
-            $this->updateProductJazz($product_);
+            $pj = $this->updateProductJazz($product_);
 
-            return sendResponse($product_);
+            return sendResponse($pj);
         } catch (\Exception $th) {
             return sendResponse(null, $th->getMessage(), 300);
         }
     }
 
-    private function updateProductJazz($product)
+    public function updateProductJazz($product): ProductJazz
     {
         // Buscar o crear instancia
-        $pj = ProductJazz::firstOrNew(['idProducto' => $product['idProducto']]);
-
-        // Extraer precios
-        $precios = collect($product['precios']);
-
-        $precio2 = $precios->first(function ($precio) {
-            return $precio['idLista'] == 2;
-        });
-        $precio3 = $precios->first(function ($precio) {
-            return $precio['idLista'] == 3;
-        });
-        $precio6 = $precios->first(function ($precio) {
-            return $precio['idLista'] == 6;
-        });
+        $pj = ProductJazz::firstOrNew(['id' => $product['idProducto']]);
 
         // Asignar datos comunes
         $pj->nombre = $product['nombre'];
-        $pj->stock = $product['totalStockFisico'];
+        $pj->stock = $product['totalStockDisponible'];
         $pj->fecha_alta = $product['fechaAlta'];
         $pj->fecha_mod = $product['fechaMod'];
-        $pj->precio_lista_2 = $precio2 ? $precio2['precio'] : null;
-        $pj->precio_lista_3 = $precio3 ? $precio3['precio'] : null;
-        $pj->precio_lista_6 = $precio6 ? $precio6['precio'] : null;
 
+        // Extraer precios
+        $pj->setPrices(collect($product['precios']));
+
+        // Adicionales
+        $pj->setAdicionales(collect($product['camposAdicionales']));
+
+        // Guardar
         $pj->save();
+
+        return $pj;
     }
 
     public function update(Request $request, $id)

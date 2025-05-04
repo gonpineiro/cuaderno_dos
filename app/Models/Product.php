@@ -99,7 +99,7 @@ class Product extends Model
 
     public function jazz()
     {
-        return $this->belongsTo(ProductJazz::class, 'idProducto', 'idProducto');
+        return $this->belongsTo(ProductJazz::class, 'idProducto', 'id');
     }
 
     /* public function getProviderAttribute()
