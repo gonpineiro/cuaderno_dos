@@ -34,7 +34,8 @@
 <p>IMPORTE TOTAL: <strong> {{$total}}</strong> </p>
 <p>SEÑA: <strong> {{$deposit}}</strong> </p>
 <p>RESTA PAGAR: <strong> {{$resto}}</strong> </p>
-<!-- <p>FECHA ESTIMADA DE DEMORA: <strong></strong> </p> -->
+<p>FECHA ESTIMADA: <strong>{{ \Carbon\Carbon::parse($pedido->estimated_date)->format('d/m/Y') }}</strong> </p>
+
 
 <p>NOS PONDREMOS EN CONTACTO CON USTED CUANDO TENGAMOS NOVEDADES DE LOS PRODUCTOS.</p>
 

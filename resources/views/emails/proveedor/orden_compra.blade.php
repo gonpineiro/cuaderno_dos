@@ -106,7 +106,14 @@
             @foreach ($oc->detail as $item)
             <tr>
                 <td class="td">{{$item['amount']}}</td>
-                <td class="td">{{$item['product']['provider_code']}}</td>
+                <td class="td">
+                    @if(!empty($item['product']['provider_code']))
+                    {{ $item['product']['provider_code'] }}
+                    @else
+                    {{ $item['product']['code'] }}
+                    @endif
+                </td>
+
                 <td class="td">{{$item['product']['description']}}</td>
             </tr>
             @endforeach
