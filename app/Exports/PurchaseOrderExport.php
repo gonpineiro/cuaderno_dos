@@ -30,7 +30,7 @@ class PurchaseOrderExport implements FromCollection, WithHeadings, WithMapping
         $t = $order->product;
         return [
             $order->amount,
-            $order->product->provider_code,
+            $order->product->provider_code ?? $order->product->code,
             $order->product->description,
         ];
     }
