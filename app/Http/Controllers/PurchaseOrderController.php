@@ -36,7 +36,10 @@ class PurchaseOrderController extends Controller
 
     public function producto_generar_pedir(Request $request)
     {
-        $toAsk = ToAsk::create($request->all());
+        $body = $request->all();
+        $body['user_id'] = auth()->user()->id;
+
+        $toAsk = ToAsk::create($body);
 
         return new PedirResource($toAsk);
     }
