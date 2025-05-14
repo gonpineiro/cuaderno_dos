@@ -4,7 +4,9 @@ use App\Http\Controllers\ClientChasisController;
 use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Product\ProductJazzController;
+
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\BrandController;
@@ -53,7 +55,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::resource('product_marca', ProductBrandController::class)->except(['update', 'delete']);
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
-    Route::get('producto/detalle_jazz', [ProductController::class, 'detalle_jazz']);
+    Route::get('producto/detalle_jazz', [ProductJazzController::class, 'detalle']);
+    Route::get('producto/jazz', [ProductJazzController::class, 'index']);
+
     Route::post('producto/borrar', [ProductController::class, 'delete']);
     Route::post('producto/recuperar', [ProductController::class, 'recuperarProducto']);
 

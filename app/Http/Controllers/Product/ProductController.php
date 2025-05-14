@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Product;
 
 use App\Http\Resources\Product\AuditResource;
 use App\Http\Resources\Product\ProductCotizacionesResource;
@@ -330,43 +330,6 @@ class ProductController extends \App\Http\Controllers\Controller
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
         return sendResponse(ProductResource::collection($results));
-    }
-    public function detalle_jazz(Request $request)
-    {
-        try {
-            $ps = new ProductService();
-            //$stock = $ps->getStock($request->id);
-            $product_ = $ps->getProduct($request->id);
-
-            $pj = $this->updateProductJazz($product_);
-
-            return sendResponse($pj);
-        } catch (\Exception $th) {
-            return sendResponse(null, $th->getMessage(), 300);
-        }
-    }
-
-    public function updateProductJazz($product): ProductJazz
-    {
-        // Buscar o crear instancia
-        $pj = ProductJazz::firstOrNew(['id' => $product['idProducto']]);
-
-        // Asignar datos comunes
-        $pj->nombre = $product['nombre'];
-        $pj->stock = $product['totalStockDisponible'];
-        $pj->fecha_alta = $product['fechaAlta'];
-        $pj->fecha_mod = $product['fechaMod'];
-
-        // Extraer precios
-        $pj->setPrices(collect($product['precios']));
-
-        // Adicionales
-        $pj->setAdicionales(collect($product['camposAdicionales']));
-
-        // Guardar
-        $pj->save();
-
-        return $pj;
     }
 
     public function update(Request $request, $id)
