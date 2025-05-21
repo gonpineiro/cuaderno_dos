@@ -18,10 +18,23 @@ class PedirResource extends JsonResource
 
         $array['provider'] = $this->provider;
 
+        if ($this->product->ubication) {
+            $destino = 'STOCK';
+        } else if (!$this->product->ubication) {
+            $destino = 'STOCK NUEVO';
+        } else if ($this->order_product && $this->order_product->type->value === 'cliente') {
+            $destino = 'CLIENTE';
+        } else if ($this->order_product && $this->order_product->type->value === 'siniestro') {
+            $destino = 'SINIESTRO';
+        } else {
+            $destino = 'SIN ASIGNAR';
+        }
+
         $array['product'] = [
             'id' => $this->product->id,
             'code' => $this->product->code,
-            'ubication' => $this->product->ubication,
+            //'ubication' => $this->product->ubication,
+            'ubication' => $destino,
             'description' => $this->product->description
         ];
 
