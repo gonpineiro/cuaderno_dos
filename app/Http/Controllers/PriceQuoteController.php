@@ -406,7 +406,7 @@ class PriceQuoteController extends Controller
 
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
 
-        $truncate = $request->type === 'interno' ? 44 : 59;
+        $truncate = $request->type === 'interno' ? 80000000 : 59;
 
         $detail = PriceQuoteProductResource::pdfArray(
             $order->detail_cotizable,

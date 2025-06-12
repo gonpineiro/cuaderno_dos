@@ -41,7 +41,7 @@ class PriceQuoteProductResource extends JsonResource
             $desc = $value->description ? $value->description : $value->product->description;
             $array[] = [
                 'code' => $value->product->code,
-                'description' => truncateString($desc, $truncate_int),
+                'description' => truncateString($desc . $desc . $desc . $desc . $desc . $desc . $desc, $truncate_int),
                 'amount' => $value->amount,
                 'unit_price' => $unitario,
                 'total' => $unitario * $value->amount,

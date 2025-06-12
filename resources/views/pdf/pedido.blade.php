@@ -96,18 +96,20 @@
 
     <table class="table-productos">
         <tr>
-            <th>Código</th>
-            <th>Ubicación</th>
+            <th style="width: 5%">Código</th>
+            <th style="width: 15%">Cod. Proveedor</th>
+            <th style="width: 5%">Ubicación</th>
             <th>Descripcion</th>
-            <th>Cant</th>
-            <th>Precio U.</th>
-            <th>Total</th>
+            <th style="width: 7%">Cant.</th>
+            <th style="width: 11%">Precio U.</th>
+            <th style="width: 15%">Total</th>
         </tr>
 
 
         @foreach ($detail as $item)
         <tr>
             <td>{{$item['code']}}</td>
+            <td>{{$item['provider_code']}}</td>
             <td>{{$item['ubication']}}</td>
             <td>{{$item['description']}}</td>
             <td>{{$item['amount']}}</td>
@@ -132,7 +134,7 @@
         SEÑA: <span class="total">{{$deposit}}</span>
     </p>
     <p class="">
-        DIFERENCIA: <span class="total">{{$diferencia}}</span>
+        DIFERENCIA:ss <span class="total">{{$diferencia}}</span>
     </p>
     @endif
 </body>
