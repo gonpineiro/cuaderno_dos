@@ -5,14 +5,17 @@ namespace App\Http\TraitsControllers;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Product\ProductResource;
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PedidoCliente;
 use App\Models\PedidoOnline;
 use App\Models\Siniestro;
 use App\Models\Table;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 
 trait TraitPedidos
 {
@@ -214,6 +217,17 @@ trait TraitPedidos
             if ($order->shipment) {
                 return sendResponse(null, 'Ya existe un envio creado con este pedido', 300);
             }
+            $estado = Table::find($request->state_id);
+
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            $user = User::find(auth()->user()->id);
+
+            /* if ($estado->value === 'entregado' && !$user->can('pedido.estado.entregado')) {
+                return sendResponse(null, "Acción no autorizada");
+            } else if ($estado->value === 'cancelado' && !$user->can('pedido.estado.cancelado')) {
+                return sendResponse(null, "Acción no autorizada");
+            } */
 
             $type = $order->type->value;
 
@@ -235,13 +249,25 @@ trait TraitPedidos
                 }
             }
 
-            $estado = Table::find($request->state_id);
             activity("pedido.$estado->value")
                 ->performedOn($order)
                 ->withProperties(['state_id' => $request->state_id])
                 ->log($request->motivo ? $request->motivo : "Pedido $estado->value");
 
             $order = Order::find($request->order_id);
+
+            /* Envio de email */
+            if ($estado->value === 'retirar' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoUnicoRetirar($order);
+            } else if ($estado->value === 'retirar' && $type == 'online') {
+                TraitPedidosEmail::pedidoRetirar($order);
+            } else if ($estado->value === 'entregado' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoEntregado($order);
+            } else if ($estado->value === 'entregado' && $type == 'online') {
+                TraitPedidosEmail::pedidoOnlineEntregado($order);
+            } else if ($estado->value === 'cancelado' && $type == 'online') {
+                TraitPedidosEmail::pedidoCancelado($order);
+            }
 
             DB::commit();
 
@@ -270,12 +296,42 @@ trait TraitPedidos
 
     public function productos(Request $request)
     {
-        $products = OrderProduct::with(['product', 'order'])->get()
-            ->map(function ($orderProduct) {
-                return ProductResource::order($orderProduct->product, $orderProduct);
-            });
+        // Cargar todas las relaciones necesarias en una sola consulta
+        $orderProducts = OrderProduct::with([
+            'product.provider',
+            'product.brand',
+            'product.activities',
+            'order.shipment',
+            'order.detail.state',
+            'order.type'
+        ])->get();
 
-        $products = $products->sortBy(function ($product) {
+        // Precalcular el estado general de cada pedido
+        $orderStates = $orderProducts->pluck('order')->unique()->mapWithKeys(function ($order) {
+            return [$order->id => $order->getGeneralState()];
+        });
+
+        // Mapear productos sin recalcular estados en cada iteración
+        $products = $orderProducts->map(function ($orderProduct) use ($orderStates) {
+            return ProductResource::order($orderProduct->product, $orderProduct, false, $orderStates[$orderProduct->order->id] ?? null);
+        });
+
+
+        $priority = [
+            'incompleto' => 1,
+            'pendiente' => 2,
+            'retirar' => 3,
+            'entregado' => 4,
+            'cancelado' => 5,
+            'envio' => 6,
+        ];
+
+
+
+        $products = $products->sortBy(fn($product) => $priority[$product['order_state']->value] ?? 99)->values();
+
+
+        /*  $products = $products->sortBy(function ($product) {
             return [
                 'incompleto' => 1,
                 'pendiente' => 2,
@@ -284,7 +340,7 @@ trait TraitPedidos
                 'cancelado' => 5,
                 'envio' => 6,
             ][$product['order_state']->value];
-        })->values();
+        })->values(); */
 
         $products = $products->take(1000);
 

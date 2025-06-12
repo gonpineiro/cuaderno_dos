@@ -21,13 +21,18 @@ use App\Models\PriceQuote;
 use App\Models\PriceQuoteProduct;
 use App\Models\Shipment;
 use App\Models\Table;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
+use App\Http\TraitsControllers\TraitPedidosEmail;
+
+use Spatie\Permission\PermissionRegistrar;
+
 class PriceQuoteController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request)
     {
         /*  if ($request->type === 'pendiente') {
             $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->take(1000)->get();
@@ -309,7 +314,10 @@ class PriceQuoteController extends Controller
 
             $priceQuote->save();
 
+            TraitPedidosEmail::pedidoProductoUnico($order);
+
             DB::commit();
+
 
             return sendResponse([
                 'pedido' => new OrderResource($order, 'complete'),
@@ -318,7 +326,7 @@ class PriceQuoteController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
+            return sendResponse(null, $e->getMessage(), 300, $e->getTrace());
         }
     }
 
@@ -338,6 +346,13 @@ class PriceQuoteController extends Controller
     public function destroy(Request $request)
     {
         DB::beginTransaction();
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $user = User::find(auth()->user()->id);
+        if (!$user->can('cotizacion.delete')) {
+            return sendResponse(null, "Acción no autorizada");
+        }
 
         try {
             $priceQuote = PriceQuote::findOrFail($request->id);
@@ -364,7 +379,8 @@ class PriceQuoteController extends Controller
 
         $price_quote = PriceQuote::findOrFail($request->price_quote_id);
 
-        if ($price_quote->order) {
+        $user = auth()->user()->id;
+        if ($price_quote->order && $user->can('pedido.estado.entregado')) {
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 
@@ -391,7 +407,13 @@ class PriceQuoteController extends Controller
         $contado_deb = $is_contado ? Coeficiente::find(2) : null;
 
         $truncate = $request->type === 'interno' ? 44 : 59;
-        $detail = PriceQuoteProductResource::pdfArray($order->detail_cotizable, $contado_deb,  $truncate);
+
+        $detail = PriceQuoteProductResource::pdfArray(
+            $order->detail_cotizable,
+            $contado_deb,
+            $truncate,
+            $order->type_price->value !== 'lista'
+        );
         //$detail_lista = PriceQuoteProductResource::pdfArray($order->detail_cotizable, null,  $truncate);
 
         $total = get_total_price($detail);
@@ -399,7 +421,7 @@ class PriceQuoteController extends Controller
         $vars = [
             'cotizacion' => $order,
             'detail' => PriceQuoteProductResource::formatPdf($detail),
-            'coefs' => $this->get_total_calculadora($order->detail_cotizable/* , $contado_deb */),
+            'coefs' => $this->get_total_calculadora($order->detail_cotizable,/* , $contado_deb */ $order->type_price->value !== 'lista'),
             'total' => formatoMoneda($total),
             'type' => $request->type,
             'is_contado' => $is_contado
@@ -410,7 +432,7 @@ class PriceQuoteController extends Controller
         return $pdf->download('informe.pdf');
     }
 
-    private function get_total_calculadora($detail_lista)
+    private function get_total_calculadora($detail_lista, $esLista)
     {
         $contado_deb = Coeficiente::find(2);
         $coefs = Coeficiente::where('show', true)->orderBy('position', 'asc')->get()->toArray();
@@ -419,9 +441,9 @@ class PriceQuoteController extends Controller
             $multiplo = $coef['coeficiente'] * $coef['value'];
             $total = 0;
             foreach ($detail_lista as $value) {
-                $valor = !$coef['cuotas'] ?
-                    redondearNumero($value['unit_price'] * $multiplo) :
-                    redondearNumero($value['unit_price'] * $contado_deb->coeficiente) * $coef['value'];
+                $_producto = !$coef['cuotas'] ? $value['unit_price'] * $multiplo : $value['unit_price'] * $contado_deb->coeficiente;
+                $_redondeo = $coef['description'] !== 'LISTA' ? redondearNumero($_producto) : $_producto;
+                $valor = !$coef['cuotas'] ?  $_redondeo : $_redondeo * $coef['value'];
 
                 //$valor = redondearNumero($value['unit_price'] * $multiplo);
                 $total += $valor * $value['amount'];
@@ -445,7 +467,9 @@ class PriceQuoteController extends Controller
         try {
             $price_quote = PriceQuote::findOrFail($id);
 
-            if ($price_quote->order) {
+            $user = User::find(auth()->user()->id);
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            if ($price_quote->order && !$user->can('pedido.estado.entregado')) {
                 return sendResponse(null, 'Existe un pedido generado desde esta cotización');
             }
 
@@ -500,7 +524,9 @@ class PriceQuoteController extends Controller
     {
         $price_quote = PriceQuote::findOrFail($id);
 
-        if ($price_quote->order) {
+        $user = User::find(auth()->user()->id);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        if ($price_quote->order && !$user->can('pedido.estado.entregado')) {
             return sendResponse(null, 'Existe un pedido generado desde esta cotización');
         }
 

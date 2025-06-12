@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'jazz_api' => [
+        'base_url' => env('API_BASE_URL'),
+        'auth_url' => env('API_AUTH_URL'),
+        'username' => env('API_USERNAME'),
+        'password' => env('API_PASSWORD'),
+    ],
 ];

@@ -18,10 +18,23 @@ class PedirResource extends JsonResource
 
         $array['provider'] = $this->provider;
 
+        if ($this->product->ubication) {
+            $destino = 'STOCK';
+        } else if (!$this->product->ubication) {
+            $destino = 'STOCK NUEVO';
+        } else if ($this->order_product && $this->order_product->type->value === 'cliente') {
+            $destino = 'CLIENTE';
+        } else if ($this->order_product && $this->order_product->type->value === 'siniestro') {
+            $destino = 'SINIESTRO';
+        } else {
+            $destino = 'SIN ASIGNAR';
+        }
+
         $array['product'] = [
             'id' => $this->product->id,
             'code' => $this->product->code,
-            'ubication' => $this->product->ubication,
+            //'ubication' => $this->product->ubication,
+            'ubication' => $destino,
             'description' => $this->product->description
         ];
 
@@ -33,9 +46,9 @@ class PedirResource extends JsonResource
         $array['order'] = [
             'id' => $this->order_product ? $this->order_product->order->id : null,
             'type' => $this->order_product ? $this->order_product->order->type->value : null,
-            'created_at' => $this->order_product ? $this->order_product->order->created_at : null,
+            'created_at' => $this->order_product ? $this->order_product->order->created_at : $this->created_at,
             'estimated_date' => $this->order_product ? $this->order_product->order->estimated_date : null,
-            'user' => $this->order_product ? $this->order_product->order->user->name : null,
+            'user' => $this->order_product ? $this->order_product->order->user->name : ($this->user ? $this->user->name : null),
         ];
 
         return $array;

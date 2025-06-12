@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\PurchaseOrder\PurchaseOrderResource;
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderProduct;
 use App\Models\Table;
@@ -35,7 +36,10 @@ class PurchaseOrderController extends Controller
 
     public function producto_generar_pedir(Request $request)
     {
-        $toAsk = ToAsk::create($request->all());
+        $body = $request->all();
+        $body['user_id'] = auth()->user()->id;
+
+        $toAsk = ToAsk::create($body);
 
         return new PedirResource($toAsk);
     }
@@ -100,6 +104,8 @@ class PurchaseOrderController extends Controller
             }
 
             DB::commit();
+
+
             return $this->pedir();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -122,6 +128,13 @@ class PurchaseOrderController extends Controller
             }
 
             $purchaseOrder->update($request->all());
+
+            $state = Table::find($request->state_id);
+
+            if ($state->value == 'enviado') {
+                $purchaseOrder->refresh();
+                TraitPedidosEmail::ordenCompra($purchaseOrder);
+            }
 
             DB::commit();
 

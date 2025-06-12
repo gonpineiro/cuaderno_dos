@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\TraitsControllers\TraitPedidosEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -178,6 +179,9 @@ class ShipmentController extends Controller
                 ->withProperties(['state_id' => $request->state_id])
                 ->log($request->motivo ? $request->motivo : "Envio $estado->value");
 
+            if ($estado->value === 'despachado') {
+                TraitPedidosEmail::envioDespachado($shipment);
+            }
 
             DB::commit();
 

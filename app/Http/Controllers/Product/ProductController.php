@@ -1,30 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Product;
 
-use App\Http\Requests\Product\StoreProductSimpleRequest;
 use App\Http\Resources\Product\AuditResource;
 use App\Http\Resources\Product\ProductCotizacionesResource;
 use App\Models\Product;
-use App\Http\Requests\Product\StoreProductRequest;
-use App\Http\Requests\Product\StoreProductSpecialRequest;
-use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Http\Resources\Product\FueraCatalogoResource;
-use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Activity;
-use App\Models\Order;
+use App\Models\User;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\ProductJazz;
 use App\Models\ProductProvider;
 use App\Models\PurchaseOrderProduct;
 use App\Models\ShipmentProduct;
 use App\Models\Table;
-use App\Models\ToAsk;
+use App\Services\JazzServices\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -366,9 +364,33 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
+    public function recuperarProducto(Request $request)
+    {
+        try {
+
+            $product = Product::withTrashed()->find($request->id);
+
+            if ($product) {
+                $product->restore();
+            }
+
+            return sendResponse(new ProductResource($product));
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getTrace(), 500);
+        }
+    }
+
     public function delete(Request $request)
     {
         try {
+
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+            $user = User::find(auth()->user()->id);
+            if (!$user->can('product.delete')) {
+                return sendResponse(null, "Acción no autorizada");
+            }
+
             $productId = $request->id;
 
             // Verificar si el producto está relacionado con alguna operación

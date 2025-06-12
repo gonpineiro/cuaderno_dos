@@ -10,13 +10,12 @@ class ToAsk extends Model
     use SoftDeletes;
     protected $table = 'to_ask';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'order_product_id',
         'product_id',
         'provider_id',
         'purchase_order',
+        'user_id',
         'amount',
     ];
 
@@ -35,6 +34,11 @@ class ToAsk extends Model
     public function order_product()
     {
         return $this->belongsTo(OrderProduct::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function provider()
