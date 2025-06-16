@@ -17,6 +17,7 @@ use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\ClientConfigController;
 use App\Http\Controllers\CoeficienteController;
 use App\Http\Controllers\ComboController;
 use App\Http\Controllers\JazzController;
@@ -42,7 +43,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
     Route::post('cliente/update', [ClientController::class, 'update']);
+    Route::post('cliente/config/save', [ClientConfigController::class, 'saveConfig']);
     Route::resource('cliente', ClientController::class)->except(['show', 'update']);
+
 
     /* Cliente Chasis */
     Route::post('cliente_chasis/update', [ClientChasisController::class, 'cliente_chasis_update']);

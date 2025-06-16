@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Client\ClientConfigResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClientResource extends JsonResource
@@ -54,6 +55,7 @@ class ClientResource extends JsonResource
 
         $this->vehiculos->load('vehiculo.brand');
         $array['vehiculos'] = $this->vehiculos;
+        $array['config'] = ClientConfigResource::collection($this->config);
         return $array;
     }
 

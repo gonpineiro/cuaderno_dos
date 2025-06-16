@@ -41,6 +41,11 @@ class Client extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function config()
+    {
+        return $this->hasMany(ClientConfig::class);
+    }
+
     public function city()
     {
         return $this->belongsTo(\App\Models\City::class);
