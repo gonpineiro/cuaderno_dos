@@ -7,6 +7,7 @@
 <table class="table-productos">
     <tr>
         <th style="width: 5%">Código</th>
+        <th style="width: 5%">Cod. Proveedor</th>
         <th>Descripción</th>
         <th style="width: 7%">Cant.</th>
         <th style="width: 11%">Precio U.</th>
@@ -17,6 +18,7 @@
     @foreach ($detail as $item)
     <tr>
         <td>{{$item['code']}}</td>
+        <td>{{$item['provider_code']}}</td>
         <td>{{$item['description']}}</td>
         <td>{{$item['amount']}}</td>
         <td>{{$item['unit_price']}}</td>
