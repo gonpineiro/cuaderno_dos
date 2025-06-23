@@ -53,6 +53,7 @@ class JazzController extends Controller
 
     public function syncProductTemp()
     {
+        return 'asd';
         $comodines = DB::connection('jazz')->table('comodines')
             ->join('comodinesvalores', 'comodines.IdComodin', '=', 'comodinesvalores.IdComodin')
             ->select('comodines.Nombre')
