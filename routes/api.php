@@ -166,6 +166,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 });
 
-Route::get('test', [JazzController::class, 'syncProductTemp']);
-Route::get('test2', [JazzController::class, 'cleanProductTemp']);
-Route::get('test3', [JazzController::class, 'sync']);
+Route::get('llenar_temporal', [JazzController::class, 'syncProductTemp']);
+Route::get('analizar_temporal', [JazzController::class, 'cleanProductTemp']);
+Route::get('sincronizar', [JazzController::class, 'sync']);
