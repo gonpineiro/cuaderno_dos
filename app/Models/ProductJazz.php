@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ProductJazz extends Model
 {
@@ -63,5 +64,32 @@ class ProductJazz extends Model
                 $this->$atributo = $campo['valor'];
             }
         }
+    }
+
+    public static function cleanTemp()
+    {
+        $total = DB::table('product_jazz_temp')->count();
+
+        $deletedCount = DB::affectingStatement(
+            "
+                    DELETE t
+                    FROM product_jazz_temp t
+                    JOIN product_jazz p ON p.id = t.id
+                    WHERE
+                        p.nombre          <=> t.nombre          AND
+                        p.code            <=> t.code            AND
+                        p.provider_code   <=> t.provider_code   AND
+                        p.equivalence     <=> t.equivalence     AND
+                        p.observation     <=> t.observation     AND
+                        p.ubicacion       <=> t.ubicacion       AND
+                        p.stock           =   t.stock           AND
+                        p.precio_lista_2  <=> t.precio_lista_2  AND
+                        p.precio_lista_3  <=> t.precio_lista_3  AND
+                        p.precio_lista_6  <=> t.precio_lista_6  AND
+                        p.fecha_alta      <=> t.fecha_alta      AND
+                        p.fecha_mod       <=> t.fecha_mod"
+        );
+
+        return ['deleted_count' => $deletedCount, 'total' => $total];
     }
 }

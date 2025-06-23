@@ -166,4 +166,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 });
 
-//Route::get('sendEmail', [OrderController::class, 'enviarCorreo']);
+Route::get('test', [JazzController::class, 'syncProductTemp']);
+Route::get('test2', [JazzController::class, 'cleanProductTemp']);
+Route::get('test3', [JazzController::class, 'sync']);

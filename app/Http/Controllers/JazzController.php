@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\JazzService;
+use App\Models\ProductJazz;
 use Illuminate\Support\Facades\DB;
 
 class JazzController extends Controller
@@ -48,10 +48,10 @@ class JazzController extends Controller
 
         $results = $this->jazzService->query($query, [50039187]);
 
-        return response()->json($results);;
+        return response()->json($results);
     }
 
-    public function test()
+    public function syncProductTemp()
     {
         $comodines = DB::connection('jazz')->table('comodines')
             ->join('comodinesvalores', 'comodines.IdComodin', '=', 'comodinesvalores.IdComodin')
@@ -78,7 +78,13 @@ class JazzController extends Controller
             'p.numero',
             'p.Nombre',
             'p.FechaMOD AS fecha_mod',
-            'p.FechaALTA AS fecha_alta'
+            'p.FechaALTA AS fecha_alta',
+            DB::raw("(
+            SELECT SUM(fa.Cantidad *
+                CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
+            FROM facturas_articulos fa
+            JOIN facturas f ON f.NroInterno = fa.NroInterno
+                WHERE fa.IdProducto = p.IdProducto) AS stock")
         ])
             ->merge($columnasPrecios)
             ->merge($columnasComodines)
@@ -96,6 +102,82 @@ class JazzController extends Controller
 
         $resultado = DB::connection('jazz')->select($sqlFinal);
 
-        return $resultado;
+        return $this->seedProductTemp($resultado);
+    }
+
+    public function seedProductTemp($resultado)
+    {
+        $collection = collect($resultado);
+
+        // Filtrar por CODIGO_ORIGINAL no vacío
+        $filtrados = $collection->filter(function ($row) {
+            return !empty($row->CODIGO_ORIGINAL);
+        });
+
+        // Mapear a estructura de la tabla
+        $rows = $filtrados->map(function ($row) {
+            $r = (array) $row;
+
+            return [
+                'id' => $r['IdProducto'] ?? null,
+                'nombre' => $r['Nombre'] ?? null,
+                'code' => $r['CODIGO_ORIGINAL'] ?? null,
+                'provider_code' => $r['CODIGO_PROVEEDOR'] ?? null,
+                'equivalence' => $r['EQUIVALENCIA'] ?? null,
+                'observation' => $r['OBSERVACION'] ?? null,
+                'ubicacion' => $r['UBICACION'] ?? null,
+                'stock' => (int) ($r['stock'] ?? 0),
+                'precio_lista_2' => (float) ($r['precio_lista_2'] ?? 0),
+                'precio_lista_3' => (float) ($r['precio_lista_3'] ?? 0),
+                'precio_lista_6' => (float) ($r['precio_lista_6'] ?? 0),
+                'fecha_alta' => $r['fecha_alta'] ?? now(),
+                'fecha_mod' => $r['fecha_mod'] ?? now(),
+            ];
+        })->values();
+
+        $rowsArray = $rows->all();
+        $chunks = array_chunk($rowsArray, 1000);
+
+        foreach ($chunks as $chunk) {
+            DB::table('product_jazz_temp')->insert($chunk);
+        }
+
+        return sendResponse($rows->count());
+    }
+
+    public function cleanProductTemp()
+    {
+
+        return sendResponse(ProductJazz::cleanTemp());
+    }
+
+    public function sync()
+    {
+        DB::table('product_jazz_temp')
+            ->orderBy('id')
+            ->chunk(300, function ($chunk) {
+                $rows = $chunk->map(fn($r) => (array) $r)->all();
+
+                DB::table('product_jazz')->upsert(
+                    $rows,
+                    'id',
+                    [
+                        'nombre',
+                        'code',
+                        'provider_code',
+                        'equivalence',
+                        'observation',
+                        'ubicacion',
+                        'stock',
+                        'precio_lista_2',
+                        'precio_lista_3',
+                        'precio_lista_6',
+                        'fecha_alta',
+                        'fecha_mod',
+                    ]
+                );
+            });
+
+        return sendResponse(ProductJazz::cleanTemp());
     }
 }
