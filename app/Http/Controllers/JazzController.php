@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jazz\ProductoJazzTemp;
 use App\Models\ProductJazz;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class JazzController extends Controller
@@ -129,12 +130,24 @@ class JazzController extends Controller
         ]);
     }
 
-    public function sync()
+    public function sync(Request $request)
     {
+
+        $array_ids = $request->ids;
+
+        if (empty($array_ids) || !is_array($array_ids)) {
+            return sendResponse(null, 'No se enviaron IDs válidos para sincronizar', 400);
+        }
         DB::table('product_jazz_temp')
+            ->whereIn('id', $array_ids)
             ->orderBy('id')
             ->chunk(300, function ($chunk) {
-                $rows = $chunk->map(fn($r) => (array) $r)->all();
+                $rows = $chunk->map(function ($r) {
+                    $array = (array) $r;
+                    unset($array['state']);
+                    return $array;
+                })->all();
+
 
                 DB::table('product_jazz')->upsert(
                     $rows,
@@ -156,6 +169,6 @@ class JazzController extends Controller
                 );
             });
 
-        return sendResponse(ProductJazz::cleanTemp());
+        return sendResponse('ok');
     }
 }
