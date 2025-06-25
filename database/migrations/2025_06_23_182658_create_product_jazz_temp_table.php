@@ -22,9 +22,10 @@ class CreateProductJazzTempTable extends Migration
             $table->string('observation')->nullable();
             $table->string('ubicacion')->nullable();
             $table->integer('stock');
-            $table->float('precio_lista_2', 12);
-            $table->float('precio_lista_3', 12);
-            $table->float('precio_lista_6', 12);
+            $table->double('precio_lista_2', 12, 2);
+            $table->double('precio_lista_3', 12, 2);
+            $table->double('precio_lista_6', 12, 2);
+            $table->string('state')->nullable();
             $table->dateTime('fecha_alta');
             $table->dateTime('fecha_mod');
         });

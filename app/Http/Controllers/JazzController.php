@@ -2,57 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jazz\ProductoJazzTemp;
 use App\Models\ProductJazz;
 use Illuminate\Support\Facades\DB;
 
 class JazzController extends Controller
 {
-    protected $jazzService;
-
-    /* public function __construct(JazzService $jazzService)
+    public function getProducts()
     {
-        $this->jazzService = $jazzService;
-    } */
-
-    public function index()
-    {
-        // Ejecutar una consulta SELECT
-        $results = $this->jazzService->query('SELECT * FROM users WHERE active = ?', [1]);
-
-        return response()->json($results);
-    }
-
-    public function store()
-    {
-        // Ejecutar una consulta INSERT
-        $inserted = $this->jazzService->query(
-            'INSERT INTO users (name, email) VALUES (?, ?)',
-            ['John Doe', 'john@example.com']
-        );
-
-        return response()->json(['inserted' => $inserted]);
-    }
-
-    public function get_stock_product()
-    {
-        // Ejecutar una consulta SELECT
-        $query =
-            'SELECT SUM(cantidad * signo) as stock
-            FROM (
-                SELECT fa.Cantidad, f.Tipo,
-                    CASE WHEN tipo IN (3, 4) THEN 1 ELSE -1 END AS signo
-                FROM facturas_articulos fa
-                JOIN facturas f ON f.NroInterno = fa.NroInterno
-                WHERE fa.IdProducto = ?
-            ) AS subquery';
-
-        $results = $this->jazzService->query($query, [50039187]);
-
-        return response()->json($results);
+        return sendResponse([
+            'no_requiere' => ProductoJazzTemp::where('state', 'no_requiere')->get(),
+            'requiere' => ProductoJazzTemp::where('state', 'requiere')->get(),
+            'nuevo' => ProductoJazzTemp::where('state', 'nuevo')->get(),
+        ]);
     }
 
     public function syncProductTemp()
     {
+        DB::statement("DELETE FROM product_jazz_temp t");
+
         $comodines = DB::connection('jazz')->table('comodines')
             ->join('comodinesvalores', 'comodines.IdComodin', '=', 'comodinesvalores.IdComodin')
             ->select('comodines.Nombre')
@@ -101,8 +69,9 @@ class JazzController extends Controller
                 ";
 
         $resultado = DB::connection('jazz')->select($sqlFinal);
+        $count = $this->seedProductTemp($resultado);
 
-        return $this->seedProductTemp($resultado);
+        return sendResponse("Analizando $count productos...");
     }
 
     public function seedProductTemp($resultado)
@@ -121,7 +90,7 @@ class JazzController extends Controller
             return [
                 'id' => $r['IdProducto'] ?? null,
                 'nombre' => $r['Nombre'] ?? null,
-                'code' => $r['CODIGO_ORIGINAL'] ?? null,
+                'code' => $r['numero'] ?? null,
                 'provider_code' => $r['CODIGO_PROVEEDOR'] ?? null,
                 'equivalence' => $r['EQUIVALENCIA'] ?? null,
                 'observation' => $r['OBSERVACION'] ?? null,
@@ -132,6 +101,7 @@ class JazzController extends Controller
                 'precio_lista_6' => (float) ($r['precio_lista_6'] ?? 0),
                 'fecha_alta' => $r['fecha_alta'] ?? now(),
                 'fecha_mod' => $r['fecha_mod'] ?? now(),
+                'state' => 'en_proceso',
             ];
         })->values();
 
@@ -142,13 +112,21 @@ class JazzController extends Controller
             DB::table('product_jazz_temp')->insert($chunk);
         }
 
-        return sendResponse($rows->count());
+        return $rows->count();
     }
 
-    public function cleanProductTemp()
+    public function procesarTemporal()
     {
+        $resultProcess = ProductJazz::processTemp();
 
-        return sendResponse(ProductJazz::cleanTemp());
+        return sendResponse([
+            'result_process' => $resultProcess,
+            'products' => [
+                'no_requiere' => ProductoJazzTemp::where('state', 'no_requiere')->get(),
+                'requiere' => ProductoJazzTemp::where('state', 'requiere')->get(),
+                'nuevo' => ProductoJazzTemp::where('state', 'nuevo')->get(),
+            ]
+        ]);
     }
 
     public function sync()
