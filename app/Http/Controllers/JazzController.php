@@ -19,7 +19,7 @@ class JazzController extends Controller
 
     public function syncProductTemp()
     {
-        DB::statement("DELETE FROM product_jazz_temp t");
+        DB::statement("DELETE FROM product_jazz_temp");
 
         $comodines = DB::connection('jazz')->table('comodines')
             ->join('comodinesvalores', 'comodines.IdComodin', '=', 'comodinesvalores.IdComodin')
