@@ -135,10 +135,10 @@ class ProductJazz extends Model
                 ");
 
         return [
-            'total' => $total,
-            'no_requiere' => $noRequiere,
-            'requiere' => $requiere,
-            'nuevo' => $nuevo,
+            'total' => $total ?? 0,
+            'no_requiere' => $noRequiere ?? 0,
+            'requiere' => $requiere ?? 0,
+            'nuevo' => $nuevo ?? 0,
         ];
     }
 }
