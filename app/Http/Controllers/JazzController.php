@@ -132,25 +132,46 @@ class JazzController extends Controller
 
     public function sync(Request $request)
     {
-
         $array_ids = $request->ids;
 
         if (empty($array_ids) || !is_array($array_ids)) {
             return sendResponse(null, 'No se enviaron IDs válidos para sincronizar', 400);
         }
+
+        $sinc_id = DB::table('product_jazz_history')->max('sinc_id') + 1;
+
         DB::table('product_jazz_temp')
             ->whereIn('id', $array_ids)
             ->orderBy('id')
-            ->chunk(300, function ($chunk) {
-                $rows = $chunk->map(function ($r) {
-                    $array = (array) $r;
-                    unset($array['state']);
-                    return $array;
-                })->all();
+            ->chunk(300, function ($chunk) use ($sinc_id) {
+                $rows = $chunk->map(fn($r) => (array) $r)->all();
+                $ids = array_column($rows, 'id');
 
+                // Obtener productos existentes
+                $existingProducts = DB::table('product_jazz')
+                    ->whereIn('id', $ids)
+                    ->get()
+                    ->map(function ($product) use ($sinc_id) {
+                        $array = (array) $product;
+                        unset($array['created_at'], $array['updated_at']); // <-- Evita columnas no existentes
+                        $array['sinc_id'] = $sinc_id;
+                        return $array;
+                    })
+                    ->all();
+
+                // Guardar los existentes en el historial
+                if (!empty($existingProducts)) {
+                    DB::table('product_jazz_history')->insert($existingProducts);
+                }
+
+                // Preparar datos para upsert
+                $rowsToUpsert = array_map(function ($r) {
+                    unset($r['state']);
+                    return $r;
+                }, $rows);
 
                 DB::table('product_jazz')->upsert(
-                    $rows,
+                    $rowsToUpsert,
                     'id',
                     [
                         'nombre',
@@ -169,6 +190,46 @@ class JazzController extends Controller
                 );
             });
 
+        $this->relacionarProductosPorCode();
+
         return sendResponse('ok');
+    }
+
+    public function relacionarProductosPorCode()
+    {
+        DB::table('products')
+            ->whereNull('idProducto')
+            ->whereNotNull('code')
+            ->orderBy('id')
+            ->chunk(500, function ($products) {
+                // Obtener códigos
+                $codes = $products->pluck('code')->unique()->toArray();
+
+                // Buscar productos jazz por code
+                $productJazzMap = DB::table('product_jazz')
+                    ->whereIn('code', $codes)
+                    ->pluck('id', 'code'); // [code => id]
+
+                // Preparar actualizaciones
+                $updates = [];
+
+                foreach ($products as $product) {
+                    if (isset($productJazzMap[$product->code])) {
+                        $updates[] = [
+                            'id' => $product->id,
+                            'idProducto' => $productJazzMap[$product->code],
+                        ];
+                    }
+                }
+
+                // Hacer updates en bloque
+                foreach ($updates as $update) {
+                    DB::table('products')
+                        ->where('id', $update['id'])
+                        ->update(['idProducto' => $update['idProducto']]);
+                }
+            });
+
+        return sendResponse('Relaciones actualizadas exitosamente.');
     }
 }
