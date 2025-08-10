@@ -91,7 +91,7 @@
         <table>
             <tr>
                 <td colspan="3">
-                    <h1>COTIZACION N°: {{$cotizacion->id}}</h1>
+                    <h2>COTIZACION N°: {{$cotizacion->id}}</h2>
                 </td>
             </tr>
             <hr>
