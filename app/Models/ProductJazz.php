@@ -109,15 +109,16 @@ class ProductJazz extends Model
                         p.provider_code   <=> t.provider_code   AND
                         p.equivalence     <=> t.equivalence     AND
                         p.observation     <=> t.observation     AND
-                        p.ubicacion       <=> t.ubicacion       AND
-                        p.stock           =   t.stock           AND
+                        p.ubicacion       <=> t.ubicacion
+
+                ");
+
+        /* p.stock           =   t.stock           AND
                         p.precio_lista_2  <=> t.precio_lista_2  AND
                         p.precio_lista_3  <=> t.precio_lista_3  AND
                         p.precio_lista_6  <=> t.precio_lista_6  AND
                         p.fecha_alta      <=> t.fecha_alta      AND
-                        p.fecha_mod       <=> t.fecha_mod
-                ");
-
+                        p.fecha_mod       <=> t.fecha_mod */
         // 2. requiere
         $requiere = DB::affectingStatement("
                     UPDATE product_jazz_temp t
