@@ -24,6 +24,7 @@ class Client extends Model
         'year',
         'chasis',
         'vehiculo_id',
+        'condicion_iva_id',
         'is_sin_vehiculo',
         'observation',
     ];
@@ -44,6 +45,11 @@ class Client extends Model
     public function config()
     {
         return $this->hasMany(ClientConfig::class);
+    }
+
+    public function condicion_iva()
+    {
+        return $this->belongsTo(Table::class, 'condicion_iva_id');
     }
 
     public function city()

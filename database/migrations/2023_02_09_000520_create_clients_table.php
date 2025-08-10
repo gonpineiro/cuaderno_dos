@@ -21,6 +21,7 @@ class CreateClientsTable extends Migration
             $table->string('email', 100)->nullable();
             $table->string('phone', 30)->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
+            $table->unsignedBigInteger('condicion_iva_id')->nullable();
             $table->string('adress')->nullable();
             $table->string('cuit')->nullable();
             $table->boolean('is_company')->default(0);
@@ -32,7 +33,8 @@ class CreateClientsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('set null');
+            $table->foreign('condicion_iva_id')->references('id')->on('tables')->onDelete('set null');
         });
     }
 
