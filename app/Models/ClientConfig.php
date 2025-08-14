@@ -13,6 +13,7 @@ class ClientConfig extends Model
         'type',
         'information_source_id',
         'type_price_id',
+        'es_cuenta_corriente',
     ];
 
     protected $hidden = [

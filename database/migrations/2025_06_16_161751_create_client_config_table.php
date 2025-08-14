@@ -21,6 +21,7 @@ class CreateClientConfigTable extends Migration
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('information_source_id');
             $table->unsignedBigInteger('type_price_id');
+            $table->boolean('es_cuenta_corriente')->nullable();
             $table->timestamps();
 
             /* Relaciones */

@@ -41,6 +41,7 @@ class PriceQuoteResource extends JsonResource
         $array['to_asign'] = $this->to_asign;
 
         $this->client->city;
+        $this->client->config;
         $array['client'] = $this->client;
 
         $this->vehiculo->brand;

@@ -18,6 +18,7 @@ class ClientConfigResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
+            'es_cuenta_corriente' => $this->es_cuenta_corriente,
             'type_price' => new BaseTableResource($this->type_price),
             'information_source' => new BaseTableResource($this->information_source),
         ];
