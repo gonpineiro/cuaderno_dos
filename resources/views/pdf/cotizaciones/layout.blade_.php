@@ -96,43 +96,45 @@
             </tr>
             <hr>
             <tr>
-                <td>
-                    <strong>Fecha:</strong> {{date("d/m/Y", strtotime($cotizacion->created_at))}}
-                </td>
-                <td>
-                    <strong>Vehículo: </strong>{{$cotizacion->vehiculo->name}}
-                </td>
+                <td class="bold">Fecha:</td>
+                <td>{{date("d/m/Y", strtotime($cotizacion->created_at))}}</td>
             </tr>
             <tr>
-                <td>
-                    <strong>Cliente:</strong> {{$cotizacion->client->name}}
-                </td>
-                <td>
-                    <strong>Condición Venta:</strong> {{$cotizacion->type_price->value == 'contado' ? 'Contado / debito
-                    /
-                    tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}
-                </td>
+                <td class="bold">Cliente:</td>
+                <td>{{$cotizacion->client->name}}</td>
             </tr>
             <tr>
-                <td><strong>Teléfono:</strong> {{$cotizacion->contacto}}</td>
+                <td class="bold">Teléfono:</td>
+                <td>{{$cotizacion->client->phone}}</td>
+            </tr>
+            <tr>
+                <td class="bold">Vehículo:</td>
+                <td>{{$cotizacion->vehiculo->name}}</td>
             </tr>
             @if (!!$cotizacion->client->is_insurance)
             <tr>
-                <td><strong>Version:</strong> {{$cotizacion->version}}</td>
-                <td><strong>Patente:</strong> {{$cotizacion->patente}}</td>
+                <td class="bold">Version:</td>
+                <td>{{$cotizacion->version}}</td>
+            </tr>
+            <tr>
+                <td class="bold">Patente:</td>
+                <td>{{$cotizacion->patente}}</td>
             </tr>
             @endif
-
+            <tr>
+                <td class="bold">Tipo Precio:</td>
+                <td>{{$cotizacion->type_price->value == 'contado' ? 'Contado / debito /
+                    tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}</td>
+            </tr>
             <tr>
                 <td colspan="3"><small>Precios sujeto a modificación sin previo aviso</small></td>
             </tr>
         </table>
+        <hr>
+        <h3>Observaciones</h3>
+        <p>{{$cotizacion->observation}}</p>
     </div>
     @yield('content')
-    <hr>
-
-    <h3>Observaciones</h3>
-    <p>{{$cotizacion->observation}}</p>
 </body>
 
 </html>
