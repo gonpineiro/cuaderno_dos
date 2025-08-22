@@ -63,8 +63,14 @@ class ClientResource extends JsonResource
     private function default($array)
     {
         $array['city'] = new CityResource($this->city);
+
+        /* $this->vehiculo && $this->vehiculo->brand;
+        $array['vehiculo'] = $this->vehiculo; */
+
         $this->vehiculos->load('vehiculo.brand');
         $array['vehiculos'] = $this->vehiculos;
+        $array['condicion_iva'] = $this->condicion_iva;
+        $array['config'] = ClientConfigResource::collection($this->config);
         return $array;
     }
 }
