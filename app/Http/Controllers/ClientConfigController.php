@@ -24,6 +24,7 @@ class ClientConfigController extends Controller
         $client->is_company = $request->is_company;
         $client->is_insurance = $request->is_insurance;
         $client->is_sin_vehiculo = $request->is_sin_vehiculo;
+        $client->condicion_iva_id = $request->client_condicion_iva_id;
         $client->save();
 
         $clientConfig = ClientConfig::create($data);
