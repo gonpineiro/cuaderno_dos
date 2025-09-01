@@ -6,6 +6,7 @@ use App\Models\Jazz\ProductoJazzTemp;
 use App\Models\ProductJazz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class JazzController extends Controller
 {
@@ -42,19 +43,33 @@ class JazzController extends Controller
             return "MAX(CASE WHEN c.Nombre = '$nombre' THEN cv.Valor END) AS `$col`";
         });
 
-        $selects = collect([
-            'p.IdProducto',
-            'p.numero',
-            'p.Nombre',
-            'p.FechaMOD AS fecha_mod',
-            'p.FechaALTA AS fecha_alta',
-            DB::raw("(
-            SELECT SUM(fa.Cantidad *
-                CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
-            FROM facturas_articulos fa
-            JOIN facturas f ON f.NroInterno = fa.NroInterno
-                WHERE fa.IdProducto = p.IdProducto) AS stock")
-        ])
+        $selects = collect(
+            [
+                'p.IdProducto',
+                'p.numero',
+                'p.Nombre',
+                'p.FechaMOD AS fecha_mod',
+                'p.FechaALTA AS fecha_alta',
+                'm.Codigo as codigo_marca',
+                DB::raw("(
+                    SELECT SUM(fa.Cantidad *
+                        CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
+                    FROM facturas_articulos fa
+                    JOIN facturas f ON f.NroInterno = fa.NroInterno
+                    WHERE fa.IdProducto = p.IdProducto) AS stock"),
+                DB::raw("(
+                    SELECT CodigoProducto
+                    FROM productosproveedores pp
+                    WHERE pp.IdProducto = p.IdProducto
+                    AND pp.CostoEstandar = (
+                        SELECT preciocostoestandar
+                        FROM productoscombinacionescabecera p2
+                        WHERE p2.IdProducto = p.IdProducto
+                    )
+                    LIMIT 1
+                    ) AS provider_code")
+            ]
+        )
             ->merge($columnasPrecios)
             ->merge($columnasComodines)
             ->implode(",\n    ");
@@ -66,9 +81,12 @@ class JazzController extends Controller
                 LEFT JOIN precios_venta pv ON p.IdProducto = pv.IdProducto
                 LEFT JOIN comodinesvalores cv ON p.IdProducto = cv.IdCampo
                 LEFT JOIN comodines c ON cv.IdComodin = c.IdComodin
-                GROUP BY p.IdProducto, p.numero, p.Nombre, p.FechaMOD, p.FechaALTA
+                LEFT JOIN productoscombinacionescabecera pcc on pcc.IdProducto  = p.IdProducto
+                LEFT JOIN marcas m on m.IdMarca = pcc.Marca
+                GROUP BY p.IdProducto, p.numero, p.Nombre, p.FechaMOD, p.FechaALTA, codigo_marca
                 ";
 
+        LOG::info($sqlFinal);
         $resultado = DB::connection('jazz')->select($sqlFinal);
         $count = $this->seedProductTemp($resultado);
 
@@ -92,11 +110,12 @@ class JazzController extends Controller
                 'id' => $r['IdProducto'] ?? null,
                 'nombre' => $r['Nombre'] ?? null,
                 'code' => $r['numero'] ?? null,
-                'provider_code' => $r['CODIGO_PROVEEDOR'] ?? null,
+                'provider_code' => $r['provider_code'] ?? null,
                 'equivalence' => $r['EQUIVALENCIA'] ?? null,
                 'observation' => $r['OBSERVACION'] ?? null,
                 'ubicacion' => $r['UBICACION'] ?? null,
                 'stock' => (int) ($r['stock'] ?? 0),
+                'codigo_marca' => $r['codigo_marca'] ?? null,
                 'precio_lista_2' => (float) ($r['precio_lista_2'] ?? 0),
                 'precio_lista_3' => (float) ($r['precio_lista_3'] ?? 0),
                 'precio_lista_6' => (float) ($r['precio_lista_6'] ?? 0),
@@ -123,9 +142,9 @@ class JazzController extends Controller
         return sendResponse([
             'result_process' => $resultProcess,
             'products' => [
-                'no_requiere' => ProductoJazzTemp::where('state', 'no_requiere')->get(),
-                'requiere' => ProductoJazzTemp::where('state', 'requiere')->get(),
-                'nuevo' => ProductoJazzTemp::where('state', 'nuevo')->get(),
+                'no_requiere' => ProductoJazzTemp::where('state', 'no_requiere')->with('brand')->get(),
+                'requiere' => ProductoJazzTemp::where('state', 'requiere')->with('brand')->get(),
+                'nuevo' => ProductoJazzTemp::where('state', 'nuevo')->with('brand')->get(),
             ]
         ]);
     }
@@ -153,7 +172,7 @@ class JazzController extends Controller
                     ->get()
                     ->map(function ($product) use ($sinc_id) {
                         $array = (array) $product;
-                        unset($array['created_at'], $array['updated_at']); // <-- Evita columnas no existentes
+                        unset($array['created_at'], $array['updated_at']);
                         $array['sinc_id'] = $sinc_id;
                         return $array;
                     })
@@ -186,6 +205,7 @@ class JazzController extends Controller
                         'precio_lista_6',
                         'fecha_alta',
                         'fecha_mod',
+                        'codigo_marca',
                     ]
                 );
             });
@@ -198,35 +218,41 @@ class JazzController extends Controller
     public function relacionarProductosPorCode()
     {
         DB::table('products')
-            ->whereNull('idProducto')
+            //->whereNull('idProducto')
             ->whereNotNull('code')
             ->orderBy('id')
             ->chunk(500, function ($products) {
-                // Obtener códigos
                 $codes = $products->pluck('code')->unique()->toArray();
 
-                // Buscar productos jazz por code
-                $productJazzMap = DB::table('product_jazz')
-                    ->whereIn('code', $codes)
-                    ->pluck('id', 'code'); // [code => id]
+                // Hacemos join directo: product_jazz → product_brands
+                $productJazz = DB::table('product_jazz as pj')
+                    ->leftJoin('product_brands as pb', 'pj.codigo_marca', '=', 'pb.code')
+                    ->whereIn('pj.code', $codes)
+                    ->select('pj.code', 'pj.id as idProducto', 'pb.id as product_brand_id')
+                    ->get();
 
-                // Preparar actualizaciones
+                // Mapeamos por code
+                $jazzMap = $productJazz->keyBy('code');
+
                 $updates = [];
-
                 foreach ($products as $product) {
-                    if (isset($productJazzMap[$product->code])) {
+                    if (isset($jazzMap[$product->code])) {
                         $updates[] = [
                             'id' => $product->id,
-                            'idProducto' => $productJazzMap[$product->code],
+                            'idProducto' => $jazzMap[$product->code]->idProducto,
+                            'product_brand_id' => $jazzMap[$product->code]->product_brand_id,
                         ];
                     }
                 }
 
-                // Hacer updates en bloque
+                // Ejecutamos updates
                 foreach ($updates as $update) {
                     DB::table('products')
                         ->where('id', $update['id'])
-                        ->update(['idProducto' => $update['idProducto']]);
+                        ->update([
+                            'idProducto' => $update['idProducto'],
+                            'product_brand_id' => $update['product_brand_id'],
+                        ]);
                 }
             });
 

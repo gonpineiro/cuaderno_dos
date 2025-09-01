@@ -109,7 +109,8 @@ class ProductJazz extends Model
                         p.provider_code   <=> t.provider_code   AND
                         p.equivalence     <=> t.equivalence     AND
                         p.observation     <=> t.observation     AND
-                        p.ubicacion       <=> t.ubicacion
+                        p.ubicacion       <=> t.ubicacion       AND
+                        p.codigo_marca   <=> t.codigo_marca
 
                 ");
 

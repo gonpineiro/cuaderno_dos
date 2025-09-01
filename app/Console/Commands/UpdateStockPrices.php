@@ -28,6 +28,15 @@ class UpdateStockPrices extends Command
     {
         $this->info("Iniciando actualización de stock y precios...");
 
+        $this->updateStockPrices();
+
+        $this->updateProductsBrands();
+
+        $this->info("Actualización completada.");
+    }
+
+    private function updateStockPrices()
+    {
         DB::statement("DELETE FROM product_jazz_temp");
 
         $listas = DB::connection('jazz')->table('precios_venta')
@@ -82,7 +91,50 @@ class UpdateStockPrices extends Command
             $percent = number_format(($current / $total) * 100, 2);
             $this->info("Procesado $current / $total ($percent%)");
         }
+    }
 
-        $this->info("Actualización completada.");
+    private function updateProductsBrands()
+    {
+        $marcas = DB::connection('jazz')->table('marcas')
+            ->select('idMarca', 'Empresa', 'Codigo', 'Nombre')
+            ->get();
+
+        // Transformo la colección a array para el upsert
+        $data = $marcas->map(function ($item) {
+            return [
+                'idMarca' => $item->idMarca,
+                'Empresa' => $item->Empresa,
+                'Codigo'  => $item->Codigo,
+                'Nombre'  => $item->Nombre,
+            ];
+        })->toArray();
+
+        // Inserto o actualizo según corresponda (basado en idMarca)
+        DB::connection('mysql')->table('product_brands_jazz')->upsert(
+            $data,
+            ['idMarca'], // clave única
+            ['Empresa', 'Codigo', 'Nombre'] // columnas que se actualizan si existe
+        );
+
+
+        // Traigo de la tabla intermedia
+        $brandsJazz = DB::table('product_brands_jazz')
+            ->select('Codigo', 'Nombre')
+            ->get();
+
+        // Transformo para el upsert
+        $data = $brandsJazz->map(function ($item) {
+            return [
+                'code' => $item->Codigo,
+                'name' => $item->Nombre,
+            ];
+        })->toArray();
+
+        // Inserto o actualizo en product_brands
+        DB::table('product_brands')->upsert(
+            $data,
+            ['code'],      // clave única
+            ['name']       // columnas que se actualizan si existe
+        );
     }
 }
