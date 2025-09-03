@@ -210,15 +210,16 @@ class JazzController extends Controller
                 );
             });
 
-        $this->relacionarProductosPorCode();
+        $this->relacionarProductosPorCode($array_ids);
 
         return sendResponse('ok');
     }
 
-    public function relacionarProductosPorCode()
+    public function relacionarProductosPorCode($array_ids)
     {
         DB::table('products')
             //->whereNull('idProducto')
+            ->whereIn('idProducto', $array_ids)
             ->whereNotNull('code')
             ->orderBy('id')
             ->chunk(500, function ($products) {
@@ -228,7 +229,7 @@ class JazzController extends Controller
                 $productJazz = DB::table('product_jazz as pj')
                     ->leftJoin('product_brands as pb', 'pj.codigo_marca', '=', 'pb.code')
                     ->whereIn('pj.code', $codes)
-                    ->select('pj.code', 'pj.id as idProducto', 'pb.id as product_brand_id')
+                    ->select('pj.code', 'pj.id as idProducto', 'pb.id as product_brand_id', 'pj.provider_code as provider_code', 'pj.equivalence as equivalence')
                     ->get();
 
                 // Mapeamos por code
@@ -237,10 +238,13 @@ class JazzController extends Controller
                 $updates = [];
                 foreach ($products as $product) {
                     if (isset($jazzMap[$product->code])) {
+                        $a = $jazzMap[$product->code];
                         $updates[] = [
                             'id' => $product->id,
                             'idProducto' => $jazzMap[$product->code]->idProducto,
                             'product_brand_id' => $jazzMap[$product->code]->product_brand_id,
+                            'provider_code' => $jazzMap[$product->code]->provider_code,
+                            'equivalence' => $jazzMap[$product->code]->equivalence
                         ];
                     }
                 }
@@ -252,6 +256,8 @@ class JazzController extends Controller
                         ->update([
                             'idProducto' => $update['idProducto'],
                             'product_brand_id' => $update['product_brand_id'],
+                            'provider_code' => $update['provider_code'],
+                            'equivalence' => $update['equivalence'],
                         ]);
                 }
             });
