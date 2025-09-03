@@ -210,7 +210,12 @@ class JazzController extends Controller
                 );
             });
 
-        $this->relacionarProductosPorCode($array_ids);
+        if ($request->type === 'requiere') {
+            $this->relacionarProductosPorCode($array_ids);
+        } else if ($request->type === 'nuevo') {
+            $this->crearProductosNuevos($array_ids);
+        }
+
 
         return sendResponse('ok');
     }
@@ -263,6 +268,39 @@ class JazzController extends Controller
             });
 
         return sendResponse('Relaciones actualizadas exitosamente.');
+    }
+
+    public function crearProductosNuevos($array_ids)
+    {
+        DB::table('product_jazz')
+            ->whereIn('id', $array_ids)
+            ->orderBy('id')
+            ->chunk(500, function ($products) {
+
+                $data = [];
+
+                foreach ($products as $product) {
+                    $data[] = [
+                        'code'             => $product->code,
+                        'idProducto'       => $product->id ?? null,
+                        'provider_code'    => $product->provider_code ?? null,
+                        'equivalence'      => $product->equivalence ?? null,
+                        'updated_at'       => now(),
+                        'created_at'       => now(),
+                    ];
+                }
+
+                if (!empty($data)) {
+                    // 'code' es la clave para hacer update si existe
+                    DB::table('products')->upsert(
+                        $data,
+                        ['code'], // columna clave
+                        ['idProducto', 'provider_code', 'equivalence', 'updated_at'] // columnas a actualizar
+                    );
+                }
+            });
+
+        return sendResponse('Creacion de producto exitosamente.');
     }
 
     public function updateStockNadPrices()
