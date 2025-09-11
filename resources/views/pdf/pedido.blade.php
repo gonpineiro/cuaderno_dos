@@ -96,13 +96,14 @@
 
     <table class="table-productos">
         <tr>
-            <th style="width: 5%">Código</th>
+            <th style="width: 10%">Código</th>
             <th style="width: 15%">Cod. Proveedor</th>
+            <th style="width: 10%">C. Fabrica</th>
             <th style="width: 5%">Ubicación</th>
             <th>Descripcion</th>
-            <th style="width: 7%">Cant.</th>
+            <th style="width: 5%">Cant.</th>
             <th style="width: 11%">Precio U.</th>
-            <th style="width: 15%">Total</th>
+            <th style="width: 13%">Total</th>
         </tr>
 
 
@@ -110,6 +111,7 @@
         <tr>
             <td>{{$item['code']}}</td>
             <td>{{$item['provider_code']}}</td>
+            <td>{{$item['factory_code']}}</td>
             <td>{{$item['ubication']}}</td>
             <td>{{$item['description']}}</td>
             <td>{{$item['amount']}}</td>

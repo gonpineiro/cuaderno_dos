@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Jazz\ProductoJazzTemp;
 use App\Models\ProductJazz;
+use App\Services\JazzServices\ApiService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -364,5 +366,31 @@ class JazzController extends Controller
             // Debug: mostrar si actualizó algo
             echo "Procesado $current / $total \n";
         }
+    }
+
+    public function generarPedidoApi()
+    {
+        $service = new ApiService();
+        $data = [
+            "empresa" => 2,
+            "sucursal" => 2,
+            "letra" => "B",
+            "boca" => 0,
+            "idCliente" => 15211,
+            "ivaTipo" => 0,
+            "idVendedor" => 1,
+            "vendedorComision" => 0,
+            "idLista" => 2,
+            "obs" => "SALDO INICIAL",
+            "condicion" => 2,
+            "moneda" => 1,
+            "enMostrador" => "N", // S o N
+            "fecha" => \Carbon\Carbon::now('UTC')->format('Y-m-d\TH:i:s.v\Z'),
+            "descuento" => "string",
+            "recargo" => "string",
+            "idEstado" => 0
+        ];
+        $pedido = $service->post('Pedido/AgregarPedido', $data);
+        $a = 1;
     }
 }

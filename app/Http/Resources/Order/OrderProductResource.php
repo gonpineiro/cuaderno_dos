@@ -36,6 +36,7 @@ class OrderProductResource extends JsonResource
             $array[] = [
                 'code' => $value->product->code,
                 'provider_code' => $value->product->provider_code,
+                'factory_code' => $value->product->factory_code,
                 'ubication' => $value->product->ubication,
                 'description' => $desc,
                 'amount' => $value->amount,
