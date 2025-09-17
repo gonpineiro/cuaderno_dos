@@ -170,3 +170,4 @@ Route::get('producto/jazz/inicio-sync', [JazzController::class, 'syncProductTemp
 Route::get('producto/jazz/analizar', [JazzController::class, 'procesarTemporal']);
 Route::post('producto/jazz/sincronizar', [JazzController::class, 'sync']);
 Route::get('products_jazz', [JazzController::class, 'getProducts']);
+Route::get('generar_pedido', [JazzController::class, 'generarPedidoApi']);
