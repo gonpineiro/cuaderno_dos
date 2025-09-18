@@ -6,8 +6,8 @@
 {{-- Detalle productos --}}
 <table class="table-productos">
     <tr>
-        <th style="width: 11%">Código</th>
-        <th style="width: 5%">Cod. Proveedor</th>
+        <th style="width: 13%">Código</th>
+        <th style="width: 12%">Cod. Prov.</th>
         <th style="width: 10%">C. Fabrica</th>
         <th>Descripción</th>
         <th style="width: 5%">Cant.</th>

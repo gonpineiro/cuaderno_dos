@@ -15,7 +15,8 @@
 
     /* Agrega más definiciones para otros pesos y estilos de la fuente Roboto */
     table {
-        width: 100%
+        width: 100%;
+        font-size: 0.9rem;
     }
 
     .table-productos {
@@ -26,7 +27,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
 
     .importe {
