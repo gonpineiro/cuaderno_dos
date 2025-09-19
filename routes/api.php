@@ -132,7 +132,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
 
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
-    Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 
     /* Ordenes de compra */
@@ -171,3 +170,4 @@ Route::get('producto/jazz/analizar', [JazzController::class, 'procesarTemporal']
 Route::post('producto/jazz/sincronizar', [JazzController::class, 'sync']);
 Route::get('products_jazz', [JazzController::class, 'getProducts']);
 Route::get('generar_pedido', [JazzController::class, 'generarPedidoApi']);
+    Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
