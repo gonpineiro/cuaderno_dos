@@ -37,6 +37,9 @@ class Order extends Model
         'remito',
         'workshop',
 
+        /* Relacion con Jazz */
+        'ref_jazz_id',
+
         'observation'
     ];
 
@@ -48,6 +51,7 @@ class Order extends Model
         'client_id',
         'price_quote_id',
         'payment_method_id',
+        'ref_jazz_id',
         'updated_at',
         'deleted_at',
         'pivot',
@@ -148,6 +152,27 @@ class Order extends Model
                 $order_product->save();
             }
         });
+    }
+
+    /**
+     * Obtiene la informacion basica para adjuntar a un pedido del Jazz
+     * @param int $nroInterno | id del pedido del jazz,
+     */
+    public function getJazzData($nroInterno)
+    {
+        return $this->detail
+            ->map(function ($detail) use ($nroInterno) {
+                return [
+                    "id"   => $detail->id,
+                    "idProducto"  => $detail->product->idProducto ?? null,
+                    "precio" => $detail->unit_price,
+                    "cantidad" => $detail->amount,
+                    "nroInterno" => $this->ref_jazz_id ? $this->ref_jazz_id : $nroInterno
+                ];
+            })
+            ->filter(fn($item) => !empty($item["idProducto"]))
+            ->values()
+            ->toArray();
     }
 
     /* public function getPercentages()
@@ -329,7 +354,7 @@ class Order extends Model
         return $estado;
     } */
 
-     public function getGeneralState()
+    public function getGeneralState()
     {
         if ($shipment = $this->shipment) {
             return (object) [
@@ -387,5 +412,4 @@ class Order extends Model
 
         return Table::where('name', $tableName)->where('value', $estadoGeneral)->first();
     }
-
 }

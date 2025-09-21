@@ -16,6 +16,8 @@ use App\Models\PurchaseOrder;
 use App\Models\Shipment;
 use App\Models\ToAsk;
 use App\Models\User;
+use App\Services\JazzServices\ApiService;
+use App\Services\JazzServices\PedidoService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -219,5 +221,60 @@ class OrderController extends \App\Http\Controllers\Controller
 
 
         return TraitPedidosEmail::pedidoEntregado($p);
+    }
+
+    public function generar_factura_jazz(Request $request)
+    {
+        $order = Order::where("id", $request->id)->with(['detail.product', 'client'])->first();
+
+        if (!$order) {
+            return sendResponse(null, 'No se encuentra el pedido');
+        }
+
+        $allHaveIdProducto = $order->detail->every(function ($detail) {
+            return !empty($detail->product->idProducto);
+        });
+
+        if (!$allHaveIdProducto) {
+            return sendResponse(null, 'Hay productos sin relacion con el Jazz', 410);
+        }
+
+        $service = new PedidoService();
+        $data = [
+            "empresa" => 2,
+            "sucursal" => 2,
+            "letra" => "B",
+            "boca" => 0,
+            "idCliente" => 15211,
+            "ivaTipo" => 0,
+            "idVendedor" => 1,
+            "vendedorComision" => 0,
+            "idLista" => 2, //
+            "obs" => "SALDO INICIAL",
+            "condicion" => 2,
+            "moneda" => 1,
+            "enMostrador" => "N",
+            "fecha" => \Carbon\Carbon::now('UTC')->format('Y-m-d\TH:i:s.v\Z'),
+            "descuento" => "string",
+            "recargo" => "string",
+            "idEstado" => 0
+        ];
+        $pedido = $service->agregarPedido($data);
+
+        if (!isset($pedido['refID']) || !$pedido['refID']) {
+            return sendResponse(null, 'No se logro crear el pedido', 303, $pedido);
+        }
+
+        $productData = $order->getJazzData($pedido['refID']);
+
+        foreach ($productData as $data) {
+            $pedido_producto = $service->agregarArticulo($data);
+            $a = 'ocurre error....';
+        }
+
+        $order->ref_jazz_id = $pedido['refID'];
+        $order->save();
+
+        return $order;
     }
 }

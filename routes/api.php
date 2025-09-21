@@ -92,14 +92,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Clientes */
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
-
-    Route::post('pedido/search', [OrderController::class, 'search']);
     Route::get('pedido/productos', [OrderController::class, 'productos']);
-    Route::post('pedido/productos/search', [OrderController::class, 'productos_search']);
-    Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
     Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
+    Route::post('pedido/search', [OrderController::class, 'search']);
+    Route::post('pedido/generar_factura_jazz', [OrderController::class, 'generar_factura_jazz']);
+    Route::post('pedido/productos/search', [OrderController::class, 'productos_search']);
     Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
     Route::post('update_pedido_product', [OrderProductController::class, 'updatePedidoProduct']);
+    Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
 
     /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
@@ -132,7 +132,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
 
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
-    Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 
     /* Ordenes de compra */
@@ -171,3 +170,4 @@ Route::get('producto/jazz/analizar', [JazzController::class, 'procesarTemporal']
 Route::post('producto/jazz/sincronizar', [JazzController::class, 'sync']);
 Route::get('products_jazz', [JazzController::class, 'getProducts']);
 Route::get('generar_pedido', [JazzController::class, 'generarPedidoApi']);
+Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
