@@ -328,7 +328,7 @@ class ProductController extends \App\Http\Controllers\Controller
             ->orderBy(
                 ProductJazz::select('precio_lista_2')
                     ->whereColumn('product_jazz.id', 'products.idProducto'),
-                'asc'
+                'desc'
             )
             ->get();
 
