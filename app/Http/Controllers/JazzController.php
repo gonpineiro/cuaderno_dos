@@ -237,7 +237,7 @@ class JazzController extends Controller
                 $productJazz = DB::table('product_jazz as pj')
                     ->leftJoin('product_brands as pb', 'pj.codigo_marca', '=', 'pb.code')
                     ->whereIn('pj.code', $codes)
-                    ->select('pj.code', 'pj.id as idProducto', 'pb.id as product_brand_id', 'pj.provider_code as provider_code', 'pj.equivalence as equivalence', 'pj.factory_code as factory_code')
+                    ->select('pj.code', 'pj.id as idProducto', 'pb.id as product_brand_id', 'pj.provider_code as provider_code', 'pj.equivalence as equivalence', 'pj.factory_code as factory_code', 'pj.ubicacion')
                     ->get();
 
                 // Mapeamos por code
@@ -253,22 +253,29 @@ class JazzController extends Controller
                             'product_brand_id' => $jazzMap[$product->code]->product_brand_id,
                             'provider_code' => $jazzMap[$product->code]->provider_code,
                             'equivalence' => $jazzMap[$product->code]->equivalence,
-                            'factory_code' => $jazzMap[$product->code]->factory_code
+                            'factory_code' => $jazzMap[$product->code]->factory_code,
+                            'ubicacion' => $jazzMap[$product->code]->ubicacion
                         ];
                     }
                 }
 
                 // Ejecutamos updates
                 foreach ($updates as $update) {
+                    $ubicacion = ProductJazz::formatUbicacion($update['ubicacion']);
+
+                    $data = [
+                        'idProducto' => $update['idProducto'],
+                        'product_brand_id' => $update['product_brand_id'],
+                        'provider_code' => $update['provider_code'],
+                        'equivalence' => $update['equivalence'],
+                        'factory_code' => $update['factory_code'],
+                    ];
+
+                    $resultado = array_merge($data, $ubicacion);
+
                     DB::table('products')
                         ->where('id', $update['id'])
-                        ->update([
-                            'idProducto' => $update['idProducto'],
-                            'product_brand_id' => $update['product_brand_id'],
-                            'provider_code' => $update['provider_code'],
-                            'equivalence' => $update['equivalence'],
-                            'factory_code' => $update['factory_code'],
-                        ]);
+                        ->update($resultado);
                 }
             });
 
