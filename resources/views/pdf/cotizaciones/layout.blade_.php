@@ -15,7 +15,8 @@
 
     /* Agrega más definiciones para otros pesos y estilos de la fuente Roboto */
     table {
-        width: 100%
+        width: 100%;
+        font-size: 0.9rem;
     }
 
     .table-productos {
@@ -26,7 +27,7 @@
     .table-productos tr th,
     .table-productos tr td {
         border: 1px solid rgba(0, 0, 0, .125);
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
 
     .importe {
@@ -96,45 +97,43 @@
             </tr>
             <hr>
             <tr>
-                <td class="bold">Fecha:</td>
-                <td>{{date("d/m/Y", strtotime($cotizacion->created_at))}}</td>
+                <td>
+                    <strong>Fecha:</strong> {{date("d/m/Y", strtotime($cotizacion->created_at))}}
+                </td>
+                <td>
+                    <strong>Vehículo: </strong>{{$cotizacion->vehiculo->name}}
+                </td>
             </tr>
             <tr>
-                <td class="bold">Cliente:</td>
-                <td>{{$cotizacion->client->name}}</td>
+                <td>
+                    <strong>Cliente:</strong> {{$cotizacion->client->name}}
+                </td>
+                <td>
+                    <strong>Condición Venta:</strong> {{$cotizacion->type_price->value == 'contado' ? 'Contado / debito
+                    /
+                    tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}
+                </td>
             </tr>
             <tr>
-                <td class="bold">Teléfono:</td>
-                <td>{{$cotizacion->client->phone}}</td>
-            </tr>
-            <tr>
-                <td class="bold">Vehículo:</td>
-                <td>{{$cotizacion->vehiculo->name}}</td>
+                <td><strong>Teléfono:</strong> {{$cotizacion->contacto}}</td>
             </tr>
             @if (!!$cotizacion->client->is_insurance)
             <tr>
-                <td class="bold">Version:</td>
-                <td>{{$cotizacion->version}}</td>
-            </tr>
-            <tr>
-                <td class="bold">Patente:</td>
-                <td>{{$cotizacion->patente}}</td>
+                <td><strong>Version:</strong> {{$cotizacion->version}}</td>
+                <td><strong>Patente:</strong> {{$cotizacion->patente}}</td>
             </tr>
             @endif
-            <tr>
-                <td class="bold">Tipo Precio:</td>
-                <td>{{$cotizacion->type_price->value == 'contado' ? 'Contado / debito /
-                    tarjeta 1 pago. IVA INCLUIDO' : 'Lista'}}</td>
-            </tr>
+
             <tr>
                 <td colspan="3"><small>Precios sujeto a modificación sin previo aviso</small></td>
             </tr>
         </table>
-        <hr>
-        <h3>Observaciones</h3>
-        <p>{{$cotizacion->observation}}</p>
     </div>
     @yield('content')
+    <hr>
+
+    <h3>Observaciones</h3>
+    <p>{{$cotizacion->observation}}</p>
 </body>
 
 </html>
