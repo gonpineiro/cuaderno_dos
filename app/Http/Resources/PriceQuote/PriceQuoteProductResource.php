@@ -44,7 +44,7 @@ class PriceQuoteProductResource extends JsonResource
                 'description' => truncateString($desc, $truncate_int),
                 'amount' => $value->amount,
                 'provider_code' => $value->product->provider_code,
-                'factory_code' => $value->product->factory_code,
+                'factory_code' => truncateString('55259635 55259635 55259635', 18),
                 'unit_price' => $unitario,
                 'total' => $unitario * $value->amount,
                 'ubication' => $value->product->ubication,
