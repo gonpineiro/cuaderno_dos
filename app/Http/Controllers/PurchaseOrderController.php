@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Product\PedirResource;
+use App\Http\Resources\PurchaseOrder\ProductEvaluarPedirResource;
 use App\Http\Resources\PurchaseOrder\PurchaseOrderResource;
 use App\Http\TraitsControllers\TraitPedidosEmail;
+use App\Models\Product;
+use App\Models\ProductJazz;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderProduct;
 use App\Models\Table;
@@ -75,6 +78,32 @@ class PurchaseOrderController extends Controller
         return sendResponse(PedirResource::collection($to_ask));
     }
 
+    public function evaluar_pedir()
+    {
+        $products = Product::whereNotNull('idProducto')
+            ->whereHas('jazz', function ($query) {
+                $query->whereColumn('stock', '<=', 'stock_min')
+                    ->where('punto_pedido', '>', 0);
+            })
+            ->with('jazz', 'provider')
+            ->get();
+
+        return sendResponse(ProductEvaluarPedirResource::collection($products));
+        //return sendResponse($products);
+    }
+
+    public function listado_producto_generar_pedir(Request $request)
+    {
+        $data = $request->data;
+
+        foreach ($data as $d) {
+            $d['user_id'] = auth()->user()->id;
+            ToAsk::create($d);
+        }
+        $count = count($data);
+        return sendResponse("Se agregaron $count productos a pedir");
+    }
+
     public function generar_orden(Request $request): \Illuminate\Http\JsonResponse
     {
         $body = $request->all();
@@ -83,7 +112,7 @@ class PurchaseOrderController extends Controller
 
         try {
 
-            $state = Table::where('name', 'purchase_order')->where('value', 'pendiente')->first();
+            $state = Table::where('name', operator: 'purchase_order')->where('value', 'pendiente')->first();
             $purchaseOrder = PurchaseOrder::create([
                 'provider_id' => $body['provider']['id'],
                 'state_id' => $state->id,

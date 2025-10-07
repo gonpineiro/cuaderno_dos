@@ -75,8 +75,8 @@ class JazzController extends Controller
             ->merge($columnasComodines)
             ->implode(",\n    ");
 
-        $sqlFinal = "
-                SELECT
+        $sqlFinal =
+            "SELECT
                     $selects
                 FROM productos p
                 LEFT JOIN precios_venta pv ON p.IdProducto = pv.IdProducto
@@ -84,8 +84,7 @@ class JazzController extends Controller
                 LEFT JOIN comodines c ON cv.IdComodin = c.IdComodin
                 LEFT JOIN productoscombinacionescabecera pcc on pcc.IdProducto  = p.IdProducto
                 LEFT JOIN marcas m on m.IdMarca = pcc.Marca
-                GROUP BY p.IdProducto, p.numero, p.Nombre, p.FechaMOD, p.FechaALTA, codigo_marca
-                ";
+                GROUP BY p.IdProducto, p.numero, p.Nombre, p.FechaMOD, p.FechaALTA, codigo_marca";
 
         LOG::info($sqlFinal);
         $resultado = DB::connection('jazz')->select($sqlFinal);
@@ -121,6 +120,9 @@ class JazzController extends Controller
                 'precio_lista_2' => (float) ($r['precio_lista_2'] ?? 0),
                 'precio_lista_3' => (float) ($r['precio_lista_3'] ?? 0),
                 'precio_lista_6' => (float) ($r['precio_lista_6'] ?? 0),
+                'stock_min' => (float) ($r['stock_min'] ?? 0),
+                'stock_max' => (float) ($r['stock_max'] ?? 0),
+                'punto_pedido' => (float) ($r['punto_pedido'] ?? 0),
                 'fecha_alta' => $r['fecha_alta'] ?? now(),
                 'fecha_mod' => $r['fecha_mod'] ?? now(),
                 'state' => 'en_proceso',
@@ -288,26 +290,31 @@ class JazzController extends Controller
             ->whereIn('id', $array_ids)
             ->orderBy('id')
             ->chunk(500, function ($products) {
-
                 $data = [];
-
                 foreach ($products as $product) {
-                    $data[] = [
+                    $ubicacion = ProductJazz::formatUbicacion($product['ubicacion']);
+
+                    $_product = [
                         'code'             => $product->code,
                         'idProducto'       => $product->id ?? null,
                         'provider_code'    => $product->provider_code ?? null,
                         'equivalence'      => $product->equivalence ?? null,
+                        'factory_code'      => $product->factory_code ?? null,
                         'updated_at'       => now(),
                         'created_at'       => now(),
                     ];
+
+                    $resultado = array_merge($_product, $ubicacion);
+
+                    $data[] = $resultado;
                 }
 
                 if (!empty($data)) {
                     // 'code' es la clave para hacer update si existe
                     DB::table('products')->upsert(
                         $data,
-                        ['code'], // columna clave
-                        ['idProducto', 'provider_code', 'equivalence', 'updated_at'] // columnas a actualizar
+                        ['code'],
+                        ['*']
                     );
                 }
             });
@@ -315,7 +322,7 @@ class JazzController extends Controller
         return sendResponse('Creacion de producto exitosamente.');
     }
 
-    public function updateStockNadPrices()
+    /*  public function updateStockNadPrices()
     {
         DB::statement("DELETE FROM product_jazz_temp");
 
@@ -372,5 +379,5 @@ class JazzController extends Controller
             // Debug: mostrar si actualizó algo
             echo "Procesado $current / $total \n";
         }
-    }
+    } */
 }

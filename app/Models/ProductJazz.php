@@ -19,6 +19,11 @@ class ProductJazz extends Model
         'precio_lista_3',
         'precio_lista_6',
 
+        'stock',
+        'stock_min',
+        'stock_max',
+        'punto_pedido',
+
         //camposAdicionales
         'code',
         'provider_code',
