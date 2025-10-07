@@ -112,7 +112,7 @@ class PurchaseOrderController extends Controller
 
         try {
 
-            $state = Table::where('name', operator: 'purchase_order')->where('value', 'pendiente')->first();
+            $state = Table::where('name', 'purchase_order')->where('value', 'pendiente')->first();
             $purchaseOrder = PurchaseOrder::create([
                 'provider_id' => $body['provider']['id'],
                 'state_id' => $state->id,
