@@ -13,46 +13,24 @@ class PedidoService extends ApiService
     {
         return $this->post('Pedido/AgregarPedido', $data);
     }
-    public function agregarArticulo(array $data)
+    public function agregarArticulo(array $data, $numero_interno)
     {
         $_data = [
-            "nroInterno" => $data['nroInterno'],
+            "nroInterno" => $numero_interno,
             "idProducto" => $data['idProducto'],
-            "cantidad" => $data['cantidad'],
+            "cantidad" =>  $data['cantidad'],
+            "descuento" => 0,
             "precio" => $data['precio'],
             /* !! */
-            "descuento" => 0,
             "unidad" => 0,
             "unidad1" => 0,
             "bultos" => 0,
-            "despacho" => "string",
+            "despacho" => "N",
             "comision" => 0,
             "idPresupuestos" => 0,
+            "camposAdicionales" => []
 
         ];
         return $this->post('Pedido/AgregarArticulo', $_data);
     }
-
-    /* {
-
-    return [
-                    "id"   => $detail->id,
-                    "idProducto"  => $detail->product->idProducto ?? null,
-                    "precio" => $detail->unit_price,
-                    "cantidad" => $detail->amount
-                ];
-    "nroInterno": 388537,
-    "idProducto": 27,
-    "cantidad": 1,
-    "precio": 10000,
-    "descuento": 0,
-    "unidad": 0,
-    "unidad1": 0,
-    "bultos": 0,
-    "despacho": "string",
-    "comision": 0,
-    "idPresupuestos": 0
-} */
-
-    public function agregarArticulos() {}
 }

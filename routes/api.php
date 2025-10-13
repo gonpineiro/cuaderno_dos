@@ -156,7 +156,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
 
 
-
     Route::get('permissions', [PermissionController::class, 'index']);
     Route::post('permissions/change_user_role', [PermissionController::class, 'change_user_role']);
     Route::post('permissions/change_user_permissions', [PermissionController::class, 'change_user_permissions']);

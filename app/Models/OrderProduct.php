@@ -16,7 +16,10 @@ class OrderProduct extends Model
         'amount',
         'purchase_order',
         'unit_price',
-        'description'
+        'description',
+
+        /* Relacion con Jazz */
+        'ref_jazz_id',
     ];
 
     protected $hidden = [
@@ -24,6 +27,7 @@ class OrderProduct extends Model
         'product_id',
         'provider_id',
         'purchase_order',
+        'ref_jazz_id',
     ];
 
     protected $dates = ['deleted_at'];
