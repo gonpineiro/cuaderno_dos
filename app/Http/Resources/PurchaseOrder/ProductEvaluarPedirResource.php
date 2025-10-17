@@ -22,6 +22,7 @@ class ProductEvaluarPedirResource extends JsonResource
             'description' => $this->description,
             'stock' => $this->jazz->stock,
             'stock_min' => (float)$this->jazz->stock_min,
+            'total_to_ask' => (int)$this->total_to_ask,
             /* 'stock_max' => (float)$this->jazz->stock_max, */
             'punto_pedido' => (float)$this->jazz->punto_pedido,
             'provider_id' => (float)$this->provider_id,

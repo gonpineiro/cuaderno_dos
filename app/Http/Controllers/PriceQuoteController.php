@@ -314,7 +314,7 @@ class PriceQuoteController extends Controller
 
             $priceQuote->save();
 
-            TraitPedidosEmail::pedidoProductoUnico($order);
+            //TraitPedidosEmail::pedidoProductoUnico($order);
 
             DB::commit();
 

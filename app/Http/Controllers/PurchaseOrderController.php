@@ -85,7 +85,8 @@ class PurchaseOrderController extends Controller
                 $query->whereColumn('stock', '<=', 'stock_min')
                     ->where('punto_pedido', '>', 0);
             })
-            ->with('jazz', 'provider')
+            ->with('jazz', 'provider', 'toAsk')
+            ->withSum('toAsk as total_to_ask', 'amount')
             ->get();
 
         return sendResponse(ProductEvaluarPedirResource::collection($products));

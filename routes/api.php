@@ -41,7 +41,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Clientes */
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
+    Route::post('cliente/buscar-jazz', [ClientController::class, 'searchJazz']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
+    Route::post('cliente/relacionar-cliente-jazz', [ClientController::class, 'relacionarClienteJazz']);
+
     Route::post('cliente/update', [ClientController::class, 'update']);
     Route::post('cliente/config/save', [ClientConfigController::class, 'saveConfig']);
     Route::resource('cliente', ClientController::class)->except(['show', 'update']);
