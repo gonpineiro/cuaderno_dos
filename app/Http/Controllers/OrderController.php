@@ -249,7 +249,7 @@ class OrderController extends \App\Http\Controllers\Controller
             "sucursal" => 2,
             "letra" => "B",
             "boca" => 0,
-            "idCliente" => 3,
+            "idCliente" => $order->client->jazz_id,
             "ivaTipo" => 3,
             "idVendedor" => 1,
             "vendedorComision" => 0,
