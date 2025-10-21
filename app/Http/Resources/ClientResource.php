@@ -65,6 +65,7 @@ class ClientResource extends JsonResource
         $array['city'] = new CityResource($this->city);
         $this->vehiculos->load('vehiculo.brand');
         $array['vehiculos'] = $this->vehiculos;
+        $array['config'] = ClientConfigResource::collection($this->config);
         return $array;
     }
 }
