@@ -286,40 +286,47 @@ class JazzController extends Controller
 
     public function crearProductosNuevos($array_ids)
     {
-        DB::table('product_jazz')
-            ->whereIn('id', $array_ids)
-            ->orderBy('id')
-            ->chunk(500, function ($products) {
-                $data = [];
-                foreach ($products as $product) {
-                    $ubicacion = ProductJazz::formatUbicacion($product['ubicacion']);
+        DB::beginTransaction();
+        try {
+            DB::table('product_jazz')
+                ->whereIn('id', $array_ids)
+                ->orderBy('id')
+                ->chunk(500, function ($products) {
+                    $data = [];
+                    foreach ($products as $product) {
+                        $ubicacion = ProductJazz::formatUbicacion($product->ubicacion);
 
-                    $_product = [
-                        'code'             => $product->code,
-                        'idProducto'       => $product->id ?? null,
-                        'provider_code'    => $product->provider_code ?? null,
-                        'equivalence'      => $product->equivalence ?? null,
-                        'factory_code'      => $product->factory_code ?? null,
-                        'updated_at'       => now(),
-                        'created_at'       => now(),
-                    ];
+                        $_product = [
+                            'code'             => $product->code,
+                            'idProducto'       => $product->id ?? null,
+                            'provider_code'    => $product->provider_code ?? null,
+                            'equivalence'      => $product->equivalence ?? null,
+                            'factory_code'      => $product->factory_code ?? null,
+                            'updated_at'       => now(),
+                            'created_at'       => now(),
+                        ];
 
-                    $resultado = array_merge($_product, $ubicacion);
+                        $resultado = array_merge($_product, $ubicacion);
 
-                    $data[] = $resultado;
-                }
+                        $data[] = $resultado;
+                    }
 
-                if (!empty($data)) {
-                    // 'code' es la clave para hacer update si existe
-                    DB::table('products')->upsert(
-                        $data,
-                        ['code'],
-                        ['*']
-                    );
-                }
-            });
-
-        return sendResponse('Creacion de producto exitosamente.');
+                    if (!empty($data)) {
+                        // 'code' es la clave para hacer update si existe
+                        DB::table('products')->upsert(
+                            $data,
+                            ['code'],
+                            ['*']
+                        );
+                    }
+                });
+            DB::commit();
+            return sendResponse('Creacion de producto exitosamente.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return sendResponse(null, $th->getMessage());
+            //throw $th;
+        }
     }
 
     /*  public function updateStockNadPrices()
