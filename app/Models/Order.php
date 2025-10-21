@@ -37,6 +37,9 @@ class Order extends Model
         'remito',
         'workshop',
 
+        /* Relacion con Jazz */
+        'ref_jazz_id',
+
         'observation'
     ];
 
@@ -48,6 +51,7 @@ class Order extends Model
         'client_id',
         'price_quote_id',
         'payment_method_id',
+        'ref_jazz_id',
         'updated_at',
         'deleted_at',
         'pivot',
@@ -150,186 +154,29 @@ class Order extends Model
         });
     }
 
-    /* public function getPercentages()
+    /**
+     * Obtiene la informacion basica para adjuntar a un pedido del Jazz
+     * @param int $nroInterno | id del pedido del jazz,
+     */
+    public function getJazzData($nroInterno)
     {
-
-        $array['pendiente'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'pendiente';
-        });
-
-        $array['retirar'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
-        });
-
-        $array['entregado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
-        });
-
-        $array['cancelado'] = $this->detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
-        });
-
-        $count = count($this->detail);
-
-        foreach ($array as $key => $value) {
-            $array[$key] = ($value * 100) / $count;
-        }
-
-        if ($array['pendiente'] > 0) {
-            $array['estado_general'] = 'pendiente';
-        } else if ($array['retirar'] > 0) {
-            $array['estado_general'] = 'retirar';
-        } else if ($array['entregado'] > 0) {
-            $array['estado_general'] = 'entregado';
-        } else if ($array['cancelado'] > 0) {
-            $array['estado_general'] = 'cancelado';
-        }
-
-        return $array;
-    } */
-
-    /* public function getGeneralState()
-    {
-        if ($shipment = $this->shipment) {
-            return (object) [
-                'value' => 'envio',
-                'description' => 'ENVÍO',
-                'background_color' => '#0d6efd',
-                'hover' => strtoupper($shipment->getGeneralState()->description),
-                //'className' => 'primary',
-                'url' =>  "/envios/$shipment->id",
-            ];
-        }
-        $type = $this->type->value;
-
-        if ($type == 'online') {
-            return $this->onlineState();
-        }
-
-        if ($type == 'cliente') {
-            return $this->clienteState();
-        }
-
-        if ($type == 'siniestro') {
-            return $this->siniestroState();
-        }
+        return $this->detail
+            ->map(function ($detail) use ($nroInterno) {
+                return [
+                    "id"   => $detail->id,
+                    'product_id' => $detail->product_id,
+                    "idProducto"  => $detail->product->idProducto ?? null,
+                    "precio" => $detail->unit_price,
+                    "cantidad" => $detail->amount,
+                    "nroInterno" => $this->ref_jazz_id ? $this->ref_jazz_id : $nroInterno
+                ];
+            })
+            ->filter(fn($item) => !empty($item["idProducto"]))
+            ->values()
+            ->toArray();
     }
 
-    private function onlineState()
-    {
-        $detail = $this->detail;
-        $pendiente = $detail->sum(function ($a) {
-            return  $a->state->value == 'pendiente';
-        });
-
-        $aRetirar = $detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
-        });
-
-        $entregado = $detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
-        });
-
-        $cancelado = $detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
-        });
-
-        $estadoGeneral = '';
-
-        if ($pendiente > 0) {
-            $estadoGeneral = 'pendiente';
-        } else if ($aRetirar > 0) {
-            $estadoGeneral = 'retirar';
-        } else if ($entregado > 0) {
-            $estadoGeneral = 'entregado';
-        } else if ($cancelado > 0) {
-            $estadoGeneral = 'cancelado';
-        }
-
-        $estado = Table::where('name', 'order_online_state')->where('value', $estadoGeneral)->first();
-
-        return $estado;
-    }
-
-    private function clienteState()
-    {
-        $detail = $this->detail;
-        $incompleto = $detail->sum(function ($a) {
-            return  $a->state->value == 'incompleto';
-        });
-
-        $pendiente = $detail->sum(function ($a) {
-            return  $a->state->value == 'pendiente';
-        });
-
-        $retirar = $detail->sum(function ($a) {
-            return  $a->state->value == 'retirar';
-        });
-
-        $cancelado = $detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
-        });
-
-        $entregado = $detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
-        });
-
-        $estadoGeneral = '';
-
-        if ($incompleto > 0) {
-            $estadoGeneral = 'incompleto';
-        } else if ($pendiente > 0) {
-            $estadoGeneral = 'pendiente';
-        } else if ($retirar > 0) {
-            $estadoGeneral = 'retirar';
-        } else if ($entregado > 0) {
-            $estadoGeneral = 'entregado';
-        } else if ($cancelado > 0) {
-            $estadoGeneral = 'cancelado';
-        }
-
-        $estado = Table::where('name', 'order_cliente_state')->where('value', $estadoGeneral)->first();
-
-        return $estado;
-    }
-
-    private function siniestroState()
-    {
-        $detail = $this->detail;
-        $incompleto = $detail->sum(function ($a) {
-            return  $a->state->value == 'incompleto';
-        });
-
-        $completo = $detail->sum(function ($a) {
-            return  $a->state->value == 'completo';
-        });
-
-        $entregado = $detail->sum(function ($a) {
-            return  $a->state->value == 'entregado';
-        });
-
-        $cancelado = $detail->sum(function ($a) {
-            return  $a->state->value == 'cancelado';
-        });
-
-        $estadoGeneral = '';
-
-        if ($incompleto > 0) {
-            $estadoGeneral = 'incompleto';
-        } else if ($completo > 0) {
-            $estadoGeneral = 'completo';
-        } else if ($entregado > 0) {
-            $estadoGeneral = 'entregado';
-        } else if ($cancelado > 0) {
-            $estadoGeneral = 'cancelado';
-        }
-
-        $estado = Table::where('name', 'order_siniestro_state')->where('value', $estadoGeneral)->first();
-
-        return $estado;
-    } */
-
-     public function getGeneralState()
+    public function getGeneralState()
     {
         if ($shipment = $this->shipment) {
             return (object) [
@@ -387,5 +234,4 @@ class Order extends Model
 
         return Table::where('name', $tableName)->where('value', $estadoGeneral)->first();
     }
-
 }

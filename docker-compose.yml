@@ -8,7 +8,7 @@ services:
             - app-network
         volumes:
             - ./:/var/www
-            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/ # Monta la configuración de nginx en el contenedor
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
         depends_on:
             - app
 
@@ -20,8 +20,8 @@ services:
         environment:
             MYSQL_DATABASE: $DB_DATABASE
             MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-            MYSQL_USER: $DB_USERNAME # Agrega un nuevo usuario
-            MYSQL_PASSWORD: $DB_PASSWORD # Establece una contraseña para el nuevo usuario
+            MYSQL_USER: $DB_USERNAME
+            MYSQL_PASSWORD: $DB_PASSWORD
         networks:
             - app-network
         volumes:
@@ -30,22 +30,24 @@ services:
     app:
         build:
             context: .
-            dockerfile: Dockerfile # Usa un Dockerfile específico para app (PHP)
+            dockerfile: Dockerfile
         restart: unless-stopped
         networks:
             - app-network
         volumes:
-            - ./:/var/www # Monta el proyecto en el contenedor
+            - ./:/var/www
+        ports:
+            - 9006:9005
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         restart: unless-stopped
         ports:
-            - 8080:80 # Acceso a phpMyAdmin en el puerto 8080
+            - 8080:80
         environment:
-            PMA_HOST: db # Nombre del servicio de base de datos
-            PMA_USER: root # Usuario por defecto
-            PMA_PASSWORD: $DB_PASSWORD # Contraseña del usuario
+            PMA_HOST: db
+            PMA_USER: root
+            PMA_PASSWORD: $DB_PASSWORD
         networks:
             - app-network
 

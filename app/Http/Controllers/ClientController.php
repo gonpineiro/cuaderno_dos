@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Schema;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\{StoreClientRequest, UpdateClientRequest};
+use App\Http\Resources\Client\ClientJazzResource;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Models\Jazz\ClientJazz;
 
 class ClientController extends Controller
 {
@@ -72,25 +74,40 @@ class ClientController extends Controller
         // Devuelve los resultados, podrías usar Resource para formatear la respuesta
         return sendResponse(ClientResource::collection($results));
     }
-    /* public function search(Request $request)
+
+    public function searchJazz(Request $request)
     {
-        $model = new Client();
+        $model = new ClientJazz();
+        $columns = $model->getSearchColumns();
 
-        $attributes = $model->getFillable();
+        $query = $model->newQuery();
 
-        $clients = Client::query();
+        $search = $request->search;
 
-        foreach ($attributes as $attribute) {
-            $clients->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        $query->where(function ($q) use ($columns, $search) {
+            foreach ($columns as $column) {
+                $q->orWhere($column, 'like', "%{$search}%");
+            }
+        });
+
+        $results = $query->get();
+
+        return sendResponse(ClientJazzResource::collection($results));
+    }
+
+    public function relacionarClienteJazz(Request $request)
+    {
+        $cliente = Client::find($request->cliente_id);
+
+        if ($cliente->jazz_id) {
+            return sendResponse(null, 'El cliente ya se encuentra relacioado');
         }
 
-        $results = $clients->get();
+        $cliente->jazz_id = $request->jazz_id;
+        $cliente->save();
 
-        if (!$results) {
-            return sendResponse(null, 'No se encontro un resultado de busqueda');
-        }
-        return sendResponse(ClientResource::collection($results));
-    } */
+        return sendResponse('Cliente asociado');
+    }
 
     public function getByReference(Request $request)
     {

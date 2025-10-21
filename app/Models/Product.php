@@ -158,6 +158,11 @@ class Product extends Model
         return $this->belongsTo(ProductBrand::class);
     }
 
+    public function toAsk()
+    {
+        return $this->hasMany(ToAsk::class);
+    }
+
     public function getUbicationAttribute()
     {
         if (

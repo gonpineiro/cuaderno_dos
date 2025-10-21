@@ -16,7 +16,8 @@
 
     /* Agrega más definiciones para otros pesos y estilos de la fuente Roboto */
     table {
-        width: 100%
+        width: 100%;
+        font-size: 1.1rem;
     }
 
     .table-productos {
@@ -30,9 +31,9 @@
         font-size: 0.8rem;
     }
 
-    .importe {
+    .importe, p {
         margin-top: 16px;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
     .total {
@@ -50,42 +51,42 @@
             </tr>
             <hr>
             <tr>
-                <td>Nombre y apellido:</td>
+                <td><strong>Nombre y apellido:</strong></td>
                 <td>{{$pedido->client->name}}</td>
             </tr>
 
             @if ($pedido->client->cuit)
             <tr>
-                <td>CUIT:</td>
+                <td><strong>CUIT:</strong></td>
                 <td>{{$pedido->client->cuit}}</td>
             </tr>
             @endif
 
             @if ($pedido->client->dni)
             <tr>
-                <td>DNI:</td>
+                <td><strong>DNI:</strong></td>
                 <td>{{$pedido->client->dni}}</td>
             </tr>
             @endif
 
             <tr>
-                <td>Teléfono:</td>
+                <td><strong>Teléfono:</strong></td>
                 <td>{{$pedido->client->phone}}</td>
             </tr>
             <tr>
-                <td>Forma de pago:</td>
+                <td><strong>Forma de pago:</strong></td>
                 <td>{{$pedido->payment_method->description}}</td>
             </tr>
             <tr>
-                <td>Vehículo:</td>
+                <td><strong>Vehículo:</strong></td>
                 <td>{{$pedido->price_quote->vehiculo->name}}</td>
             </tr>
             <tr>
-                <td>Vendedor:</td>
+                <td><strong>Vendedor:</strong></td>
                 <td>{{$pedido->user->name}}</td>
             </tr>
             <tr>
-                <td>Fecha:</td>
+                <td><strong>Fecha:</strong></td>
                 <td>{{$fecha}}</td>
             </tr>
         </table>
@@ -96,13 +97,14 @@
 
     <table class="table-productos">
         <tr>
-            <th style="width: 5%">Código</th>
-            <th style="width: 15%">Cod. Proveedor</th>
+            <th style="width: 13%">Código</th>
+            <th style="width: 12%">Cod. Prov.</th>
+            <th style="width: 10%">C. Fabrica</th>
             <th style="width: 5%">Ubicación</th>
             <th>Descripcion</th>
-            <th style="width: 7%">Cant.</th>
+            <th style="width: 5%">Cant.</th>
             <th style="width: 11%">Precio U.</th>
-            <th style="width: 15%">Total</th>
+            <th style="width: 13%">Total</th>
         </tr>
 
 
@@ -110,6 +112,7 @@
         <tr>
             <td>{{$item['code']}}</td>
             <td>{{$item['provider_code']}}</td>
+            <td>{{$item['factory_code']}}</td>
             <td>{{$item['ubication']}}</td>
             <td>{{$item['description']}}</td>
             <td>{{$item['amount']}}</td>

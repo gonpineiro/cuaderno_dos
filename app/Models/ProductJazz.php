@@ -19,6 +19,11 @@ class ProductJazz extends Model
         'precio_lista_3',
         'precio_lista_6',
 
+        'stock',
+        'stock_min',
+        'stock_max',
+        'punto_pedido',
+
         //camposAdicionales
         'code',
         'provider_code',
@@ -109,7 +114,9 @@ class ProductJazz extends Model
                         p.provider_code   <=> t.provider_code   AND
                         p.equivalence     <=> t.equivalence     AND
                         p.observation     <=> t.observation     AND
-                        p.ubicacion       <=> t.ubicacion
+                        p.ubicacion       <=> t.ubicacion       AND
+                        p.factory_code    <=> t.factory_code    AND
+                        p.codigo_marca    <=> t.codigo_marca
 
                 ");
 
@@ -141,5 +148,32 @@ class ProductJazz extends Model
             'requiere' => $requiere ?? 0,
             'nuevo' => $nuevo ?? 0,
         ];
+    }
+
+    public static function formatUbicacion($ubicacion)
+    {
+        // Expresión regular para validar y capturar
+        $regex = '/^NAVE:\s*([A-Za-z0-9])\s*-\s*MOD:\s*([1-9][0-9]*)\s*-\s*COL:\s*([0-9]{2})\s*-\s*FILA:\s*([0-9]{2})\s*-\s*LADO:\s*([A-Za-z])$/';
+
+        if (preg_match($regex, $ubicacion, $matches)) {
+            // $matches[1..5] contienen los grupos capturados
+            $resultado = [
+                'ship'   => $matches[1],
+                'module' => (int)$matches[2],
+                'column'    => $matches[3],
+                'row'   => $matches[4],
+                'side'   => strtoupper($matches[5]),
+            ];
+
+            return $resultado;
+        } else {
+            return  [
+                'ship'   => null,
+                'module' => null,
+                'column'    => null,
+                'row'   => null,
+                'side'   => null,
+            ];
+        }
     }
 }

@@ -324,7 +324,13 @@ class ProductController extends \App\Http\Controllers\Controller
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
         }
 
-        $results = $products->orderBy('factory_code', 'asc')->get();
+        $results = $products->orderBy('factory_code', 'asc')
+            ->orderBy(
+                ProductJazz::select('precio_lista_2')
+                    ->whereColumn('product_jazz.id', 'products.idProducto'),
+                'desc'
+            )
+            ->get();
 
         if (!$results) {
             return sendResponse(null, 'No se encontro un resultado de busqueda');

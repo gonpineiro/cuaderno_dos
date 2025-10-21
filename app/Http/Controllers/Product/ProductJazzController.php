@@ -29,10 +29,8 @@ class ProductJazzController extends Controller
 
     public function updateProductJazz($product): ProductJazz
     {
-        // Buscar o crear instancia
         $pj = ProductJazz::firstOrNew(['id' => $product['idProducto']]);
 
-        // Asignar datos comunes
         $pj->nombre = $product['nombre'];
         $pj->stock = $product['totalStockDisponible'];
         $pj->fecha_alta = $product['fechaAlta'];
@@ -44,7 +42,6 @@ class ProductJazzController extends Controller
         // Adicionales
         $pj->setAdicionales(collect($product['camposAdicionales']));
 
-        // Guardar
         $pj->save();
 
         return $pj;

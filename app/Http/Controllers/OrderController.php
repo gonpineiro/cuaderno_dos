@@ -16,6 +16,8 @@ use App\Models\PurchaseOrder;
 use App\Models\Shipment;
 use App\Models\ToAsk;
 use App\Models\User;
+use App\Services\JazzServices\ApiService;
+use App\Services\JazzServices\PedidoService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -219,5 +221,75 @@ class OrderController extends \App\Http\Controllers\Controller
 
 
         return TraitPedidosEmail::pedidoEntregado($p);
+    }
+
+    public function generar_factura_jazz(Request $request)
+    {
+        $order = Order::where("id", $request->id)->with(['detail.product', 'client'])->first();
+
+        if (!$order) {
+            return sendResponse(null, 'No se encuentra el pedido');
+        }
+
+        $allHaveIdProducto = $order->detail->every(function ($detail) {
+            return !empty($detail->product->idProducto);
+        });
+
+        if (!$allHaveIdProducto) {
+            return sendResponse(null, 'Hay productos sin relacion con el Jazz', 410);
+        }
+
+        if ($order->ref_jazz_id) {
+            return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
+        }
+
+        $service = new PedidoService();
+        $data = [
+            "empresa" => 2,
+            "sucursal" => 2,
+            "letra" => "B",
+            "boca" => 0,
+            "idCliente" => $order->client->jazz_id,
+            "ivaTipo" => 3,
+            "idVendedor" => 1,
+            "vendedorComision" => 0,
+            "idLista" => 6,
+            //"obs" => "SALDO INICIAL",
+            "condicion" => 2,
+            "moneda" => 1,
+            "enMostrador" => "N",
+            "fecha" => \Carbon\Carbon::now('UTC')->format('Y-m-d\TH:i:s.v\Z'),
+            "descuento" => null,
+            "recargo" => null,
+            "idEstado" => 5
+        ];
+
+        DB::beginTransaction();
+
+        try {
+            $pedido = $service->agregarPedido($data);
+            if (!isset($pedido['refID']) || !$pedido['refID']) {
+                return sendResponse(null, 'No se logro crear el pedido', 303, $pedido);
+            }
+
+            $id_pedido_jazz = $pedido['refID'];
+            $productData = $order->getJazzData($id_pedido_jazz);
+
+            foreach ($productData as $data) {
+                $pedido_producto = $service->agregarArticulo($data, $id_pedido_jazz);
+                $order_product = OrderProduct::where('order_id', $order->id)->where('product_id', $data["product_id"])->first();
+                $order_product->ref_jazz_id = $pedido_producto["refID"];
+                $order_product->save();
+            }
+
+            $order->ref_jazz_id = $id_pedido_jazz;
+            $order->save();
+
+            DB::commit();
+            return sendResponse("Pedido Jazz N°: $id_pedido_jazz generado correctamente!");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return sendResponse(null, "Ocurrio un error al generar el Pedido en Jazz", 303, $e->getMessage());
+        }
     }
 }

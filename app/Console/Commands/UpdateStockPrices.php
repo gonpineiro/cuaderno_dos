@@ -28,6 +28,15 @@ class UpdateStockPrices extends Command
     {
         $this->info("Iniciando actualización de stock y precios...");
 
+        $this->updateStockPrices();
+
+        $this->updateProductsBrands();
+
+        $this->info("Actualización completada.");
+    }
+
+    private function updateStockPrices()
+    {
         DB::statement("DELETE FROM product_jazz_temp");
 
         $listas = DB::connection('jazz')->table('precios_venta')
@@ -43,6 +52,9 @@ class UpdateStockPrices extends Command
             'p.IdProducto',
             'p.numero',
             'p.Nombre',
+            'pcc.StockMin as stock_min',
+            'pcc.StockMax as stock_max',
+            'pcc.PuntoPedido as punto_pedido',
             DB::raw("(
                     SELECT SUM(fa.Cantidad *
                         CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
@@ -59,7 +71,8 @@ class UpdateStockPrices extends Command
                 $selects
             FROM productos p
             LEFT JOIN precios_venta pv ON p.IdProducto = pv.IdProducto
-            GROUP BY p.IdProducto, p.numero, p.Nombre
+            LEFT JOIN productoscombinacionescabecera pcc on pcc.IdProducto = p.IdProducto
+            GROUP BY p.IdProducto, p.numero, p.Nombre, stock_min, stock_max, punto_pedido
         ";
 
         $resultado = DB::connection('jazz')->select($sqlFinal);
@@ -77,12 +90,58 @@ class UpdateStockPrices extends Command
                     'precio_lista_2' => $row->precio_lista_2 ?? 0,
                     'precio_lista_3' => $row->precio_lista_3 ?? 0,
                     'precio_lista_6' => $row->precio_lista_6 ?? 0,
+                    'stock_min' => $row->stock_min ?? 0,
+                    'stock_max' => $row->stock_max ?? 0,
+                    'punto_pedido' => $row->punto_pedido ?? 0,
                 ]);
 
             $percent = number_format(($current / $total) * 100, 2);
             $this->info("Procesado $current / $total ($percent%)");
         }
+    }
 
-        $this->info("Actualización completada.");
+    private function updateProductsBrands()
+    {
+        $marcas = DB::connection('jazz')->table('marcas')
+            ->select('idMarca', 'Empresa', 'Codigo', 'Nombre')
+            ->get();
+
+        // Transformo la colección a array para el upsert
+        $data = $marcas->map(function ($item) {
+            return [
+                'idMarca' => $item->idMarca,
+                'Empresa' => $item->Empresa,
+                'Codigo'  => $item->Codigo,
+                'Nombre'  => $item->Nombre,
+            ];
+        })->toArray();
+
+        // Inserto o actualizo según corresponda (basado en idMarca)
+        DB::connection('mysql')->table('product_brands_jazz')->upsert(
+            $data,
+            ['idMarca'], // clave única
+            ['Empresa', 'Codigo', 'Nombre'] // columnas que se actualizan si existe
+        );
+
+
+        // Traigo de la tabla intermedia
+        $brandsJazz = DB::table('product_brands_jazz')
+            ->select('Codigo', 'Nombre')
+            ->get();
+
+        // Transformo para el upsert
+        $data = $brandsJazz->map(function ($item) {
+            return [
+                'code' => $item->Codigo,
+                'name' => $item->Nombre,
+            ];
+        })->toArray();
+
+        // Inserto o actualizo en product_brands
+        DB::table('product_brands')->upsert(
+            $data,
+            ['code'],      // clave única
+            ['name']       // columnas que se actualizan si existe
+        );
     }
 }

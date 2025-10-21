@@ -41,7 +41,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Clientes */
     Route::get('cliente/referencia', [ClientController::class, 'getByReference']);
+    Route::post('cliente/buscar-jazz', [ClientController::class, 'searchJazz']);
     Route::post('cliente/buscar', [ClientController::class, 'search']);
+    Route::post('cliente/relacionar-cliente-jazz', [ClientController::class, 'relacionarClienteJazz']);
+
     Route::post('cliente/update', [ClientController::class, 'update']);
     Route::post('cliente/config/save', [ClientConfigController::class, 'saveConfig']);
     Route::resource('cliente', ClientController::class)->except(['show', 'update']);
@@ -92,14 +95,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* Clientes */
     Route::get('pedidos', [OrderController::class, 'index']);
     Route::get('pedidos/{id}', [OrderController::class, 'showPedido']);
-
-    Route::post('pedido/search', [OrderController::class, 'search']);
     Route::get('pedido/productos', [OrderController::class, 'productos']);
-    Route::post('pedido/productos/search', [OrderController::class, 'productos_search']);
-    Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
     Route::get('pedido/pdf/{id}', [OrderController::class, 'getPdfPedido']);
+    Route::post('pedido/search', [OrderController::class, 'search']);
+    Route::post('pedido/generar_factura_jazz', [OrderController::class, 'generar_factura_jazz']);
+    Route::post('pedido/productos/search', [OrderController::class, 'productos_search']);
     Route::post('pedidos/cambiar-estado', [OrderController::class, 'updateState']);
     Route::post('update_pedido_product', [OrderProductController::class, 'updatePedidoProduct']);
+    Route::put('pedidos/{id}', [OrderController::class, 'updatePedido']);
 
     /* Siniestros */
     Route::get('siniestro', [OrderController::class, 'indexSiniestros']);
@@ -132,7 +135,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('cotizacion/asignar/cliente', [PriceQuoteController::class, 'asignarCliente']);
 
     Route::post('cotizacion/asignar/envio', [PriceQuoteController::class, 'asignarEnvio']);
-    Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
     Route::post('update_price_quote_product', [PriceQuoteController::class, 'update_price_quote_product']);
 
     /* Ordenes de compra */
@@ -140,6 +142,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ordenes_compra/producto_generar_pedir', [PurchaseOrderController::class, 'producto_generar_pedir']);
     Route::post('ordenes_compra/producto_modificar_pedir', [PurchaseOrderController::class, 'producto_modificar_pedir']);
     Route::get('ordenes_compra/pedir', [PurchaseOrderController::class, 'pedir']);
+    Route::get('ordenes_compra/evaluar_pedir', [PurchaseOrderController::class, 'evaluar_pedir']);
+    Route::post('ordenes_compra/listado_producto_generar_pedir', [PurchaseOrderController::class, 'listado_producto_generar_pedir']);
     Route::post('ordenes_compra/borrar', [PurchaseOrderController::class, 'delete']);
     Route::post('generar_orden/generar', [PurchaseOrderController::class, 'generar_orden']);
     Route::post('ordenes_compra/cambiar-estado/{id}', [PurchaseOrderController::class, 'update']);
@@ -153,7 +157,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Coeficientes */
     Route::post('coeficientes/update', [CoeficienteController::class, 'store']);
-
 
 
     Route::get('permissions', [PermissionController::class, 'index']);
@@ -170,3 +173,5 @@ Route::get('producto/jazz/inicio-sync', [JazzController::class, 'syncProductTemp
 Route::get('producto/jazz/analizar', [JazzController::class, 'procesarTemporal']);
 Route::post('producto/jazz/sincronizar', [JazzController::class, 'sync']);
 Route::get('products_jazz', [JazzController::class, 'getProducts']);
+Route::get('generar_pedido', [JazzController::class, 'generarPedidoApi']);
+Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);

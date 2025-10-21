@@ -69,8 +69,8 @@ class ClientResource extends JsonResource
 
         $this->vehiculos->load('vehiculo.brand');
         $array['vehiculos'] = $this->vehiculos;
-        $array['condicion_iva'] = $this->condicion_iva;
         $array['config'] = ClientConfigResource::collection($this->config);
+        $array['condicion_iva'] = $this->condicion_iva;
         return $array;
     }
 }

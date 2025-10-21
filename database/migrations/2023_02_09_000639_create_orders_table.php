@@ -36,6 +36,7 @@ class CreateOrdersTable extends Migration
             /* Siniestro */
             $table->string('remito')->nullable();
             $table->string('workshop')->nullable();
+            $table->unsignedBigInteger('ref_jazz_id')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

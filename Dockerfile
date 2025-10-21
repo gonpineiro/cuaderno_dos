@@ -27,6 +27,17 @@ RUN docker-php-ext-install pdo_mysql zip exif pcntl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install gd
 
+# Instalamos Xdebug
+RUN apt-get update && apt-get install -y autoconf gcc make \
+    && pecl install xdebug-3.1.6 \
+    && docker-php-ext-enable xdebug \
+    && apt-get remove -y autoconf gcc make \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiamos configuración de Xdebug
+COPY ./docker/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
 # Instalamos composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -37,8 +48,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # computadora (los archivos de laravel) a /var/www/
 COPY . /var/www/
 
-# Exponemos el puerto 9000 a la network
-EXPOSE 9000
+# Exponer puertos
+EXPOSE 9000 9005
 
 # Corremos el comando php-fpm para ejecutar PHP
 CMD ["php-fpm"]

@@ -21,6 +21,7 @@ class Client extends Model
         'is_insurance',
         'is_company',
         'reference_id',
+        'jazz_id',
         'year',
         'chasis',
         'vehiculo_id',
