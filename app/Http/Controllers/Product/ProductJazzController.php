@@ -32,7 +32,7 @@ class ProductJazzController extends Controller
         $pj = ProductJazz::firstOrNew(['id' => $product['idProducto']]);
 
         $pj->nombre = $product['nombre'];
-        $pj->stock = $product['totalStockDisponible'];
+        $pj->stock = $product['totalStockDisponible'] ? $product['totalStockDisponible'] : 0;
         $pj->fecha_alta = $product['fechaAlta'];
         $pj->fecha_mod = $product['fechaMod'];
 
