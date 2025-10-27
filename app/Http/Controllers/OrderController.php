@@ -157,7 +157,7 @@ class OrderController extends \App\Http\Controllers\Controller
         return $pdf->download('informe.pdf');
     }
 
-    private function storeOrderProduct($request, $order_id, $coef = null, $redondear = false)
+    private static function storeOrderProduct($request, $order_id, $coef = null, $redondear = false)
     {
         $detail = $request->detail;
         $to_ask = $request->to_ask;
