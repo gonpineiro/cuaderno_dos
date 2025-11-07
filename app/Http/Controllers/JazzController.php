@@ -299,6 +299,7 @@ class JazzController extends Controller
                         $_product = [
                             'code'             => $product->code,
                             'idProducto'       => $product->id ?? null,
+                            'description'       => $product->nombre ?? null,
                             'provider_code'    => $product->provider_code ?? null,
                             'equivalence'      => $product->equivalence ?? null,
                             'factory_code'      => $product->factory_code ?? null,
@@ -312,11 +313,15 @@ class JazzController extends Controller
                     }
 
                     if (!empty($data)) {
-                        // 'code' es la clave para hacer update si existe
+                        $first = $data[0];
+                        $columns = array_keys($first);
+                        // Excluir la clave única
+                        $updateColumns = array_diff($columns, ['code', 'created_at']);
+
                         DB::table('products')->upsert(
                             $data,
                             ['code'],
-                            ['*']
+                            $updateColumns
                         );
                     }
                 });

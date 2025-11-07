@@ -13,6 +13,7 @@ class ProductJazz extends Model
 
     protected $fillable = [
         'id',
+        'code',
         'nombre',
         'stock',
         'precio_lista_2',
@@ -76,23 +77,22 @@ class ProductJazz extends Model
         $total = DB::table('product_jazz_temp')->count();
 
         $deletedCount = DB::affectingStatement(
-            "
-                    DELETE t
-                    FROM product_jazz_temp t
-                    JOIN product_jazz p ON p.id = t.id
-                    WHERE
-                        p.nombre          <=> t.nombre          AND
-                        p.code            <=> t.code            AND
-                        p.provider_code   <=> t.provider_code   AND
-                        p.equivalence     <=> t.equivalence     AND
-                        p.observation     <=> t.observation     AND
-                        p.ubicacion       <=> t.ubicacion       AND
-                        p.stock           =   t.stock           AND
-                        p.precio_lista_2  <=> t.precio_lista_2  AND
-                        p.precio_lista_3  <=> t.precio_lista_3  AND
-                        p.precio_lista_6  <=> t.precio_lista_6  AND
-                        p.fecha_alta      <=> t.fecha_alta      AND
-                        p.fecha_mod       <=> t.fecha_mod"
+            "DELETE t
+                FROM product_jazz_temp t
+                JOIN product_jazz p ON p.id = t.id
+                WHERE
+                    p.nombre          <=> t.nombre          AND
+                    p.code            <=> t.code            AND
+                    p.provider_code   <=> t.provider_code   AND
+                    p.equivalence     <=> t.equivalence     AND
+                    p.observation     <=> t.observation     AND
+                    p.ubicacion       <=> t.ubicacion       AND
+                    p.stock           =   t.stock           AND
+                    p.precio_lista_2  <=> t.precio_lista_2  AND
+                    p.precio_lista_3  <=> t.precio_lista_3  AND
+                    p.precio_lista_6  <=> t.precio_lista_6  AND
+                    p.fecha_alta      <=> t.fecha_alta      AND
+                    p.fecha_mod       <=> t.fecha_mod"
         );
 
         return ['deleted_count' => $deletedCount, 'total' => $total];
@@ -103,44 +103,36 @@ class ProductJazz extends Model
         $total = DB::table('product_jazz_temp')->count();
 
         // 1. no_requiere
-        $noRequiere = DB::affectingStatement("
-                    UPDATE product_jazz_temp t
-                    JOIN product_jazz p ON p.id = t.id
-                    SET t.state = 'no_requiere'
-                    WHERE
-                        t.state = 'en_proceso' AND
-                        p.nombre          <=> t.nombre          AND
-                        p.code            <=> t.code            AND
-                        p.provider_code   <=> t.provider_code   AND
-                        p.equivalence     <=> t.equivalence     AND
-                        p.observation     <=> t.observation     AND
-                        p.ubicacion       <=> t.ubicacion       AND
-                        p.factory_code    <=> t.factory_code    AND
-                        p.codigo_marca    <=> t.codigo_marca
+        $noRequiere = DB::affectingStatement(
+            "UPDATE product_jazz_temp t
+                JOIN product_jazz p ON p.id = t.id
+                SET t.state = 'no_requiere'
+                WHERE
+                    t.state = 'en_proceso' AND
+                    p.nombre          <=> t.nombre          AND
+                    p.code            <=> t.code            AND
+                    p.provider_code   <=> t.provider_code   AND
+                    p.equivalence     <=> t.equivalence     AND
+                    p.observation     <=> t.observation     AND
+                    p.ubicacion       <=> t.ubicacion       AND
+                    p.factory_code    <=> t.factory_code    AND
+                    p.codigo_marca    <=> t.codigo_marca"
+        );
 
-                ");
-
-        /* p.stock           =   t.stock           AND
-                        p.precio_lista_2  <=> t.precio_lista_2  AND
-                        p.precio_lista_3  <=> t.precio_lista_3  AND
-                        p.precio_lista_6  <=> t.precio_lista_6  AND
-                        p.fecha_alta      <=> t.fecha_alta      AND
-                        p.fecha_mod       <=> t.fecha_mod */
-        // 2. requiere
-        $requiere = DB::affectingStatement("
-                    UPDATE product_jazz_temp t
-                    JOIN product_jazz p ON p.id = t.id
-                    SET t.state = 'requiere'
-                    WHERE t.state = 'en_proceso'
-                ");
+        $requiere = DB::affectingStatement(
+            "UPDATE product_jazz_temp t
+                JOIN product_jazz p ON p.id = t.id
+                SET t.state = 'requiere'
+                WHERE t.state = 'en_proceso'"
+        );
 
         // 3. nuevo
-        $nuevo = DB::affectingStatement("
-                    UPDATE product_jazz_temp t
-                    LEFT JOIN product_jazz p ON p.id = t.id
-                    SET t.state = 'nuevo'
-                    WHERE p.id IS NULL AND t.state = 'en_proceso'
-                ");
+        $nuevo = DB::affectingStatement(
+            "UPDATE product_jazz_temp t
+                LEFT JOIN product_jazz p ON p.id = t.id
+                SET t.state = 'nuevo'
+                WHERE p.id IS NULL AND t.state = 'en_proceso'"
+        );
 
         return [
             'total' => $total ?? 0,
