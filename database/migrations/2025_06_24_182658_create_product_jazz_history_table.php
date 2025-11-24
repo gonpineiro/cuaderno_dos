@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductJazzTempTable extends Migration
+class CreateProductJazzHistoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProductJazzTempTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_jazz_history', callback: function (Blueprint $table) {
+        Schema::create('product_jazz_history', function (Blueprint $table) {
             $table->unsignedBigInteger('sinc_id')->primary();
             $table->unsignedBigInteger('id')->primary();
             $table->string('nombre')->nullable();

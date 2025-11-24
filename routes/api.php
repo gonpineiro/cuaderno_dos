@@ -23,6 +23,7 @@ use App\Http\Controllers\ComboController;
 use App\Http\Controllers\JazzController;
 use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\VehiculoController;
 
 Route::post('login', [ApiController::class, 'login']);
@@ -167,7 +168,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
+
+    /* Tickets */
+    Route::get('tickets', [TicketController::class, 'index']);
+    Route::post('generar_ticket', [TicketController::class, 'generar_ticket']);
 });
+
+
 
 Route::get('producto/jazz/inicio-sync', [JazzController::class, 'syncProductTemp']);
 Route::get('producto/jazz/analizar', [JazzController::class, 'procesarTemporal']);

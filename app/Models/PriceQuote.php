@@ -108,6 +108,11 @@ class PriceQuote extends Model
         return $this->belongsTo(Table::class, 'information_source_id');
     }
 
+    public function tickets()
+    {
+        return $this->morphMany(Ticket::class, 'ticketable');
+    }
+
     public function getStateAttribute()
     {;
 
