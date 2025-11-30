@@ -28,23 +28,31 @@ class TicketController extends Controller
 
     public function generar_ticket(Request $request)
     {
-        $modelInstance = Ticket::modelMap($request->model);
-        $model = $modelInstance::find($request->model_id);
-
-        if (!$model) {
-            return sendResponse(null, "No se encontro el modelo: $request->model; id: $request->model_id");
-        }
-
         $state = Table::where('name', 'ticket_estado')->where('value', 'abierto')->first();
-        $ticket =  $model->tickets()->create([
+        $data = [
             'user_id'     => auth()->id(),
             'prioridad_id' => $request->prioridad_id,
             'estado_id' => $state->id,
             'titulo'      => $request->titulo,
             'descripcion' => $request->descripcion,
-        ]);
+        ];
 
-        return sendResponse($ticket);
+        $modelInstance = Ticket::modelMap($request->model);
+        if (!$modelInstance) {
+            //Cuando es generico
+            $ticket = Ticket::create($data);
+        } else {
+            $model = $modelInstance::find($request->model_id);
+
+            if (!$model) {
+                return sendResponse(null, "No se encontro el modelo: $request->model; id: $request->model_id");
+            }
+
+            $ticket =  $model->tickets()->create($data);
+        }
+
+
+        return sendResponse(new TicketResource($ticket));
     }
 
     public function show($id)
@@ -60,10 +68,10 @@ class TicketController extends Controller
         return sendResponse(new VehiculoResource($vehiculo));
     }
 
-    public function destroy($id)
+    public function borrar(Request $request)
     {
-        $vehiculo = Vehiculo::findOrFail($id);
-        $vehiculo->delete();
-        return sendResponse(new VehiculoResource($vehiculo));
+        $ticket = Ticket::findOrFail($request->id);
+        $ticket->delete();
+        return sendResponse(true);
     }
 }

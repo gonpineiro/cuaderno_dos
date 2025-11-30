@@ -15,15 +15,6 @@ class TicketResource extends JsonResource
      */
     public function toArray($request)
     {
-
-        /*    id: number
-    user: string
-    prioridad: TicketPrioridadTable
-    estado: TicketEstadoTable
-    titulo: string
-    descripcion: string
-    origen: TickerOrigin
- */
         return [
             'id' => $this->id,
             'user' => $this->user->name,
@@ -32,6 +23,7 @@ class TicketResource extends JsonResource
             'titulo' => $this->titulo,
             'descripcion' => $this->descripcion,
             'origen' => $this->origen,
+            'created_at' => $this->created_at,
         ];
     }
 }

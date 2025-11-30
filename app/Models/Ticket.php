@@ -42,6 +42,7 @@ class Ticket extends Model
             'envio'        => \App\Models\Shipment::class,
             'pedido'       => \App\Models\Order::class,
             'producto'     => \App\Models\Product::class,
+            'generico'     => null,
         ];
 
         return $arrayMap[$string_model];
@@ -49,6 +50,9 @@ class Ticket extends Model
 
     public function getOrigenAttribute()
     {
+        if (!$this->ticketable_type) {
+            return 'generico';
+        }
         $arrayMap = [
             'App\\Models\\PriceQuote' => 'cotizacion'
         ];
