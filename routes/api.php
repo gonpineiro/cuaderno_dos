@@ -171,6 +171,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     /* Tickets */
     Route::get('tickets', [TicketController::class, 'index']);
+    Route::post('tickets/borrar', [TicketController::class, 'borrar']);
     Route::post('generar_ticket', [TicketController::class, 'generar_ticket']);
 });
 
