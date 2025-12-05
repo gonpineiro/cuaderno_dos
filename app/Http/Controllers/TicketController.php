@@ -26,6 +26,21 @@ class TicketController extends Controller
         return sendResponse(new VehiculoResource($vehiculo));
     }
 
+    public function resolver(Request $request)
+    {
+        $ticket = Ticket::find($request->id);
+        if (!$ticket) {
+            return sendResponse(null, 'No se encuentra el ticket');
+        }
+
+        $state = Table::where('name', 'ticket_estado')->where('value', 'cerrado')->first();
+
+        $ticket->resolucion = $request->resolucion;
+        $ticket->estado_id = $state->id;
+        $ticket->save();
+        return sendResponse(new TicketResource($ticket));
+    }
+
     public function generar_ticket(Request $request)
     {
         $state = Table::where('name', 'ticket_estado')->where('value', 'abierto')->first();
