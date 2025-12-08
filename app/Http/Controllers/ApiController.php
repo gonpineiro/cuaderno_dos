@@ -95,7 +95,7 @@ class ApiController extends \App\Http\Controllers\Controller
     {
         $JWTAuth = \Tymon\JWTAuth\Facades\JWTAuth::class;
         $user = User::find(auth()->user()->id);
-        $user->roles->map(function($r) {
+        $user->roles->map(function ($r) {
             $r->permissions;
         });
 

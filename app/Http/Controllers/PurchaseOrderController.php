@@ -99,6 +99,7 @@ class PurchaseOrderController extends Controller
 
         foreach ($data as $d) {
             $d['user_id'] = auth()->user()->id;
+            $d['amount'] = $d['amount'] - $d['stock'];
             ToAsk::create($d);
         }
         $count = count($data);
