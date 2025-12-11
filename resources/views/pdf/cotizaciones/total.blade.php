@@ -23,8 +23,25 @@
 </table>
 
 
-{{-- Total --}}
+
+@if($iva)
 <p class="w-100 importe">
-    IMPORTE TOTAL {{$is_contado ? 'PRECIO CONTADO' : 'DE LISTA'}}: <span class="total">{{$total}}</span>
+    IMPORTE TOTAL {{ $is_contado ? 'PRECIO CONTADO' : 'DE LISTA' }} SIN IVA:
+    <span class="total">{{ formatoMoneda($total - $iva) }}</span>
 </p>
+
+<p class="w-100 importe">
+    TOTAL IVA: <span class="total">{{ formatoMoneda($iva) }}</span>
+</p>
+
+<p class="w-100 importe">
+    IMPORTE TOTAL {{ $is_contado ? 'PRECIO CONTADO' : 'DE LISTA' }}:
+    <span class="total">{{ formatoMoneda($total) }}</span>
+</p>
+@else
+<p class="w-100 importe">
+    IMPORTE TOTAL {{ $is_contado ? 'PRECIO CONTADO' : 'DE LISTA' }}:
+    <span class="total">{{ formatoMoneda($total) }}</span>
+</p>
+@endif
 @endsection

@@ -73,7 +73,7 @@ if (!function_exists('calcularDescuento')) {
 }
 
 if (!function_exists('get_total_price')) {
-    function get_total_price($detail, $coef = 1)
+    function get_total_price($detail, $coef = 1, $iva = 1)
     {
         $total = 0;
         foreach ($detail as $item) {

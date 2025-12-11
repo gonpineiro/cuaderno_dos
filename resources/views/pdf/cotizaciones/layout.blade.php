@@ -20,6 +20,7 @@
 
     .table-productos {
         border: 1px solid rgba(0, 0, 0, .125);
+        margin-bottom: 16px !important;
     }
 
     .table-productos tr,
@@ -30,7 +31,6 @@
     }
 
     .importe {
-        margin-top: 16px;
         font-size: 1.2rem;
     }
 
