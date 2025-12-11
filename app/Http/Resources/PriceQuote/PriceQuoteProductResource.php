@@ -54,15 +54,13 @@ class PriceQuoteProductResource extends JsonResource
         return $array;
     }
 
-    public static function formatPdf($detail, $iva = 0)
+    public static function formatPdf($detail, $iva = false)
     {
-        $multiplicador = 1 - ($iva / 100);
-
         foreach ($detail as $key => $value) {
 
             // Precio sin IVA
-            $unitPriceSinIva = $value['unit_price'] * $multiplicador;
-            $totalSinIva = $value['total'] * $multiplicador;
+            $unitPriceSinIva = $iva ? $value['unit_price'] / 1.21 : $value['unit_price'];
+            $totalSinIva = $iva ? $value['total'] / 1.21 : $value['total'];
 
             // Reemplazar los valores por el sin IVA
             $detail[$key]['unit_price'] = formatoMoneda($unitPriceSinIva);

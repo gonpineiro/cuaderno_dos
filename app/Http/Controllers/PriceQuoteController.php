@@ -422,12 +422,12 @@ class PriceQuoteController extends Controller
 
         $valor_iva = null;
         if ($order->client->condicion_iva && $order->client->condicion_iva->id === $responsable_inscripto->id) {
-            $valor_iva = $total - ($total * 0.79);
+            $valor_iva = $total - ($total / 1.21);
         }
 
         $vars = [
             'cotizacion' => $order,
-            'detail' => PriceQuoteProductResource::formatPdf($detail, $valor_iva ? 21 : 0),
+            'detail' => PriceQuoteProductResource::formatPdf($detail, !!$valor_iva),
             'coefs' => $this->get_total_calculadora($order->detail_cotizable,/* , $contado_deb */ $order->type_price->value !== 'lista'),
             'total' => $total,
             'type' => $request->type,
