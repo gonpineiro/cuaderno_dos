@@ -15,6 +15,14 @@ class UserController extends Controller
         return User::with('activities.subject')->get();
     }
 
+    public function get_users()
+    {
+        $users = User::select('id', 'name')
+            ->where('name', '!=', 'sudo')
+            ->get();
+        return sendResponse($users);
+    }
+
     public function show(Request $request, $id)
     {
 

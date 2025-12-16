@@ -16,7 +16,7 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::all();
+        $tickets = Ticket::orderBy('created_at', 'desc')->get();
         return sendResponse(TicketResource::collection($tickets));
     }
 
@@ -46,6 +46,7 @@ class TicketController extends Controller
         $state = Table::where('name', 'ticket_estado')->where('value', 'abierto')->first();
         $data = [
             'user_id'     => auth()->id(),
+            'responsable_id'     => $request->responsable_id,
             'prioridad_id' => $request->prioridad_id,
             'estado_id' => $state->id,
             'titulo'      => $request->titulo,
@@ -63,7 +64,7 @@ class TicketController extends Controller
                 return sendResponse(null, "No se encontro el modelo: $request->model; id: $request->model_id");
             }
 
-            $ticket =  $model->tickets()->create($data);
+            $ticket = $model->tickets()->create($data);
         }
 
 

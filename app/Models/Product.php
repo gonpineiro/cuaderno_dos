@@ -163,6 +163,11 @@ class Product extends Model
         return $this->hasMany(ToAsk::class);
     }
 
+    public function tickets()
+    {
+        return $this->morphMany(Ticket::class, 'ticketable');
+    }
+
     public function getUbicationAttribute()
     {
         if (

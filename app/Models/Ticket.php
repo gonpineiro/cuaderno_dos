@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
+
+    use LogsActivity;
+
     protected $fillable = [
         'user_id',
+        'responsable_id',
         'titulo',
         'descripcion',
         'resolucion',
@@ -16,6 +21,11 @@ class Ticket extends Model
     ];
 
     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function responsable()
     {
         return $this->belongsTo(User::class);
     }
@@ -55,7 +65,8 @@ class Ticket extends Model
             return 'generico';
         }
         $arrayMap = [
-            'App\\Models\\PriceQuote' => 'cotizacion'
+            'App\\Models\\PriceQuote' => 'cotizacion',
+            'App\\Models\\Product' => 'producto'
         ];
 
         return $arrayMap[$this->ticketable_type];

@@ -18,11 +18,13 @@ class TicketResource extends JsonResource
         return [
             'id' => $this->id,
             'user' => $this->user->name,
+            'responsable' => $this->responsable ? $this->responsable->name : null,
             'estado' => $this->estado,
             'prioridad' => $this->prioridad,
             'titulo' => $this->titulo,
             'descripcion' => $this->descripcion,
             'origen' => $this->origen,
+            'resolucion' => $this->resolucion,
             'created_at' => $this->created_at,
         ];
     }

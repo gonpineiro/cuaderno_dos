@@ -11,6 +11,7 @@ class CreateTicketsTable extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('responsable_id')->nullable();
 
             // Relación polimórfica
             $table->morphs('ticketable');
@@ -26,6 +27,7 @@ class CreateTicketsTable extends Migration
 
             $table->timestamps();
 
+            $table->foreign('responsable_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('estado_id')->references('id')->on('tables')->onDelete('cascade');
             $table->foreign('prioridad_id')->references('id')->on('tables')->onDelete('cascade');
         });

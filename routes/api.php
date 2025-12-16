@@ -34,6 +34,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('refresh', [ApiController::class, 'refresh']);
     Route::get('get_user', [ApiController::class, 'get_user']);
 
+    Route::get('user/obtener', [UserController::class, 'get_users']);
     Route::resource('user', UserController::class);
     Route::resource('proveedor', ProviderController::class);
     Route::post('ciudad/buscar', [CityController::class, 'search']);
