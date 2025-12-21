@@ -257,17 +257,7 @@ trait TraitPedidos
             $order = Order::find($request->order_id);
 
             /* Envio de email */
-            if ($estado->value === 'retirar' && $type == 'cliente') {
-                TraitPedidosEmail::pedidoUnicoRetirar($order);
-            } else if ($estado->value === 'retirar' && $type == 'online') {
-                TraitPedidosEmail::pedidoRetirar($order);
-            } else if ($estado->value === 'entregado' && $type == 'cliente') {
-                TraitPedidosEmail::pedidoEntregado($order);
-            } else if ($estado->value === 'entregado' && $type == 'online') {
-                TraitPedidosEmail::pedidoOnlineEntregado($order);
-            } else if ($estado->value === 'cancelado' && $type == 'online') {
-                TraitPedidosEmail::pedidoCancelado($order);
-            }
+            $this->sendEmail($estado, $type, $order);
 
             DB::commit();
 
@@ -275,6 +265,26 @@ trait TraitPedidos
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 300, $request->all());
+        }
+    }
+
+    private function sendEmail($estado, $type, $order)
+    {
+
+        if (app()->environment('local')) {
+            return null;
+        }
+
+        if ($estado->value === 'retirar' && $type == 'cliente') {
+            TraitPedidosEmail::pedidoUnicoRetirar($order);
+        } else if ($estado->value === 'retirar' && $type == 'online') {
+            TraitPedidosEmail::pedidoRetirar($order);
+        } else if ($estado->value === 'entregado' && $type == 'cliente') {
+            TraitPedidosEmail::pedidoEntregado($order);
+        } else if ($estado->value === 'entregado' && $type == 'online') {
+            TraitPedidosEmail::pedidoOnlineEntregado($order);
+        } else if ($estado->value === 'cancelado' && $type == 'online') {
+            TraitPedidosEmail::pedidoCancelado($order);
         }
     }
 
