@@ -31,7 +31,7 @@ class ApiService
                 throw new \Exception('Error al autenticar con la API.');
             }
 
-            return $response->json('token'); // Ajusta según la estructura de respuesta
+            return $response->json('token');
         });
     }
 

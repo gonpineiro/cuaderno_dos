@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
 use App\Http\Resources\Product\FueraCatalogoResource;
+use App\Http\Resources\Product\ProductFusionResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Activity;
 use App\Models\User;
@@ -336,6 +337,32 @@ class ProductController extends \App\Http\Controllers\Controller
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
         return sendResponse(ProductResource::collection($results));
+    }
+
+    public function search_fusionar(Request $request)
+    {
+        $model = new Product();
+
+        $attributes = $model->getFillable();
+
+        $products = Product::query()->withTrashed();
+
+        foreach ($attributes as $attribute) {
+            $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        }
+
+        $results = $products->orderBy('factory_code', 'asc')
+            ->orderBy(
+                ProductJazz::select('precio_lista_2')
+                    ->whereColumn('product_jazz.id', 'products.idProducto'),
+                'desc'
+            )
+            ->get();
+
+        if (!$results) {
+            return sendResponse(null, 'No se encontro un resultado de busqueda');
+        }
+        return sendResponse(ProductFusionResource::collection($results));
     }
 
     public function update(Request $request, $id)
