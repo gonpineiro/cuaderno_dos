@@ -38,6 +38,7 @@ class UpdateStockPrices extends Command
     private function updateStockPrices()
     {
         try {
+            activity('success.updateStockPrices')->log('Inicio');
             DB::statement("DELETE FROM product_jazz_temp");
 
             $listas = DB::connection('jazz')->table('precios_venta')
