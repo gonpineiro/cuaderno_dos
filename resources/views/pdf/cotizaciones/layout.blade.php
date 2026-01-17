@@ -111,11 +111,26 @@
                 <td class="bold">Vehículo:</td>
                 <td>{{$cotizacion->vehiculo->name}}</td>
             </tr>
-            @if (!!$cotizacion->client->is_insurance)
+            {{-- VERSION ANTIGUA DE SINIESTRO --}}
+            {{-- @if (!!$cotizacion->client->is_insurance)
             <tr>
                 <td class="bold">Version:</td>
                 <td>{{$cotizacion->version}}</td>
             </tr>
+            <tr>
+                <td class="bold">Patente:</td>
+                <td>{{$cotizacion->patente}}</td>
+            </tr>
+            @endif --}}
+
+
+            @if (!!$cotizacion->version)
+            <tr>
+                <td class="bold">Version:</td>
+                <td>{{$cotizacion->version}}</td>
+            </tr>
+            @endif
+            @if (!!$cotizacion->patente)
             <tr>
                 <td class="bold">Patente:</td>
                 <td>{{$cotizacion->patente}}</td>
