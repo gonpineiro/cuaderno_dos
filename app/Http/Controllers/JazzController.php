@@ -98,12 +98,12 @@ class JazzController extends Controller
         $collection = collect($resultado);
 
         // Filtrar por CODIGO_ORIGINAL no vacío
-        $filtrados = $collection->filter(function ($row) {
+        /*  $filtrados = $collection->filter(function ($row) {
             return !empty($row->CODIGO_ORIGINAL);
-        });
+        }); */
 
         // Mapear a estructura de la tabla
-        $rows = $filtrados->map(function ($row) {
+        $rows = $collection->map(function ($row) {
             $r = (array) $row;
 
             return [

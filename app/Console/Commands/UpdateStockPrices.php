@@ -37,36 +37,37 @@ class UpdateStockPrices extends Command
 
     private function updateStockPrices()
     {
-        DB::statement("DELETE FROM product_jazz_temp");
+        try {
+            DB::statement("DELETE FROM product_jazz_temp");
 
-        $listas = DB::connection('jazz')->table('precios_venta')
-            ->select('idLista')
-            ->distinct()
-            ->pluck('idLista');
+            $listas = DB::connection('jazz')->table('precios_venta')
+                ->select('idLista')
+                ->distinct()
+                ->pluck('idLista');
 
-        $columnasPrecios = $listas->map(function ($id) {
-            return "MAX(CASE WHEN pv.idLista = $id THEN pv.Precio END) AS precio_lista_$id";
-        });
+            $columnasPrecios = $listas->map(function ($id) {
+                return "MAX(CASE WHEN pv.idLista = $id THEN pv.Precio END) AS precio_lista_$id";
+            });
 
-        $selects = collect([
-            'p.IdProducto',
-            'p.numero',
-            'p.Nombre',
-            'pcc.StockMin as stock_min',
-            'pcc.StockMax as stock_max',
-            'pcc.PuntoPedido as punto_pedido',
-            DB::raw("(
+            $selects = collect([
+                'p.IdProducto',
+                'p.numero',
+                'p.Nombre',
+                'pcc.StockMin as stock_min',
+                'pcc.StockMax as stock_max',
+                'pcc.PuntoPedido as punto_pedido',
+                DB::raw("(
                     SELECT SUM(fa.Cantidad *
                         CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
                     FROM facturas_articulos fa
                     JOIN facturas f ON f.NroInterno = fa.NroInterno
                     WHERE fa.IdProducto = p.IdProducto
                 ) AS stock")
-        ])
-            ->merge($columnasPrecios)
-            ->implode(",\n    ");
+            ])
+                ->merge($columnasPrecios)
+                ->implode(",\n    ");
 
-        $sqlFinal = "
+            $sqlFinal = "
             SELECT
                 $selects
             FROM productos p
@@ -75,28 +76,41 @@ class UpdateStockPrices extends Command
             GROUP BY p.IdProducto, p.numero, p.Nombre, stock_min, stock_max, punto_pedido
         ";
 
-        $resultado = DB::connection('jazz')->select($sqlFinal);
+            $resultado = DB::connection('jazz')->select($sqlFinal);
 
-        $total = count($resultado);
-        $current = 0;
+            $total = count($resultado);
+            $current = 0;
 
-        foreach ($resultado as $row) {
-            $current++;
+            foreach ($resultado as $row) {
+                $current++;
 
-            DB::table('product_jazz')
-                ->where('id', $row->IdProducto)
-                ->update([
-                    'stock' => $row->stock ?? 0,
-                    'precio_lista_2' => $row->precio_lista_2 ?? 0,
-                    'precio_lista_3' => $row->precio_lista_3 ?? 0,
-                    'precio_lista_6' => $row->precio_lista_6 ?? 0,
-                    'stock_min' => $row->stock_min ?? 0,
-                    'stock_max' => $row->stock_max ?? 0,
-                    'punto_pedido' => $row->punto_pedido ?? 0,
-                ]);
+                DB::table('product_jazz')
+                    ->where('id', $row->IdProducto)
+                    ->update([
+                        'stock' => $row->stock ?? 0,
+                        'precio_lista_2' => $row->precio_lista_2 ?? 0,
+                        'precio_lista_3' => $row->precio_lista_3 ?? 0,
+                        'precio_lista_6' => $row->precio_lista_6 ?? 0,
+                        'stock_min' => $row->stock_min ?? 0,
+                        'stock_max' => $row->stock_max ?? 0,
+                        'punto_pedido' => $row->punto_pedido ?? 0,
+                    ]);
 
-            $percent = number_format(($current / $total) * 100, 2);
-            $this->info("Procesado $current / $total ($percent%)");
+                $percent = number_format(($current / $total) * 100, 2);
+                $this->info("Procesado $current / $total ($percent%)");
+            }
+            activity('success.updateStockPrices')
+                ->withProperties(['total' => $total])
+                ->log('Proceso finalizado');
+        } catch (\Exception $e) {
+            activity('error.updateStockPrices')
+                ->withProperties([
+                    'command' => $this->signature,
+                    'error' => $e->getMessage(),
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                ])
+                ->log('Error en limpieza de idProducto');
         }
     }
 
@@ -143,5 +157,7 @@ class UpdateStockPrices extends Command
             ['code'],      // clave única
             ['name']       // columnas que se actualizan si existe
         );
+
+        activity('success.updateProductsBrands')->log('Proceso finalizado');
     }
 }
