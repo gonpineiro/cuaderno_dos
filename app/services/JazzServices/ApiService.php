@@ -19,9 +19,9 @@ class ApiService
     /**
      * Autenticación en la API
      */
-    private function authenticate(): string
+    public function authenticate(): string
     {
-        return Cache::remember('api_token', 3600, function () {
+        return Cache::remember('api_token_jazz', 3600, function () {
             $response = Http::post(config('services.jazz_api.base_url') . "/Auth/Login", [
                 'user' => config('services.jazz_api.username'),
                 'password' => config('services.jazz_api.password'),
