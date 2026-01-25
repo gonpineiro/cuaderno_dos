@@ -232,13 +232,13 @@ class OrderController extends \App\Http\Controllers\Controller
         }
 
         /* Potencialmente hay que retirarlo */
-        $allHaveIdProducto = $order->detail->every(function ($detail) {
+        /* $allHaveIdProducto = $order->detail->every(function ($detail) {
             return !empty($detail->product->idProducto);
         });
 
         if (!$allHaveIdProducto) {
             return sendResponse(null, 'Hay productos sin relacion con el Jazz', 410);
-        }
+        } */
 
         if ($order->ref_jazz_id) {
             return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
