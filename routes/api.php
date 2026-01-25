@@ -169,6 +169,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('permissions/change_role_permission', [PermissionController::class, 'change_role_permission']);
 
 
+    /* BORRAR */
     Route::get('jazz/get_stock_product', [JazzController::class, 'get_stock_product']);
 
     /* Tickets */
@@ -176,6 +177,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('tickets/resolver', [TicketController::class, 'resolver']);
     Route::post('tickets/borrar', [TicketController::class, 'borrar']);
     Route::post('generar_ticket', [TicketController::class, 'generar_ticket']);
+
+    /* TEst */
+
+    Route::group(['middleware' => ['role:sudo']], function () {
+        Route::get('test/jazz/test_auth_api', [JazzController::class, 'test_auth_api']);
+    });
 });
 
 

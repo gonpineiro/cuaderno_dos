@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jazz\ProductoJazzTemp;
 use App\Models\ProductJazz;
+use App\Services\JazzServices\ApiService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -392,4 +393,16 @@ class JazzController extends Controller
             echo "Procesado $current / $total \n";
         }
     } */
+
+    /* TEST */
+    public function test_auth_api()
+    {
+        try {
+            $api = new ApiService();
+            $response = $api->authenticate();
+            return sendResponse($response);
+        } catch (\Throwable $th) {
+            return sendResponse(null, $th->getMessage());
+        }
+    }
 }

@@ -19,6 +19,7 @@ class CreateCoeficientesTable extends Migration
             $table->float('value', 10, 8);
             $table->float('coeficiente', 10, 8);
             $table->integer('cuotas')->nullable();
+            $table->integer('position')->nullable();
             $table->boolean('show')->default(1);
         });
     }

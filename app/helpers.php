@@ -128,3 +128,15 @@ if (!function_exists('applyDateFilter')) {
         }
     }
 }
+
+if (!function_exists('get_excep_array')) {
+    function get_excep_array(\Throwable $e): array
+    {
+        return [
+            'message' => $e->getMessage(),
+            'code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ];
+    }
+}

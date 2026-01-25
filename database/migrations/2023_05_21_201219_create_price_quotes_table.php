@@ -23,6 +23,7 @@ class CreatePriceQuotesTable extends Migration
 
             $table->unsignedBigInteger('vehiculo_id');
             $table->string('chasis')->nullable();
+            $table->string('contacto')->nullable();
 
             $table->unsignedBigInteger('information_source_id');
             $table->unsignedBigInteger('type_price_id');
