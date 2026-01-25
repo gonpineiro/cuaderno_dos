@@ -42,6 +42,12 @@ class PedidoService extends ApiService
             $order_product->save();
         }
 
+        $finalizar = $this->finalizarPedido($id_pedido_jazz);
+
+        if (isset($finalizar['hasErrorMessage']) && $finalizar['hasErrorMessage']) {
+            throw new \Exception($finalizar['responseMessage']);
+        }
+
         return $id_pedido_jazz;
     }
 
@@ -89,6 +95,15 @@ class PedidoService extends ApiService
 
         ];
         return $this->post('Pedido/AgregarArticulo', $_data);
+    }
+
+    public function finalizarPedido($numero_interno, string $descuento = '')
+    {
+        $_data = [
+            "nroInterno" => $numero_interno,
+            "descuento" => $descuento,
+        ];
+        return $this->post('Pedido/FinalizarPedido', $_data);
     }
 
     public function getFormatData($cliente_jazz_id)
