@@ -109,9 +109,9 @@ class PedidoService extends ApiService
     public function getFormatData($cliente_jazz_id)
     {
         return [
-            "empresa" => 2,
+            "empresa" => 1,
             "sucursal" => 2,
-            "letra" => "B",
+            "letra" => "P",
             "boca" => 0,
             "idCliente" => $cliente_jazz_id,
             "ivaTipo" => 3,
@@ -119,9 +119,9 @@ class PedidoService extends ApiService
             "vendedorComision" => 0,
             "idLista" => 6,
             //"obs" => "SALDO INICIAL",
-            "condicion" => 2,
+            "condicion" => 0,
             "moneda" => 1,
-            "enMostrador" => "N",
+            "enMostrador" => "S",
             "fecha" => \Carbon\Carbon::now('UTC')->format('Y-m-d\TH:i:s.v\Z'),
             "descuento" => null,
             "recargo" => null,
