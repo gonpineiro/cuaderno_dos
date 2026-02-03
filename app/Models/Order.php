@@ -6,6 +6,7 @@ use App\Models\Traits\LogsActivity;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -39,6 +40,7 @@ class Order extends Model
 
         /* Relacion con Jazz */
         'ref_jazz_id',
+        'numero_jazz',
 
         'observation'
     ];
@@ -233,5 +235,33 @@ class Order extends Model
         }
 
         return Table::where('name', $tableName)->where('value', $estadoGeneral)->first();
+    }
+
+    public function setNumeroJazz(): void
+    {
+        try {
+            $presupuesto = DB::connection('jazz')
+                ->table('presupuestos')
+                ->where('NroInterno', $this->ref_jazz_id)
+                ->first();
+
+            if (!$presupuesto) {
+                throw new \Exception(
+                    "No se encontró presupuesto en Jazz para NroInterno {$this->ref_jazz_id}"
+                );
+            }
+
+            if (!isset($presupuesto->Numero)) {
+                throw new \Exception(
+                    "El presupuesto encontrado no contiene el campo Numero (NroInterno {$this->ref_jazz_id})"
+                );
+            }
+
+            $this->numero_jazz = $presupuesto->Numero;
+        } catch (\Throwable $e) {
+            throw new \Exception(
+                "Error al obtener Numero Jazz (Order ID {$this->id}): " . $e->getMessage()
+            );
+        }
     }
 }

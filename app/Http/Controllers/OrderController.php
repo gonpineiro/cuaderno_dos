@@ -253,6 +253,7 @@ class OrderController extends \App\Http\Controllers\Controller
             $id_pedido_jazz = $service->crearPedidoCompleto($data, $order);
 
             $order->ref_jazz_id = $id_pedido_jazz;
+            //$order->setNumeroJazz();
             $order->save();
 
             DB::commit();
