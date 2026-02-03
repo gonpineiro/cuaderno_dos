@@ -37,6 +37,7 @@ class CreateOrdersTable extends Migration
             $table->string('remito')->nullable();
             $table->string('workshop')->nullable();
             $table->unsignedBigInteger('ref_jazz_id')->nullable();
+            $table->unsignedBigInteger('numero_jazz')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
