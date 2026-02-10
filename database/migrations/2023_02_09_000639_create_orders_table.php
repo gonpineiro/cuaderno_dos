@@ -37,6 +37,7 @@ class CreateOrdersTable extends Migration
             $table->string('remito')->nullable();
             $table->string('workshop')->nullable();
             $table->unsignedBigInteger('ref_jazz_id')->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
             $table->unsignedBigInteger('numero_jazz')->nullable();
 
             $table->timestamps();
@@ -47,6 +48,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('tables')->onDelete('cascade');
             $table->foreign('payment_method_id')->references('id')->on('tables')->onDelete('cascade');
+            $table->foreign('state_id')->references('id')->on('tables')->onDelete('cascade');
         });
     }
 

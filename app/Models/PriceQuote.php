@@ -114,8 +114,7 @@ class PriceQuote extends Model
     }
 
     public function getStateAttribute()
-    {;
-
+    {
         if ($shipment = $this->shipment) {
             return [
                 'value' => 'envio',

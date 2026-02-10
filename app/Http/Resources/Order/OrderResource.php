@@ -23,12 +23,12 @@ class OrderResource extends JsonResource
         switch ((string) $this->customParam) {
             case 'complete':
                 $array = $this->complete($array);
+                $array['estado_general'] = $this->state;
                 break;
             default:
                 $array = $this->default($array);
                 break;
         }
-        $array['estado_general'] = $this->getGeneralState();
         //$array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
 
         return $array;
@@ -75,19 +75,23 @@ class OrderResource extends JsonResource
         unset($array['detail']);
         $array['user'] = $this->user->name;
         //$array['client']['id'] = $this->client->id;
-        $array['client']['name'] = $this->client->name;
-        $array['client']['phone'] = $this->client->phone;
+        $array['client'] = $this->client->name;
+        /* $array['client']['name'] = $this->client->name;
+        $array['client']['phone'] = $this->client->phone; */
         $this->payment_method && $array['payment_method'] = $this->payment_method->description;
         $array['estimated_date'] = $this->estimated_date;
         $array['created_at'] = $this->created_at->format('Y-m-d');
         /* $array['type'] = $this->type->value; */
         /* $array['type_price'] = $this->price_quote->type_price; */
         $array['vehiculo'] = $this->vehiculo->name;
+        unset($array['version']);
+        unset($array['vehiculo_id']);
+        unset($array['patente']);
         unset($array['shipment']);
         unset($array['chasis']);
         unset($array['year']);
         unset($array['type']);
-        unset($array['shipment_id']);
+        //unset($array['shipment_id']);
         unset($array['invoice_number']);
         unset($array['deposit']);
         unset($array['remito']);

@@ -24,6 +24,7 @@ class Order extends Model
         'chasis',
         'contacto',
         'vehiculo_id',
+        'state_id',
 
         /* Pedido online */
         'payment_method_id',
@@ -122,6 +123,11 @@ class Order extends Model
     public function activities()
     {
         return $this->morphMany(Activity::class, 'subject')->with('causer');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(Table::class);
     }
 
     public function getUserCompleteAttribute()
