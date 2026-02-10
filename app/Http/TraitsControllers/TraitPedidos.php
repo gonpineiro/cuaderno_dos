@@ -51,7 +51,7 @@ trait TraitPedidos
 
         $query = Order::where('type_id', '!=', $siniestro->id)->orderByDesc('created_at');
 
-        $pedidos = $query->take(300)->get();
+        $pedidos = $query->take(2000)->get();
 
         return $pedidos;
     }
