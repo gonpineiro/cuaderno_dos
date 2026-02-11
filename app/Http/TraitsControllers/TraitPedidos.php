@@ -40,7 +40,7 @@ trait TraitPedidos
             $pedidos = $this->getPedidos();
         }
 
-        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos)->take(300));
+        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos)->take(2000));
 
         return sendResponse($pedidos);
     }
