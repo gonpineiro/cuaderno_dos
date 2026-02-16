@@ -2,6 +2,7 @@
 
 namespace App\Http\TraitsControllers;
 
+use App\Http\DB\DBPedidosTrait;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Product\ProductResource;
@@ -19,30 +20,23 @@ use Spatie\Permission\PermissionRegistrar;
 
 trait TraitPedidos
 {
+    use DBPedidosTrait;
+
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
+        try {
+            $query = $this->getPedidosQuery();
 
-        // Traer todos los pedidos que no sean de tipo "siniestro" ordenados por `estimated_date`
-        $query = Order::where('type_id', '!=', $siniestro->id);
+            if ($request->filled('last_id')) {
+                $query->where('orders.id', '>', (int) $request->last_id);
+            }
 
-        if ($request->last_id) {
-            $pedidos = $query->where('id', '>', (int)$request->last_id)
-                ->orderByDesc('id')->get();
-
-            $odernados = $this->ordenarPedidos($this->getPedidos());
-            $ids = array_values($odernados->pluck('id')->toArray());
-            return sendResponse([
-                "pedidos" => OrderResource::collection($pedidos),
-                "order" => $ids
-            ]);
-        } else {
-            $pedidos = $this->getPedidos();
+            $pedidos = $query->limit(5000)->get();
+            $collection = OrderResource::collection($pedidos);
+            return sendResponse($collection);
+        } catch (\Throwable $th) {
+            return sendResponse($th->getMessage());
         }
-
-        $pedidos = OrderResource::collection($this->ordenarPedidos($pedidos)->take(2000));
-
-        return sendResponse($pedidos);
     }
 
     private function getPedidos()
@@ -56,15 +50,14 @@ trait TraitPedidos
         return $pedidos;
     }
 
-    public function search(Request $request)
+    public function search(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $siniestro = Table::where('name', 'order_type')->where('value', 'siniestro')->first();
-            $query = Order::where('type_id', '!=', $siniestro->id);
-
-            if (empty($request->all())) {
+            if (empty(array_filter($request->all()))) {
                 return $this->index($request);
             }
+
+            $query = $this->getPedidosQuery();
 
             foreach ($request->all() as $key => $value) {
                 if (!$value) {
@@ -74,48 +67,50 @@ trait TraitPedidos
                 switch ($key) {
                     case 'client_name':
                         $query->whereHas('client', function ($q) use ($value) {
-                            $q->where('name', 'LIKE', '%' . $value . '%');
+                            $q->where('name', 'LIKE', "%{$value}%");
                         });
                         break;
 
                     case 'client_phone':
                         $query->whereHas('client', function ($q) use ($value) {
-                            $q->where('phone', 'LIKE', '%' . $value . '%');
+                            $q->where('phone', 'LIKE', "%{$value}%");
                         });
                         break;
 
                     case 'vehiculo':
                         $query->whereHas('vehiculo', function ($q) use ($value) {
-                            $q->where('name', 'LIKE', '%' . $value . '%');
+                            $q->where('name', 'LIKE', "%{$value}%");
+                        });
+                        break;
+
+                    case 'payment_method':
+                        $query->whereHas('payment_method', function ($q) use ($value) {
+                            $q->where('description', 'LIKE', "%{$value}%");
                         });
                         break;
 
                     case 'estimated_date':
-                        applyDateFilter($query, 'estimated_date', $value);
+                        applyDateFilter($query, 'orders.estimated_date', $value);
                         break;
-                    case 'payment_method':
-                        $query->whereHas('payment_method', function ($q) use ($value) {
-                            $q->where('description', 'LIKE', '%' . $value . '%');
-                        });
-                        break;
+
                     case 'created_at':
-                        applyDateFilter($query, 'created_at', $value);
+                        applyDateFilter($query, 'orders.created_at', $value);
                         break;
 
                     default:
-                        $query->where($key, 'LIKE', '%' . $value . '%');
+                        $query->where("orders.$key", 'LIKE', "%{$value}%");
                         break;
                 }
             }
 
-            $pedidos = $query->get();
+            $pedidos = $query->limit(5000)->get();
 
-
-            return sendResponse(OrderResource::collection($this->ordenarPedidos($pedidos)));
-        } catch (\Exception $th) {
-            return sendResponse(null, $th->getMessage(), 301);
+            return sendResponse(OrderResource::collection($pedidos));
+        } catch (\Throwable $th) {
+            return sendResponse(null, $th->getMessage(), 500);
         }
     }
+
 
     private function ordenarPedidos($pedidos)
     {
@@ -127,10 +122,10 @@ trait TraitPedidos
                 'entregado' => null,
                 'envio' => null,
                 'cancelado' => null,
-            ][$order->getGeneralState()->value];
+            ][$order->state->value ?? null];
         })->groupBy(function ($order) {
             // Agrupar los pedidos por el estado general
-            return $order->getGeneralState()->value;
+            return $order->state->value;
         });
 
         // Aplicar el orden específico dentro de cada grupo de estado

@@ -22,6 +22,7 @@ class PedidoCliente extends Order
         'chasis',
         'contacto',
         'vehiculo_id',
+        'state_id',
 
         'deposit',
         'payment_method_id',

@@ -71,32 +71,38 @@ class OrderResource extends JsonResource
 
     private function default($array)
     {
-        unset($array['observation']);
-        unset($array['detail']);
+        unset(
+            $array['observation'],
+            $array['detail'],
+            $array['version'],
+            $array['vehiculo_id'],
+            $array['patente'],
+            $array['shipment'],
+            $array['chasis'],
+            $array['year'],
+            $array['type'],
+            $array['invoice_number'],
+            $array['deposit'],
+            $array['remito'],
+            $array['workshop'],
+            $array['user']
+        );
+
         $array['user'] = $this->user->name;
-        //$array['client']['id'] = $this->client->id;
         $array['client'] = $this->client->name;
-        /* $array['client']['name'] = $this->client->name;
-        $array['client']['phone'] = $this->client->phone; */
-        $this->payment_method && $array['payment_method'] = $this->payment_method->description;
+        $array['vehiculo'] = $this->vehiculo->name;
+
+        if ($this->payment_method) {
+            $array['payment_method'] = $this->payment_method->description;
+        }
+
         $array['estimated_date'] = $this->estimated_date;
         $array['created_at'] = $this->created_at->format('Y-m-d');
-        /* $array['type'] = $this->type->value; */
-        /* $array['type_price'] = $this->price_quote->type_price; */
-        $array['vehiculo'] = $this->vehiculo->name;
-        unset($array['version']);
-        unset($array['vehiculo_id']);
-        unset($array['patente']);
-        unset($array['shipment']);
-        unset($array['chasis']);
-        unset($array['year']);
-        unset($array['type']);
-        //unset($array['shipment_id']);
-        unset($array['invoice_number']);
-        unset($array['deposit']);
-        unset($array['remito']);
-        unset($array['workshop']);
-        unset($array['user']);
+
+
+
+        $array['estado_general'] = $this->state->value;
+
         return $array;
     }
 

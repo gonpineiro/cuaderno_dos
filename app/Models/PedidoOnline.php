@@ -22,6 +22,7 @@ class PedidoOnline extends Order
         'chasis',
         'contacto',
         'vehiculo_id',
+        'state_id',
 
         'payment_method_id',
         'invoice_number',

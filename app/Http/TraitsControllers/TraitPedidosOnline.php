@@ -28,6 +28,12 @@ trait TraitPedidosOnline
         $data = $request->all();
         $data['user_id'] = $user->id;
 
+        $onlineStateId = Table::where('name', 'order_online_state')
+            ->where('value', 'pendiente')
+            ->value('id');
+
+        $data['state_id'] = $onlineStateId;
+
         $order = PedidoOnline::create($data);
 
         $is_contado = $order->price_quote->type_price->value == 'contado';

@@ -224,7 +224,7 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            $this->save_shipment($request, $order);
+            $this->save_shipment($request, $order, $type_order);
 
             $priceQuote->save();
 
@@ -237,7 +237,7 @@ class PriceQuoteController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
+            return sendResponse(null, $e->getMessage(), 300, $e->getTrace());
         }
     }
 
@@ -267,7 +267,7 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            $this->save_shipment($request, $order);
+            $this->save_shipment($request, $order, $type_order);
 
             $priceQuote->save();
 
@@ -280,7 +280,7 @@ class PriceQuoteController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 300, $request->all());
+            return sendResponse(null, $e->getMessage(), 300, $e->getTrace());
         }
     }
 
@@ -310,7 +310,7 @@ class PriceQuoteController extends Controller
 
             $priceQuote->order_id = $order->id;
 
-            $this->save_shipment($request, $order);
+            $this->save_shipment($request, $order, $type_order);
 
             $priceQuote->save();
 
@@ -330,13 +330,16 @@ class PriceQuoteController extends Controller
         }
     }
 
-    private function save_shipment(Request $request, $order)
+    private function save_shipment(Request $request, $order, $type_order)
     {
         if ($request->envio) {
+            $type_value = $type_order->value;
+            $state  = Table::where('name', "order_{$type_value}_state")->where('value', 'envio')->first();
             $shipment = ShipmentController::storeShipment($request->envio, $order);
 
             $order->payment_method_id = $request->envio['payment_method_id'];
             $order->shipment_id = $shipment->id;
+            $order->state_id = $state->id;
             $order->save();
 
             $order->setShipmentState();
