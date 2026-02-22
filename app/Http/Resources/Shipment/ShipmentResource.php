@@ -28,7 +28,12 @@ class ShipmentResource extends JsonResource
                 $array = $this->default($array);
                 break;
         }
-        $array['estado_general'] = $this->getGeneralState();
+        $array['estado_general'] = $this->state->toArray();
+
+        if ($this->state->value == 'despachado' && ($this->payment_method->value === 'online' || $this->payment_method->value === 'contrareembolso')) {
+            $array['estado_general']['background_color'] = '#198754';
+            $array['estado_general']['color'] = 'white';
+        }
 
         return $array;
     }

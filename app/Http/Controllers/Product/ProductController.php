@@ -194,7 +194,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $priceQuotes = PriceQuoteResource::collection($priceQuotes);
             return sendResponse($priceQuotes);
         } catch (\Exception $e) {
-            return sendResponse(null, $e->getMessage(), 300);
+            return sendResponse(null, $e->getTrace(), 300);
         }
     }
 

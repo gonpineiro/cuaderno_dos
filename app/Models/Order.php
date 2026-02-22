@@ -184,30 +184,17 @@ class Order extends Model
             ->toArray();
     }
 
-    public function getGeneralState()
+    /* public function getGeneralStateAttribute()
     {
-        if ($shipment = $this->shipment) {
-            return (object) [
-                'value' => 'envio',
-                'description' => 'ENVÍO',
-                'background_color' => '#0d6efd',
-                'hover' => strtoupper($shipment->getGeneralState()->description),
-                'url' =>  "/envios/$shipment->id",
-            ];
+        // 🚚 Si tiene envío → manda el estado del envío
+        if ($this->shipment_id && $this->relationLoaded('shipment') && $this->shipment?->state) {
+            return $this->shipment->state;
         }
 
-        $type = $this->type->value;
-        switch ($type) {
-            case 'online':
-                return $this->calculateState('order_online_state');
-            case 'cliente':
-                return $this->calculateState('order_cliente_state');
-            case 'siniestro':
-                return $this->calculateState('order_siniestro_state');
-            default:
-                return null;
-        }
-    }
+        // 📦 Caso normal → estado del pedido
+        return $this->state;
+    } */
+
 
     private function calculateState($tableName)
     {

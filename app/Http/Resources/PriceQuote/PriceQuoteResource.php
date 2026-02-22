@@ -53,7 +53,7 @@ class PriceQuoteResource extends JsonResource
 
             $this->order->type;
             $array['order'] = $this->order;
-            $array['order']['estado_general'] = $this->order->getGeneralState();
+            $array['order']['estado_general'] = $this->order->state;
         } else {
             $array['order'] = null;
         }
@@ -73,17 +73,22 @@ class PriceQuoteResource extends JsonResource
     private function default($array)
     {
         $array['user'] = $this->user->name;
-        /* $array['client']['id'] = $this->client->id; */
-        $array['client']['name'] = $this->client->name;
-        $array['client']['phone'] = $this->client->phone;
+        $array['client'] = [
+            'name' => $this->client->name,
+            'phone' => $this->client->phone,
+        ];
+
         $array['state'] = $this->state;
+
         $array['vehiculo'] = $this->vehiculo->name;
         $array['created_at'] = $this->created_at->format('Y-m-d');
 
-        unset($array['order_id']);
-        unset($array['year']);
-        unset($array['chasis']);
-        unset($array['deleted_at']);
+        unset(
+            $array['order_id'],
+            $array['year'],
+            $array['chasis'],
+            $array['deleted_at']
+        );
 
         return $array;
     }

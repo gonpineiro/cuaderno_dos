@@ -119,7 +119,7 @@ class PriceQuote extends Model
             return [
                 'value' => 'envio',
                 'string' => 'ENVÍO',
-                'hover' => strtoupper($shipment->getGeneralState()->description),
+                'hover' => strtoupper($shipment->state->description),
                 'className' => 'primary',
                 'url' =>  "/envios/$shipment->id",
             ];
@@ -133,12 +133,12 @@ class PriceQuote extends Model
 
             if ($type['value'] === 'online' || $type['value'] === 'cliente') {
                 $type['string'] = 'PEDIDO';
-                $type['hover'] = strtoupper($order->getGeneralState()->description);
+                $type['hover'] = strtoupper($order->state->description);
                 $type['className'] = 'success';
                 $type['url'] = "/pedidos/$order->id";
             } else if ($type['value'] === 'siniestro') {
                 $type['string'] =  'SINIESTRO';
-                $type['hover'] = strtoupper($order->getGeneralState()->description);
+                $type['hover'] = strtoupper($order->state->description);
                 $type['className'] = 'success';
                 $type['url'] = "/siniestros/$order->id";
             }

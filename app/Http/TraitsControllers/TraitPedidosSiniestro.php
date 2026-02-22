@@ -29,6 +29,12 @@ trait TraitPedidosSiniestro
         $data = $request->all();
         $data['user_id'] = $user->id;
 
+        $siniestroStateId = Table::where('name', 'order_siniestro_state')
+            ->where('value', 'incompleto')
+            ->value('id');
+
+        $data['state_id'] = $siniestroStateId;
+
         $order = Siniestro::create($data);
 
         $is_contado = $order->price_quote->type_price->value == 'contado';

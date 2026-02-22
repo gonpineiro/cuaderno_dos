@@ -23,6 +23,7 @@ class Shipment extends Model
         'patente',
 
         'payment_method_id',
+        'state_id',
 
         'transport',
         'invoice_number',
@@ -91,6 +92,11 @@ class Shipment extends Model
         return $this->morphMany(Activity::class, 'subject')->with('causer');
     }
 
+    public function state()
+    {
+        return $this->belongsTo(Table::class);
+    }
+
     /* public function getPercentages()
     {
 
@@ -135,7 +141,7 @@ class Shipment extends Model
         return $array;
     } */
 
-    public function getGeneralState()
+    public function _getGeneralState()
     {
         $detail = $this->detail;
         $pendiente = $detail->sum(function ($a) {
@@ -183,7 +189,7 @@ class Shipment extends Model
 
     public function getEstadoSearch()
     {
-        $estado = $this->getGeneralState()->value;
+        $estado = $this->state->value;
 
         if ($estado === 'pendiente' || $estado === 'listo_enviar' || $estado === 'cancelado') {
             return $estado;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DB\DBEnviosTrait;
 use App\Http\TraitsControllers\TraitPedidosEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,23 +21,10 @@ use App\Models\Table;
 
 class ShipmentController extends Controller
 {
+    use DBEnviosTrait;
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $shipments = Shipment::orderBy('created_at')->get();
-
-        $shipments = $shipments->sortBy(function ($shipment) {
-            return [
-                'pendiente' => 1,
-                'listo_enviar' => 2,
-                'despachado_contrareembolso' => 3,
-                'contrareembolso_pago' => 4,
-                'despachado_online' => 5,
-                'contrareembolso' => 6,
-                'despachado' => 7,
-                'cancelado' => 8,
-            ][$shipment->getEstadoSearch()];
-        });
-
+        $shipments = $this->getEnviosQuery()->get();
         return sendResponse(ShipmentResource::collection($shipments));
     }
 
@@ -60,14 +48,17 @@ class ShipmentController extends Controller
 
             self::changeToRetirar($type, $newDetail);
 
+            $pendiente = Table::where('name', 'order_envio_state')->where('value', 'pendiente')->first();
+            $data['state_id'] = $pendiente->id;
             $shipment = Shipment::create($data);
 
             if (!self::storeShipmentProduct($newDetail, $shipment->id)) {
                 DB::rollBack();
                 throw new \Exception('No se pudieron guardar los productos del pedido cliente');
             }
-
+            $estado_envio = Table::where('name', "order_{$type}_state")->where('value', 'envio')->first();
             $order->shipment_id = $shipment->id;
+            $order->state_id = $estado_envio->id;
             $order->save();
 
             if ($type === 'online') {
@@ -174,14 +165,16 @@ class ShipmentController extends Controller
             $shipment = Shipment::find($request->shipment_id);
 
             $estado = Table::find($request->state_id);
+            $shipment->state_id = $estado->id;
+            $shipment->save();
             activity("envio.$estado->value")
                 ->performedOn($shipment)
                 ->withProperties(['state_id' => $request->state_id])
                 ->log($request->motivo ? $request->motivo : "Envio $estado->value");
 
-            if ($estado->value === 'despachado') {
+            /* if ($estado->value === 'despachado') {
                 TraitPedidosEmail::envioDespachado($shipment);
-            }
+            } */
 
             DB::commit();
 

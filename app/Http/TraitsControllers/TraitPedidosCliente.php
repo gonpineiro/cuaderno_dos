@@ -43,6 +43,12 @@ trait TraitPedidosCliente
         $data = $request->all();
         $data['user_id'] = $user->id;
 
+        $clienteStateId = Table::where('name', 'order_cliente_state')
+            ->where('value', 'incompleto')
+            ->value('id');
+
+        $data['state_id'] = $clienteStateId;
+
         $order = PedidoCliente::create($data);
 
         $is_contado = $order->price_quote->type_price->value == 'contado';

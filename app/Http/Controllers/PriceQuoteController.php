@@ -34,38 +34,32 @@ class PriceQuoteController extends Controller
 {
     public function index(Request $request)
     {
-        /*  if ($request->type === 'pendiente') {
-            $priceQuote = PriceQuote::with('order')->orderByDesc('created_at')->take(1000)->get();
-        } else if ($request->type === 'pedido') {
-            $priceQuote = PriceQuote::with('order')
-                ->whereHas('order', function ($query) {
-                    $query->where('type_id', 6);
-                })
-                ->whereNotNull('order_id')
-                ->orderByDesc('created_at')
-                ->take(1000)
-                ->get();
-        } else if ($request->type === 'siniestro') {
-            $priceQuote = PriceQuote::with('order')
-                ->whereHas('order', function ($query) {
-                    $query->where('type_id', 8);
-                })
-                ->whereNotNull('order_id')
-                ->orderByDesc('created_at')
-                ->take(1000)
-                ->get();
-        } else {
-            $priceQuote = PriceQuote::orderByDesc('created_at')->take(500)->get();
-        } */
+        $query = PriceQuote::query()
+            ->orderByDesc('price_quotes.created_at');
 
         if ($request->last_id) {
-            $priceQuote = PriceQuote::where('id', '>', (int)$request->last_id)->orderByDesc('created_at')->get();
-            return sendResponse(PriceQuoteResource::collection($priceQuote));
+            $query->where('price_quotes.id', '>', (int) $request->last_id);
+        } else {
+            $query->limit(1000);
         }
-        $priceQuote = PriceQuote::orderByDesc('created_at')->take(300)->get();
 
-        return sendResponse(PriceQuoteResource::collection($priceQuote));
+        $quotes = $query->with([
+            'user:id,name',
+            'client:id,name,phone',
+            'vehiculo:id,name',
+
+            'order:id,state_id,shipment_id,type_id',
+            'order.state:id,value,description',
+            'order.type:id,value',
+
+            'order.shipment:id,state_id',
+            'order.shipment.state:id,value,description',
+        ])->get();
+
+        return sendResponse(PriceQuoteResource::collection($quotes));
     }
+
+
 
     public function search(Request $request)
     {
@@ -479,7 +473,7 @@ class PriceQuoteController extends Controller
             $price_quote = PriceQuote::findOrFail($id);
 
             $user = User::find(auth()->user()->id);
-            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            // app()[PermissionRegistrar::class]->forgetCachedPermissions();
             if ($price_quote->order && !$user->can('pedido.estado.entregado')) {
                 return sendResponse(null, 'Existe un pedido generado desde esta cotización');
             }

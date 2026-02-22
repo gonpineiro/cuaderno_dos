@@ -7,7 +7,6 @@ use App\Http\Resources\Order\OrderResource;
 use App\Models\Coeficiente;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\PedidoCliente;
 use App\Models\PedidoOnline;
 use App\Models\Table;
 use Illuminate\Http\Request;

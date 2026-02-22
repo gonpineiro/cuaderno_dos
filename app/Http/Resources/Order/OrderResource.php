@@ -65,7 +65,7 @@ class OrderResource extends JsonResource
 
         $array['activity'] = $this->activities;
 
-        $array['estado_shipment'] = $this->shipment ? $this->shipment->getGeneralState() : null;
+        $array['estado_shipment'] = $this->shipment ? $this->shipment->state : null;
         return $array;
     }
 
@@ -85,12 +85,14 @@ class OrderResource extends JsonResource
             $array['deposit'],
             $array['remito'],
             $array['workshop'],
-            $array['user']
+            $array['user'],
         );
 
         $array['user'] = $this->user->name;
         $array['client'] = $this->client->name;
         $array['vehiculo'] = $this->vehiculo->name;
+
+        $array['shipment_state_id'] = $this->shipment ? $this->shipment->state_id : null;
 
         if ($this->payment_method) {
             $array['payment_method'] = $this->payment_method->description;
@@ -101,7 +103,7 @@ class OrderResource extends JsonResource
 
 
 
-        $array['estado_general'] = $this->state->value;
+        //$array['estado_general'] = $this->state->value;
 
         return $array;
     }
