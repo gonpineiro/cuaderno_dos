@@ -48,6 +48,30 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
+if (isset($_GET['clear_cache']) && $_GET['clear_cache'] == 1) {
+
+    // Bootstrap mínimo
+    $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    // Cache general
+    app('cache')->clear();
+
+    // Archivos cacheados
+    @unlink(base_path('bootstrap/cache/config.php'));
+    @unlink(base_path('bootstrap/cache/services.php'));
+    @unlink(base_path('bootstrap/cache/packages.php'));
+    @unlink(base_path('bootstrap/cache/routes.php'));
+    @unlink(base_path('bootstrap/cache/routes-v7.php'));
+
+    // Views compiladas
+    foreach (glob(storage_path('framework/views/*.php')) as $file) {
+        @unlink($file);
+    }
+
+    echo '✅ Cache de Laravel limpiado correctamente';
+    exit;
+}
+
 $kernel = $app->make(Kernel::class);
 
 $response = $kernel->handle(
