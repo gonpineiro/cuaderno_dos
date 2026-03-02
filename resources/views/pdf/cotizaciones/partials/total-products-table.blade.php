@@ -40,6 +40,7 @@ tarjeta 1 pago. IVA INCLUIDO' : 'Lista';
     </tbody>
 
     <tfoot>
+        @if($iva)
         <tr>
             <td colspan="3" style="text-align:right; padding:4px 0px;">
                 <strong>Subtotal</strong>
@@ -54,16 +55,16 @@ tarjeta 1 pago. IVA INCLUIDO' : 'Lista';
                 <strong>IVA 21%</strong>
             </td>
             <td style="text-align:right; padding:4px 0px;">
-                $ {{$_iva}}
+                {{formatoMoneda($_iva)}}
             </td>
         </tr>
-
+        @endif
         <tr>
             <td colspan="3" style="text-align:right; padding:4px 0px;">
                 <strong>Importe Total</strong>
             </td>
             <td style="text-align:right; padding:4px 0px;">
-                <strong>{{ formatoMoneda($total - $_iva) }}</strong>
+                <strong>{{ formatoMoneda($total) }}</strong>
             </td>
         </tr>
     </tfoot>
