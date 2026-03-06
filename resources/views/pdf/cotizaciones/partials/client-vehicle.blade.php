@@ -25,8 +25,12 @@ tarjeta 1 pago. IVA INCLUIDO' : 'Lista';
 
             <div style="line-height:20px; font-size: 0.9rem;">
                 Nombre: {{ $cotizacion->client->name }}<br>
-                Teléfono: {{ $cotizacion->client->phone }}<br>
-                Dirección: {{ $cotizacion->client->adress }}
+                Teléfono: {{ $cotizacion->contacto }}<br>
+                @if ($cotizacion->client->is_company)
+                CUIT: {{ $cotizacion->client->cuit }}
+                @else
+                DNI: {{ $cotizacion->client->dni }}
+                @endif
             </div>
         </td>
 
@@ -46,11 +50,19 @@ tarjeta 1 pago. IVA INCLUIDO' : 'Lista';
                 </table>
             </h1>
 
+            @if ($cotizacion->client->is_insurance)
             <div style="line-height:20px; font-size: 0.9rem;">
                 Vehículo: {{ $cotizacion->vehiculo->name }}<br>
                 Versión: {{ $cotizacion->version }}<br>
                 Patente: {{ $cotizacion->patente }}
             </div>
+            @else
+            <div style="line-height:20px; font-size: 0.9rem;">
+                Vehículo: {{ $cotizacion->vehiculo->name }}<br>
+                Chasis: {{ $cotizacion->chasis }}<br>
+                Año: {{ $cotizacion->year }}
+            </div>
+            @endif
         </td>
     </tr>
 </table>

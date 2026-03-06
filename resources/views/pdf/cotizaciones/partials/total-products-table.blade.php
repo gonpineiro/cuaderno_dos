@@ -3,14 +3,15 @@
 @php
 $_iva = $iva ? $iva : 0;
 
-$tipo_precio = $cotizacion->type_price->value == 'contado' ? 'Contado / debito /
-tarjeta 1 pago. IVA INCLUIDO' : 'Lista';
+$contadoConIva = 'Contado / debito / tarjeta 1 pago. IVA INCLUIDO';
+$contadoSinIva = 'Contado / debito / tarjeta 1 pago.';
+$tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSinIva : $contadoConIva) : 'Lista';
 @endphp
 
 <table class="table-productos" style="margin-top: 15px;">
     <thead>
         <tr>
-            <th class="table-productos-header" style="width:65%;">DESRIPCIÓN</th>
+            <th class="table-productos-header" style="width:65%;">DESCRIPCIÓN</th>
             <th class="table-productos-header" style="width:7%; text-align:center;">CANT.</th>
             <th class="table-productos-header" style="width:11%; text-align:right;">P. UNIT.</th>
             <th class="table-productos-header" style="width:13%; text-align:right;">TOTAL</th>
