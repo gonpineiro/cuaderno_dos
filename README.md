@@ -1,4 +1,4 @@
-### Problemas en la sincronizacion de pedido -> Factura
+### Problemas en la sincronizacion de pedido -> Facturas
 
 1. En nuestro clientes tenemos el dato reference_id (ID + idClienteJazz),
    El usuario de nuestra base ID11561,
