@@ -12,7 +12,7 @@
 <div class="margin-x-container">
     @include('pdf.cotizaciones.partials.title-info')
     @include('pdf.cotizaciones.partials.client-vehicle')
-    @include('pdf.cotizaciones.partials.products-table')
+    @include('pdf.cotizaciones.partials.total-products-table')
 </div>
 
 @include('pdf.partials.footer')
