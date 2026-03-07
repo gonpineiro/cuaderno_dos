@@ -1,27 +1,21 @@
-@extends('pdf.cotizaciones.layout')
+{{-- cotizacion.blade.php --}}
+@extends('pdf.cotizaciones.layouts.base')
 
 @section('content')
 
-<hr>
-{{-- Detalle productos --}}
-<table class="table-productos">
-    <tr>
-        <th style="width: 65%">Descripción</th>
-        <th style="width: 7%">Cant.</th>
-        <th style="width: 11%">Precio U.</th>
-        <th style="width: 13%">Total</th>
-    </tr>
+<div class="margin-x-container" style="margin-top: 5mm">
+    @include('pdf.cotizaciones.partials.header-brands')
+</div>
 
-    @foreach ($detail as $item)
-    <tr>
-        <td>{{$item['description']}}</td>
-        <td>{{$item['amount']}}</td>
-        <td>{{$item['unit_price']}}</td>
-        <td>{{$item['total']}} </td>
-    </tr>
-    @endforeach
-</table>
+@include('pdf.cotizaciones.partials.header-contact')
+
+<div class="margin-x-container">
+    @include('pdf.cotizaciones.partials.title-info')
+    @include('pdf.cotizaciones.partials.client-vehicle')
+    @include('pdf.cotizaciones.partials.products-table')
+</div>
+
+@include('pdf.partials.footer')
 
 
-{{-- Total --}}
 @endsection
