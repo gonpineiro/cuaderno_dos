@@ -47,7 +47,7 @@ class ProductFusionResource extends JsonResource
             $array['state'] = $this->state ? $this->state->value : null;
         }
 
-        $array['jazz'] = $this->jazz;
+        //$array['jazz'] = $this->jazz;
 
         return $array;
     }
