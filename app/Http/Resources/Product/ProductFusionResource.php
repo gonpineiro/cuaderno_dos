@@ -18,6 +18,7 @@ class ProductFusionResource extends JsonResource
         //$array = parent::toArray($request);
         $array = [
             /* Primitivos */
+            'id' => $this->id,
             'code' => $this->code,
             'idProducto' => $this->idProducto,
             'provider_code' => $this->provider_code,
@@ -27,27 +28,26 @@ class ProductFusionResource extends JsonResource
             'model' => $this->model,
             'engine' => $this->engine,
             'observation' => $this->observation,
-            'observation' => $this->observation,
             'ubication' => $this->ubication,
 
             /* No primitivos */
-            'providers' => $this->product_providers,
-            'provider' => $this->provider ? $this->provider : null,
+            //'providers' => $this->product_providers,
+            //'provider' => $this->provider ? $this->provider : null,
             'brand' => $this->brand ? $this->brand : null,
             'product_brand' => $this->product_brand ? $this->product_brand : null,
 
 
         ];
 
-        if ($this->is_special) {
+        /* if ($this->is_special) {
             $array['state'] = 'is_special';
         } else if (!$this->ubication) {
             $array['state'] = 'is_simple';
         } else {
             $array['state'] = $this->state ? $this->state->value : null;
-        }
+        } */
 
-        $array['jazz'] = $this->jazz;
+        //$array['jazz'] = $this->jazz;
 
         return $array;
     }

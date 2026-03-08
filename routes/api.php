@@ -64,6 +64,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('producto/buscar', [ProductController::class, 'search']);
     Route::get('producto/buscar_fusionar', [ProductController::class, 'search_fusionar']);
+    Route::get('producto/buscar_relaciones', [ProductController::class, 'search_relaciones']);
+    Route::post('producto/fusionar', [ProductController::class, 'fusionar']);
     Route::get('producto/detalle_jazz', [ProductJazzController::class, 'detalle']);
     Route::get('producto/jazz', [ProductJazzController::class, 'index']);
 
