@@ -353,7 +353,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $attributes = $model->getFillable();
 
-        $products = Product::query()->withTrashed();
+        $products = Product::query();
 
         foreach ($attributes as $attribute) {
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
@@ -449,8 +449,12 @@ class ProductController extends \App\Http\Controllers\Controller
             PurchaseOrderProduct::where('product_id', $product_b_id)
                 ->update(['product_id' => $product_a_id]);
 
-                DB::commit();
-                return sendResponse('ok');
+            $product_b =  Product::find($product_b_id);
+            $product_b->idProducto = null;
+            $product_b->delete();
+
+            DB::commit();
+            return sendResponse('ok');
         } catch (\Throwable $th) {
             DB::rollBack();
             return sendResponse(null, $th->getMessage());
