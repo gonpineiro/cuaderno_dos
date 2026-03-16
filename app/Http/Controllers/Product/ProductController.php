@@ -2,28 +2,36 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Resources\Product\AuditResource;
-use App\Http\Resources\Product\ProductCotizacionesResource;
-use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
+
+
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\PriceQuote\PriceQuoteResource;
+use App\Http\Resources\Product\AuditResource;
+use App\Http\Resources\Product\ProductCotizacionesResource;
 use App\Http\Resources\Product\FueraCatalogoResource;
+use App\Http\Resources\Product\PedirResource;
 use App\Http\Resources\Product\ProductFusionResource;
 use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\PurchaseOrder\PurchaseOrderResource;
+use App\Http\Resources\Shipment\ShipmentResource;
+use App\Models\Product;
 use App\Models\Activity;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\PriceQuoteProduct;
 use App\Models\OrderProduct;
+use App\Models\PriceQuote;
 use App\Models\ProductJazz;
 use App\Models\ProductProvider;
+use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderProduct;
+use App\Models\Shipment;
 use App\Models\ShipmentProduct;
 use App\Models\Table;
-use App\Services\JazzServices\ProductService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\PermissionRegistrar;
+use App\Models\ToAsk;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -345,7 +353,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $attributes = $model->getFillable();
 
-        $products = Product::query()->withTrashed();
+        $products = Product::query();
 
         foreach ($attributes as $attribute) {
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
@@ -363,6 +371,95 @@ class ProductController extends \App\Http\Controllers\Controller
             return sendResponse(null, 'No se encontro un resultado de busqueda');
         }
         return sendResponse(ProductFusionResource::collection($results));
+    }
+
+    public function search_relaciones(Request $request)
+    {
+        $id = $request->input('id');
+
+        // Cotizaciones
+        $priceQuoteIds = PriceQuoteProduct::where('product_id', $id)
+            ->pluck('price_quote_id')
+            ->unique();
+
+        $priceQuotes = PriceQuote::whereIn('id', $priceQuoteIds)->get();
+
+        // Pedidos
+        $orderIds = OrderProduct::where('product_id', $id)
+            ->pluck('order_id')
+            ->unique();
+
+        $orders = Order::whereIn('id', $orderIds)->get();
+
+        // Envíos
+        $shipmentIds = ShipmentProduct::where('product_id', $id)
+            ->pluck('shipment_id')
+            ->unique();
+
+        $shipments = Shipment::whereIn('id', $shipmentIds)->get();
+
+        // to_ask | Antes de compra de proveedores
+        $toAskIds = ToAsk::where('product_id', $id)
+            ->pluck('id')
+            ->unique();
+
+        $toASks = ToAsk::whereIn('id', $toAskIds)->get();
+
+
+        // Compras proveedor
+        $purchaseOrderIds = PurchaseOrderProduct::where('product_id', $id)
+            ->pluck('purchase_order_id')
+            ->unique();
+
+        $purchaseOrders = PurchaseOrder::whereIn('id', $purchaseOrderIds)->get();
+
+        return sendResponse([
+            'cotizaciones' => PriceQuoteResource::collection($priceQuotes),
+            'pedidos' => OrderResource::collection($orders),
+            'envios' => ShipmentResource::collection($shipments),
+            'productos_pedir' => PedirResource::collection($toASks),
+            'orden_compras' => PurchaseOrderResource::collection($purchaseOrders)
+        ]);
+    }
+
+    public function fusionar(Request $request)
+    {
+        $product_a_id = $request->input('product_a_id');
+        $product_b_id = $request->input('product_b_id');
+        $data = $request->input('data');
+
+        DB::beginTransaction();
+        try {
+            $product_a =  Product::find($product_a_id);
+            $product_a->update($data);
+            $product_a->save();
+
+            PriceQuoteProduct::where('product_id', $product_b_id)
+                ->update(['product_id' => $product_a_id]);
+
+            OrderProduct::where('product_id', $product_b_id)
+                ->update(['product_id' => $product_a_id]);
+
+            ShipmentProduct::where('product_id', $product_b_id)
+                ->update(['product_id' => $product_a_id]);
+
+            ToAsk::where('product_id', $product_b_id)
+                ->update(['product_id' => $product_a_id]);
+
+            PurchaseOrderProduct::where('product_id', $product_b_id)
+                ->update(['product_id' => $product_a_id]);
+
+            $product_b =  Product::find($product_b_id);
+            $product_b->idProducto = null;
+            $product_b->save();
+            $product_b->delete();
+
+            DB::commit();
+            return sendResponse('ok');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return sendResponse(null, $th->getMessage());
+        }
     }
 
     public function update(Request $request, $id)
