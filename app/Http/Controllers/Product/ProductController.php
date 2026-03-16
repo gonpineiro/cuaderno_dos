@@ -353,7 +353,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $attributes = $model->getFillable();
 
-        $products = Product::query()->withTrashed();
+        $products = Product::query();
 
         foreach ($attributes as $attribute) {
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
