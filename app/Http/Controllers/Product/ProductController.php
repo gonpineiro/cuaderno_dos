@@ -449,8 +449,13 @@ class ProductController extends \App\Http\Controllers\Controller
             PurchaseOrderProduct::where('product_id', $product_b_id)
                 ->update(['product_id' => $product_a_id]);
 
-                DB::commit();
-                return sendResponse('ok');
+            $product_b =  Product::find($product_b_id);
+            $product_b->idProducto = null;
+            $product_b->save();
+            $product_b->delete();
+
+            DB::commit();
+            return sendResponse('ok');
         } catch (\Throwable $th) {
             DB::rollBack();
             return sendResponse(null, $th->getMessage());
