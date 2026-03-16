@@ -451,6 +451,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
             $product_b =  Product::find($product_b_id);
             $product_b->idProducto = null;
+            $product_b->save();
             $product_b->delete();
 
             DB::commit();
