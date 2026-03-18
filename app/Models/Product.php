@@ -97,6 +97,11 @@ class Product extends Model
         return $this->belongsTo(Provider::class);
     }
 
+    public static function productoAjuste()
+    {
+        return self::where('code', 'AJUSTE')->first();
+    }
+
     public function jazz()
     {
         return $this->belongsTo(ProductJazz::class, 'idProducto', 'id');
