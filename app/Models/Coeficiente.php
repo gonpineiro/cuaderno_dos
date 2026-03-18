@@ -18,6 +18,7 @@ class Coeficiente extends Model
         'decimals',
         'position',
         'show',
+        'has_recargo',
     ];
 
     public $timestamps = false;
@@ -26,5 +27,6 @@ class Coeficiente extends Model
         'show' => 'boolean',
         'value' => 'double',
         'coeficiente' => 'double',
+        'has_recargo' => 'boolean',
     ];
 }
