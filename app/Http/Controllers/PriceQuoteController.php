@@ -200,6 +200,7 @@ class PriceQuoteController extends Controller
 
     public function asignarSiniestro(StoreSiniestroOrderRequest $request)
     {
+        throw new \Exception('NOPE_SINIESTRO');
         DB::beginTransaction();
 
         try {
@@ -286,6 +287,7 @@ class PriceQuoteController extends Controller
 
     public function asignarCliente(StoreClienteOrderRequest $request)
     {
+        throw new \Exception('SIPI');
         DB::beginTransaction();
 
         try {
