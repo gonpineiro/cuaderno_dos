@@ -77,11 +77,18 @@ class TicketController extends Controller
         return sendResponse(new VehiculoResource($vehiculo));
     }
 
-    public function update(UpdateVehiculoRequest $request, $id)
+    public function update(Request $request)
     {
-        $vehiculo = Vehiculo::findOrFail($id);
-        $vehiculo->fill($request->all())->save();
-        return sendResponse(new VehiculoResource($vehiculo));
+        $ticket = Ticket::findOrFail($request->id);
+
+        $ticket->update([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'prioridad_id' => $request->prioridad_id,
+            'responsable_id' => $request->responsable_id,
+        ]);
+
+        return sendResponse(new TicketResource($ticket));
     }
 
     public function borrar(Request $request)
