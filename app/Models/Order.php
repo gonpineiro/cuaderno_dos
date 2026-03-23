@@ -109,6 +109,11 @@ class Order extends Model
         return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
+    public function information_source()
+    {
+        return $this->belongsTo(Table::class, 'information_source_id');
+    }
+
     public function shipment()
     {
         return $this->belongsTo(Shipment::class);

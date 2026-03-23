@@ -27,6 +27,7 @@ class CreateOrdersTable extends Migration
 
             /** Pedido Online */
             $table->unsignedBigInteger('payment_method_id')->nullable();
+            $table->unsignedBigInteger('information_source_id')->nullable();
             $table->string('invoice_number')->nullable();
 
             /* Pedidos cliente */
@@ -47,6 +48,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('tables')->onDelete('cascade');
             $table->foreign('payment_method_id')->references('id')->on('tables')->onDelete('cascade');
+            $table->foreign('information_source_id')->references('id')->on('tables');
         });
     }
 
