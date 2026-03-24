@@ -29,6 +29,7 @@ Toda la documentación del proyecto está en el directorio `doc/`:
 | `doc/documentacion_completa.md` | Documentación principal (modelos, endpoints, flujo de negocio) |
 | `doc/integracion_jazz.md` | Detalles de integración con Jazz (Productos, Pedidos, Clientes, API) |
 | `doc/commands_tools.md` | Comandos útiles (Docker, Laravel, Sincronización) |
+| `doc/permissions.md` | Permisos y Roles (Spatie Laravel Permission) |
 | `doc/productos.md` | Información de productos |
 | `doc/consistencia_ubicacion.md` | Notas de consistencia de ubicación |
 | `doc/changes.md` | Registro de cambios |
@@ -104,11 +105,7 @@ Consulta `doc/commands_tools.md` para comandos completos de Docker, Laravel y si
 
 ## Permisos
 
-Usando Spatie. Permisos principales:
-- `cotizacion.delete` - Eliminar cotizaciones
-- `pedido.delete` - Eliminar pedidos
-- `pedido.estado.entregado` - Modificar pedidos entregados
-- `audit.product.view` - Ver auditoría de productos
+Consulta `doc/permissions.md` para documentación completa de roles, permisos y asignaciones.
 
 ---
 
