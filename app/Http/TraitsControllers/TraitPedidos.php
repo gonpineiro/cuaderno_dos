@@ -31,7 +31,7 @@ trait TraitPedidos
                 $query->where('orders.id', '>', (int) $request->last_id);
             }
 
-            $pedidos = $query->limit(1000)->get();
+            $pedidos = $query->limit(500)->get();
             $collection = OrderResource::collection($pedidos);
             return sendResponse($collection);
         } catch (\Throwable $th) {
