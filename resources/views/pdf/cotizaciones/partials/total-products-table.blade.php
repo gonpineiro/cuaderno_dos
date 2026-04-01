@@ -43,29 +43,30 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
     <tfoot>
         @if($iva)
         <tr>
-            <td colspan="3" style="text-align:right; padding:4px 0px;">
+            <td colspan="2" style="text-align:right; padding:4px 4px;">
                 <strong>Subtotal</strong>
             </td>
-            <td style="text-align:right; padding:4px 0px;">
+            <td colspan="2" style="text-align:right; padding:4px 0px;">
                 {{ formatoMoneda($total - $_iva) }}
             </td>
         </tr>
 
         <tr>
-            <td colspan="3" style="text-align:right; padding:4px 0px;">
-                <strong>IVA 21%</strong>
+            <td colspan="2" style="text-align:right; padding:4px 4px;">
+                <strong style="padding-left: 4px">IVA 21%</strong>
             </td>
-            <td style="text-align:right; padding:4px 0px;">
+            <td colspan="2" style="text-align:right; padding:4px 0px;">
                 {{formatoMoneda($_iva)}}
             </td>
         </tr>
         @endif
+
         <tr>
-            <td colspan="3" style="text-align:right; padding:4px 0px;">
-                <strong>Importe Total</strong>
+            <td colspan="2" style="text-align:right; padding:4px 4px;">
+                <strong style="padding-left: 4px">Importe Total</strong>
             </td>
-            <td style="text-align:right; padding:4px 0px;">
-                <strong>{{ formatoMoneda($total) }}</strong>
+            <td colspan="2" style="text-align:right; padding:4px 0px;">
+                <strong style="padding-left: 4px">{{ formatoMoneda($total) }}</strong>
             </td>
         </tr>
     </tfoot>
