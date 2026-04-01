@@ -12,6 +12,7 @@ use App\Http\TraitsControllers\TraitPedidosEmail;
 use App\Mail\CrearPedidoClienteEmail;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\Shipment;
 use App\Models\ToAsk;
@@ -161,6 +162,19 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $detail = $request->detail;
         $to_ask = $request->to_ask;
+        if (isset($request->recargo) && $request->recargo) {
+            $recargoProducto = Product::productoAjuste();
+            $data = [
+                'product_id' => $recargoProducto->id,
+                'order_id' => $order_id,
+                'state_id' => $detail[0]['state']['id'],
+                'unit_price' => $request->recargo,
+                'description' => 'AJUSTE POR MEDIO DE PAGO',
+                'amount' => 1,
+            ];
+            OrderProduct::create($data);
+        }
+
 
         foreach ($detail as $item) {
             $item['order_id'] = $order_id;
@@ -194,11 +208,6 @@ class OrderController extends \App\Http\Controllers\Controller
                     throw new \Exception("No se pudo registro de to_ask");
                 }
             }
-
-
-            /* if (!!$item['product']['is_special']) {
-
-            } */
         }
         return true;
     }

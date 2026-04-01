@@ -43,6 +43,7 @@ class OrderResource extends JsonResource
         $array['client'] = $this->client;
 
         $this->payment_method && $array['payment_method'] = $this->payment_method;
+        $this->information_source && $array['information_source'] = $this->information_source;
 
         $array['type'] = $this->type;
         $array['user_complete'] = $this->user_complete;
