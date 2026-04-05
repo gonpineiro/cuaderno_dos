@@ -194,8 +194,6 @@ class PriceQuoteController extends Controller
 
     public function asignarSiniestro(StoreSiniestroOrderRequest $request)
     {
-        throw new \Exception('NOPE_SINIESTRO');
-        DB::beginTransaction();
 
         try {
             $priceQuote = PriceQuote::find($request->price_quote_id);
@@ -222,6 +220,10 @@ class PriceQuoteController extends Controller
             $this->save_shipment($request, $order, $type_order);
 
             $priceQuote->save();
+
+            if ($request->generar_pedido_jazz) {
+                OrderController::generar_pedido_jazz($order);
+            }
 
             DB::commit();
 
@@ -266,6 +268,10 @@ class PriceQuoteController extends Controller
 
             $priceQuote->save();
 
+            if ($request->generar_pedido_jazz) {
+                OrderController::generar_pedido_jazz($order);
+            }
+
             DB::commit();
 
             return sendResponse([
@@ -306,6 +312,10 @@ class PriceQuoteController extends Controller
             $this->save_shipment($request, $order, $type_order);
 
             $priceQuote->save();
+
+            if ($request->generar_pedido_jazz) {
+                OrderController::generar_pedido_jazz($order);
+            }
 
             //TraitPedidosEmail::pedidoProductoUnico($order);
 

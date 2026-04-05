@@ -253,10 +253,22 @@ class OrderController extends \App\Http\Controllers\Controller
             return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
         }
 
+        DB::beginTransaction();
+
+        try {
+            $res =  $this->generar_pedido_jazz($order);
+            DB::commit();
+            return sendResponse($res);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return sendResponse(null, $e->getMessage(), 303);
+        }
+    }
+
+    public static function generar_pedido_jazz($order)
+    {
         $service = new PedidoService();
         $data = $service->getFormatData($order->client->jazz_id);
-
-        DB::beginTransaction();
 
         try {
             $id_pedido_jazz = $service->crearPedidoCompleto($data, $order);
@@ -265,11 +277,9 @@ class OrderController extends \App\Http\Controllers\Controller
             //$order->setNumeroJazz();
             $order->save();
 
-            DB::commit();
-            return sendResponse("Pedido Jazz N°: $id_pedido_jazz generado correctamente!");
+            return "Pedido Jazz N°: $id_pedido_jazz generado correctamente!";
         } catch (\Exception $e) {
-            DB::rollBack();
-            return sendResponse(null, $e->getMessage(), 303);
+            throw $e;
         }
     }
 }
