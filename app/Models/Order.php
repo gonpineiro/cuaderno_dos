@@ -25,6 +25,7 @@ class Order extends Model
         'contacto',
         'vehiculo_id',
         'state_id',
+        'information_source_id',
 
         /* Pedido online */
         'payment_method_id',

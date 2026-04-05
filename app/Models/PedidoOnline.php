@@ -26,6 +26,7 @@ class PedidoOnline extends Order
 
         'payment_method_id',
         'invoice_number',
+        'information_source_id',
 
         'observation'
     ];

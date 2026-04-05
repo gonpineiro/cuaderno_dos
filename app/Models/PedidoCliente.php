@@ -26,6 +26,7 @@ class PedidoCliente extends Order
 
         'deposit',
         'payment_method_id',
+        'information_source_id',
         'estimated_date',
 
         'observation'
