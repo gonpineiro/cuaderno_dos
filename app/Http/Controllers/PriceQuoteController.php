@@ -281,7 +281,6 @@ class PriceQuoteController extends Controller
 
     public function asignarCliente(StoreClienteOrderRequest $request)
     {
-        throw new \Exception('SIPI');
         DB::beginTransaction();
 
         try {
