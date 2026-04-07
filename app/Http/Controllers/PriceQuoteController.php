@@ -40,7 +40,7 @@ class PriceQuoteController extends Controller
         if ($request->last_id) {
             $query->where('price_quotes.id', '>', (int) $request->last_id);
         } else {
-            $query->limit(1000);
+            $query->limit(500);
         }
 
         $quotes = $query->with([

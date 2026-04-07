@@ -201,6 +201,32 @@ class Order extends Model
     } */
 
 
+
+    public function getGeneralState()
+    {
+        if ($shipment = $this->shipment) {
+            return (object) [
+                'value' => 'envio',
+                'description' => 'ENVÍO',
+                'background_color' => '#0d6efd',
+                'hover' => strtoupper($shipment->getGeneralState()->description),
+                'url' =>  "/envios/$shipment->id",
+            ];
+        }
+
+        $type = $this->type->value;
+        switch ($type) {
+            case 'online':
+                return $this->calculateState('order_online_state');
+            case 'cliente':
+                return $this->calculateState('order_cliente_state');
+            case 'siniestro':
+                return $this->calculateState('order_siniestro_state');
+            default:
+                return null;
+        }
+    }
+
     private function calculateState($tableName)
     {
         // Cargar todos los detalles con su estado en una sola consulta

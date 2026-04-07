@@ -141,7 +141,7 @@ class Shipment extends Model
         return $array;
     } */
 
-    public function _getGeneralState()
+    public function getGeneralState()
     {
         $detail = $this->detail;
         $pendiente = $detail->sum(function ($a) {

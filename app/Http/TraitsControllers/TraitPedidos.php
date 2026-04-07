@@ -31,7 +31,7 @@ trait TraitPedidos
                 $query->where('orders.id', '>', (int) $request->last_id);
             }
 
-            $pedidos = $query->limit(1000)->get();
+            $pedidos = $query->limit(500)->get();
             $collection = OrderResource::collection($pedidos);
             return sendResponse($collection);
         } catch (\Throwable $th) {
@@ -268,20 +268,27 @@ trait TraitPedidos
     private function sendEmail($estado, $type, $order)
     {
 
-        if (app()->environment('local')) {
-            return null;
-        }
+        try {
+            if (app()->environment('local')) {
+                return null;
+            }
 
-        if ($estado->value === 'retirar' && $type == 'cliente') {
-            TraitPedidosEmail::pedidoUnicoRetirar($order);
-        } else if ($estado->value === 'retirar' && $type == 'online') {
-            TraitPedidosEmail::pedidoRetirar($order);
-        } else if ($estado->value === 'entregado' && $type == 'cliente') {
-            TraitPedidosEmail::pedidoEntregado($order);
-        } else if ($estado->value === 'entregado' && $type == 'online') {
-            TraitPedidosEmail::pedidoOnlineEntregado($order);
-        } else if ($estado->value === 'cancelado' && $type == 'online') {
-            TraitPedidosEmail::pedidoCancelado($order);
+            if ($estado->value === 'retirar' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoUnicoRetirar($order);
+            } else if ($estado->value === 'retirar' && $type == 'online') {
+                TraitPedidosEmail::pedidoRetirar($order);
+            } else if ($estado->value === 'entregado' && $type == 'cliente') {
+                TraitPedidosEmail::pedidoEntregado($order);
+            } else if ($estado->value === 'entregado' && $type == 'online') {
+                TraitPedidosEmail::pedidoOnlineEntregado($order);
+            } else if ($estado->value === 'cancelado' && $type == 'online') {
+                TraitPedidosEmail::pedidoCancelado($order);
+            }
+        } catch (\Throwable $th) {
+            activity("error.email")
+                ->performedOn($order)
+                ->withProperties($th->getTrace())
+                ->log($th->getMessage());
         }
     }
 
