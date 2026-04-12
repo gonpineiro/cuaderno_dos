@@ -194,6 +194,7 @@ class PriceQuoteController extends Controller
 
     public function asignarSiniestro(StoreSiniestroOrderRequest $request)
     {
+        DB::beginTransaction();
 
         try {
             $priceQuote = PriceQuote::find($request->price_quote_id);
@@ -287,6 +288,8 @@ class PriceQuoteController extends Controller
 
     public function asignarCliente(StoreClienteOrderRequest $request)
     {
+        DB::beginTransaction();
+
         try {
             $priceQuote = PriceQuote::find($request->price_quote_id);
 

@@ -122,12 +122,15 @@ class ShipmentController extends Controller
 
     public static function storeShipment($envio, $order)
     {
+        $state  = Table::where('name', "order_envio_state")->where('value', 'pendiente')->first();
+
         $shipment = Shipment::create([
             'user_id' => auth()->user()->id,
             'order_id' => $order->id,
             'client_id' => $order->client_id,
             'year' => $order->year,
             'chasis' => $order->chasis,
+            'state_id' => $state->id,
             'version' => $order->version,
             'patente' => $order->patente,
             'contacto' => $order->contacto,
