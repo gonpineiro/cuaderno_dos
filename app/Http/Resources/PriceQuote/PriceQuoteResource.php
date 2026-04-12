@@ -37,6 +37,7 @@ class PriceQuoteResource extends JsonResource
         $array['type_price'] = $this->type_price;
         $array['information_source'] = $this->information_source;
         $array['user'] = $this->user;
+        //$array['cotizador'] = $this->user;
 
         $array['to_asign'] = $this->to_asign;
 

@@ -5,6 +5,7 @@ namespace App\Services\JazzServices;
 use App\Models\Jazz\LogJazzApi;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ApiService
 {
@@ -150,7 +151,7 @@ class ApiService
 
             return $response->json();
         } catch (\Throwable $e) {
-
+            Log::info($e->getTrace());
             $logJazzApi->update([
                 'error' => get_excep_array($e),
             ]);

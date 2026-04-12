@@ -164,12 +164,13 @@ class OrderController extends \App\Http\Controllers\Controller
         $to_ask = $request->to_ask;
         if (isset($request->recargo) && $request->recargo) {
             $recargoProducto = Product::productoAjuste();
+            $rl = $request->recargo_label;
             $data = [
                 'product_id' => $recargoProducto->id,
                 'order_id' => $order_id,
                 'state_id' => $detail[0]['state']['id'],
                 'unit_price' => $request->recargo,
-                'description' => 'AJUSTE POR MEDIO DE PAGO',
+                'description' => $rl ? $rl : 'AJUSTE POR MEDIO DE PAGO',
                 'amount' => 1,
             ];
             OrderProduct::create($data);
@@ -258,7 +259,7 @@ class OrderController extends \App\Http\Controllers\Controller
         try {
             $res =  $this->generar_pedido_jazz($order);
             DB::commit();
-            return sendResponse($res);
+            return sendResponse(null, $res);
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 303);
