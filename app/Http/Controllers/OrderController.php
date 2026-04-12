@@ -259,7 +259,7 @@ class OrderController extends \App\Http\Controllers\Controller
         try {
             $res =  $this->generar_pedido_jazz($order);
             DB::commit();
-            return sendResponse(null, $res);
+            return sendResponse($res);
         } catch (\Exception $e) {
             DB::rollBack();
             return sendResponse(null, $e->getMessage(), 303);
