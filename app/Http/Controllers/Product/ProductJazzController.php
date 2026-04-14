@@ -65,4 +65,13 @@ class ProductJazzController extends Controller
 
         return sendResponse($data);
     }
+
+    public function syncStock()
+    {
+        try {
+            return sendResponse(ProductService::updateStockPrices());
+        } catch (\Throwable $th) {
+            return sendResponse(null, $th->getMessage());
+        }
+    }
 }

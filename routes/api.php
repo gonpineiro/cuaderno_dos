@@ -71,6 +71,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::post('producto/borrar', [ProductController::class, 'delete']);
     Route::post('producto/recuperar', [ProductController::class, 'recuperarProducto']);
+    Route::post('producto/jazz/sync-stock', [ProductJazzController::class, 'syncStock']);
 
     Route::get('producto/relacion', [ProductController::class, 'relation']);
     Route::get('producto/cotizaciones', [ProductController::class, 'getInCotizaciones']);
