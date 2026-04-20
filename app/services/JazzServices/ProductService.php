@@ -62,8 +62,14 @@ class ProductService extends ApiService
             'pcc.StockMax as stock_max',
             'pcc.PuntoPedido as punto_pedido',
             DB::raw("(
-                    SELECT SUM(fa.Cantidad *
-                        CASE WHEN f.Tipo IN (3, 4) THEN 1 ELSE -1 END)
+                    SELECT SUM(
+                        fa.Cantidad *
+                        CASE
+                            WHEN f.CodigoPerfil = 6 THEN 0
+                            WHEN f.Tipo IN (3, 4) THEN 1
+                            ELSE -1
+                        END
+                    )
                     FROM facturas_articulos fa
                     JOIN facturas f ON f.NroInterno = fa.NroInterno
                     WHERE fa.IdProducto = p.IdProducto

@@ -1,0 +1,49 @@
+services:
+    server:
+        image: nginx:alpine
+        restart: always
+        ports:
+            - "8080:80"
+        networks:
+            - prod-network
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/prod.conf:/etc/nginx/conf.d/default.conf:ro
+        depends_on:
+            - app
+
+    db:
+        image: mysql:5.7.33
+        restart: always
+        ports:
+            - "3308:3306"
+        environment:
+            MYSQL_DATABASE: $DB_DATABASE
+            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+            MYSQL_PASSWORD: $DB_PASSWORD
+        networks:
+            - prod-network
+        volumes:
+            - db-prod-data:/var/lib/mysql
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+        restart: always
+        networks:
+            - prod-network
+        volumes:
+            - .:/var/www
+        env_file:
+            - .env
+
+networks:
+    prod-network:
+        name: prod_network
+        driver: bridge
+
+volumes:
+    db-prod-data:
+        name: prod_dbdata
+        driver: local

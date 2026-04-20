@@ -69,6 +69,12 @@ class ProductJazzController extends Controller
     public function syncStock()
     {
         try {
+            // Sin límite de tiempo de ejecución
+            set_time_limit(0);
+
+            // Sin límite de memoria
+            ini_set('memory_limit', '-1');
+
             return sendResponse(ProductService::updateStockPrices());
         } catch (\Throwable $th) {
             return sendResponse(null, $th->getMessage());
