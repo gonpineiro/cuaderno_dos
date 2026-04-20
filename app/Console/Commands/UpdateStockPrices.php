@@ -31,7 +31,7 @@ class UpdateStockPrices extends Command
 
         $this->updateStockPrices();
 
-        // $this->updateProductsBrands();
+        $this->updateProductsBrands();
 
         $this->info("Actualización completada.");
     }

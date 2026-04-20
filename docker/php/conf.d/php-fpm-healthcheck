@@ -1,0 +1,2 @@
+#!/bin/sh
+SCRIPT_NAME=/health SCRIPT_FILENAME=/health REQUEST_METHOD=GET cgi-fcgi -s -q -t 15 http://localhost:9000 || exit 1
