@@ -15,6 +15,7 @@ use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\Shipment;
+use App\Models\Table;
 use App\Models\ToAsk;
 use App\Models\User;
 use App\Services\JazzServices\ApiService;
@@ -162,7 +163,17 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $detail = $request->detail;
         $to_ask = $request->to_ask;
-        if (isset($request->recargo) && $request->recargo) {
+
+        $noCotizarState = Table::where('name', 'price_quote_state')->where('value', 'no cotizar')->first();
+        $noCotizarStateId = $noCotizarState ? $noCotizarState->id : null;
+
+        $detail = array_filter($detail, function ($item) use ($noCotizarStateId) {
+            return $noCotizarStateId === null || isset($item['state']['id']) && $item['state']['id'] != $noCotizarStateId;
+        });
+
+        $detail = array_values($detail);
+
+        if (isset($request->recargo) && $request->recargo && !empty($detail)) {
             $recargoProducto = Product::productoAjuste();
             $rl = $request->recargo_label;
             $data = [

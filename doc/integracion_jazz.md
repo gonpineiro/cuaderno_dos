@@ -11,7 +11,9 @@
 4. [Clientes](#clientes)
    - [Búsqueda en Jazz](#búsqueda-en-jazz)
    - [Relación Cliente-App con Jazz](#relación-cliente-app-con-jazz)
-5. [Servicios y Configuración](#servicios-y-configuración)
+5. [Usuarios](#usuarios)
+   - [Relación con Vendedor Jazz](#relación-con-vendedor-jazz)
+6. [Servicios y Configuración](#servicios-y-configuración)
 
 ---
 
@@ -442,6 +444,36 @@ if ($cliente->jazz_id) {
 
 $cliente->jazz_id = $request->jazz_id;
 $cliente->save();
+```
+
+---
+
+## Usuarios
+
+### Relación con Vendedor Jazz
+
+Cada usuario del sistema puede estar vinculado a un **vendedor** en Jazz mediante el campo `idVendedor`. Esto permite identificar qué vendedor crearassociated un pedido en Jazz.
+
+**Tabla:** `users`
+
+**Campo:** `idVendedor` (INT, NULL)
+
+**Ubicación del campo:** Después de `id` (primary key)
+
+**Query SQL:*** `ALTER TABLE users ADD COLUMN idVendedor INT NULL DEFAULT NULL AFTER id;`
+
+**Propósito:**
+- Vincular el usuario de la aplicación con el vendedor en Jazz
+- Se usa al crear pedidos en Jazz para asignar el vendedor
+
+**Ejemplo de uso en pedido:**
+
+```php
+// Al crear un pedido en Jazz, se usa el idVendedor del usuario creador
+$pedidoData = [
+    // ... otros campos
+    "idVendedor" => $user->idVendedor,  // NULL si no está vinculado
+];
 ```
 
 ---

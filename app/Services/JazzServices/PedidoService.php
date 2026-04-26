@@ -110,6 +110,7 @@ class PedidoService extends ApiService
 
     public function getFormatData($cliente_jazz_id)
     {
+        $user = auth()->user();
         return [
             "empresa" => 1,
             "sucursal" => 2,
@@ -117,7 +118,7 @@ class PedidoService extends ApiService
             "boca" => 0,
             "idCliente" => $cliente_jazz_id,
             "ivaTipo" => 3,
-            "idVendedor" => 1,
+            "idVendedor" => $user->idVendedor ? $user->idVendedor : 1,
             "vendedorComision" => 0,
             "idLista" => 6,
             //"obs" => "SALDO INICIAL",
