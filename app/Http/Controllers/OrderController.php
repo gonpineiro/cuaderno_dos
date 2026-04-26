@@ -280,7 +280,19 @@ class OrderController extends \App\Http\Controllers\Controller
     public static function generar_pedido_jazz($order)
     {
         $service = new PedidoService();
-        $data = $service->getFormatData($order->client->jazz_id);
+
+        // Detectar productos de recargo (código "AJUSTE")
+        $recargo = $order->detail->filter(function ($detail) {
+            return $detail->product->code === 'AJUSTE';
+        })->first();
+
+        // Generar observación con el recargo si existe
+        $observation = null;
+        if ($recargo) {
+            $observation = $recargo->description;
+        }
+
+        $data = $service->getFormatData($order->client->jazz_id, $observation);
 
         try {
             $id_pedido_jazz = $service->crearPedidoCompleto($data, $order);

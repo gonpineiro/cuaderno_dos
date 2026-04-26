@@ -287,7 +287,7 @@ public function getFormatData($cliente_jazz_id)
         "boca" => 0,
         "idCliente" => $cliente_jazz_id,
         "ivaTipo" => 3,
-        "idVendedor" => 1,
+        "idVendedor" => $user->idVendedor ? $user->idVendedor : 1,
         "idLista" => 6,
         "condicion" => 0,
         "moneda" => 1,
@@ -452,15 +452,15 @@ $cliente->save();
 
 ### Relación con Vendedor Jazz
 
-Cada usuario del sistema puede estar vinculado a un **vendedor** en Jazz mediante el campo `idVendedor`. Esto permite identificar qué vendedor crearassociated un pedido en Jazz.
+Cada usuario del sistema puede estar vinculado a un **vendedor** en Jazz mediante el campo `idVendedor`. Esto permite identificar qué vendedor está asociado a un pedido en Jazz.
 
 **Tabla:** `users`
 
-**Campo:** `idVendedor` (INT, NULL)
+**Campo:** `idVendedor` (INT, NULL, UNIQUE)
 
 **Ubicación del campo:** Después de `id` (primary key)
 
-**Query SQL:*** `ALTER TABLE users ADD COLUMN idVendedor INT NULL DEFAULT NULL AFTER id;`
+**Query SQL:** `ALTER TABLE users ADD COLUMN idVendedor INT NULL DEFAULT NULL UNIQUE AFTER id;`
 
 **Propósito:**
 - Vincular el usuario de la aplicación con el vendedor en Jazz
