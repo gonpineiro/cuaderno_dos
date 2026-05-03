@@ -66,8 +66,10 @@ class ProductService extends ApiService
                         fa.Cantidad *
                         CASE
                             WHEN f.CodigoPerfil = 6 THEN 0
-                            WHEN f.Tipo IN (3, 4) THEN 1
-                            ELSE -1
+                            WHEN f.AfectaStock = 'N' THEN 0
+                            WHEN f.AfectaStock = 'S' AND f.Tipo IN (3, 4) THEN 1
+                            WHEN f.AfectaStock = 'S' AND f.Tipo NOT IN (3, 4) THEN -1
+                            ELSE 0
                         END
                     )
                     FROM facturas_articulos fa

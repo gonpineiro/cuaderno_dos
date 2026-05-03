@@ -14,6 +14,7 @@ services:
 
     db:
         image: mysql:5.7.33
+        hostname: db
         restart: unless-stopped
         ports:
             - 3307:3306
