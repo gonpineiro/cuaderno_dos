@@ -130,12 +130,17 @@ class ApiController extends \App\Http\Controllers\Controller
             ->latest('created_at')
             ->first();
 
+        $finProceso = $fin->created_at;
+        if ($finProceso && $inicio && $finProceso <= $inicio->created_at) {
+            $finProceso = null;
+        }
+
         return [
             'is_updated_1' => $productJazzUpdated,
             'is_updated_0' => $productJazzNotUpdated,
             'total' => $productJazzTotal,
             'inicio_proceso' => $inicio->created_at,
-            'fin_proceso' => $fin->created_at,
+            'fin_proceso' => $finProceso,
         ];
     }
 }
