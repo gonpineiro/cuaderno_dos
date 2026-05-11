@@ -173,20 +173,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
         $detail = array_values($detail);
 
-        if (isset($request->recargo) && $request->recargo && !empty($detail)) {
-            $recargoProducto = Product::productoAjuste();
-            $rl = $request->recargo_label;
-            $data = [
-                'product_id' => $recargoProducto->id,
-                'order_id' => $order_id,
-                'state_id' => $detail[0]['state']['id'],
-                'unit_price' => $request->recargo,
-                'description' => $rl ? $rl : 'AJUSTE POR MEDIO DE PAGO',
-                'amount' => 1,
-            ];
-            OrderProduct::create($data);
-        }
-
 
         foreach ($detail as $item) {
             $item['order_id'] = $order_id;
@@ -221,6 +207,21 @@ class OrderController extends \App\Http\Controllers\Controller
                 }
             }
         }
+
+        if (isset($request->recargo) && $request->recargo && !empty($detail)) {
+            $recargoProducto = Product::productoAjuste();
+            $rl = $request->recargo_label;
+            $data = [
+                'product_id' => $recargoProducto->id,
+                'order_id' => $order_id,
+                'state_id' => $detail[0]['state']['id'],
+                'unit_price' => $request->recargo,
+                'description' => /*$rl ? $rl : 'AJUSTE POR MEDIO DE PAGO'*/ 'Financiación',
+                'amount' => 1,
+            ];
+            OrderProduct::create($data);
+        }
+
         return true;
     }
 
