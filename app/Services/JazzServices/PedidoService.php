@@ -108,7 +108,7 @@ class PedidoService extends ApiService
         return $this->post('Pedido/FinalizarPedido', $_data);
     }
 
-    public function getFormatData($cliente_jazz_id)
+    public function getFormatData($cliente_jazz_id, string $observation = null)
     {
         $user = auth()->user();
         return [
@@ -121,7 +121,7 @@ class PedidoService extends ApiService
             "idVendedor" => $user->idVendedor ? $user->idVendedor : 1,
             "vendedorComision" => 0,
             "idLista" => 6,
-            //"obs" => "SALDO INICIAL",
+            "obs" => $observation,
             "condicion" => 0,
             "moneda" => 1,
             "enMostrador" => "S",
