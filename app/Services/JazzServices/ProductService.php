@@ -43,6 +43,8 @@ class ProductService extends ApiService
 
     public static function updateStockPrices()
     {
+        DB::table('product_jazz')->update(['is_updated' => 0]);
+
         DB::statement("DELETE FROM product_jazz_temp");
 
         $listas = DB::connection('jazz')->table('precios_venta')
@@ -107,6 +109,7 @@ class ProductService extends ApiService
                     'stock_min' => $row->stock_min ?? 0,
                     'stock_max' => $row->stock_max ?? 0,
                     'punto_pedido' => $row->punto_pedido ?? 0,
+                    'is_updated' => 1,
                 ]);
         }
 

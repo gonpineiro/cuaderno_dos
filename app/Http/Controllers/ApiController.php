@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CoeficienteResource;
 use App\Models\Coeficiente;
+use App\Models\ProductJazz;
 use App\Models\Provider;
 use App\Models\Province;
 use App\Models\Table;
@@ -101,6 +102,7 @@ class ApiController extends \App\Http\Controllers\Controller
 
         $coeficientes  = Coeficiente::orderBy('position', 'asc')->get();
         $data = [
+            'product_jazz_report' => $this->getProductJazzReport(),
             'user' => $user,
             'coeficientes' => CoeficienteResource::collection($coeficientes),
             'provinces' => Province::all(),
@@ -110,5 +112,30 @@ class ApiController extends \App\Http\Controllers\Controller
         ];
 
         return sendResponse($data);
+    }
+
+    private function getProductJazzReport(): array
+    {
+        $productJazzUpdated = ProductJazz::where('is_updated', 1)->count();
+        $productJazzNotUpdated = ProductJazz::where('is_updated', 0)->count();
+        $productJazzTotal = ProductJazz::count();
+
+        $inicio = \Spatie\Activitylog\Models\Activity::where('log_name', 'success.updateStockPrices')
+            ->where('description', 'Inicio')
+            ->latest('created_at')
+            ->first();
+
+        $fin = \Spatie\Activitylog\Models\Activity::where('log_name', 'success.updateStockPrices')
+            ->where('description', 'Proceso finalizado')
+            ->latest('created_at')
+            ->first();
+
+        return [
+            'is_updated_1' => $productJazzUpdated,
+            'is_updated_0' => $productJazzNotUpdated,
+            'total' => $productJazzTotal,
+            'inicio_proceso' => $inicio->created_at,
+            'fin_proceso' => $fin->created_at,
+        ];
     }
 }
