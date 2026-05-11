@@ -78,7 +78,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
             <h3 style="margin:0; color: black;">
                 Tipo Precio:
             </h3>
-            {{$tipo_precio}}
+            {{ mb_strtoupper($tipo_precio, 'UTF-8') }}
         </td>
     </tr>
     <tr>
