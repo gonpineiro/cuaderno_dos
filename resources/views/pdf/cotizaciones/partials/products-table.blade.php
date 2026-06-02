@@ -42,7 +42,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
 </table>
 
 <table style="margin-top:5px;">
-    {{-- <tr>
+    <tr>
         <td style="width:100%;">
             <h3 style="margin:0; color: black;">
                 Tipo Precio:
@@ -52,7 +52,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
     </tr>
     <tr>
         <td><small>Precios sujeto a modificación sin previo aviso</small></td>
-    </tr> --}}
+    </tr>
     <tr>
         <td style="width:100%;">
             <h3 style="margin:0; color: black;">

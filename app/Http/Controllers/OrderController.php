@@ -210,33 +210,36 @@ class OrderController extends \App\Http\Controllers\Controller
 
         if (!empty($detail)) {
             $recargoProducto = Product::productoAjuste();
-            $recargos = $request->input('recargos', []);
+            $recargos = self::normalizePaymentLines($request);
+            $mediosSinRecargo = [];
 
-            if (is_string($recargos)) {
-                $decoded = json_decode($recargos, true);
-                $recargos = is_array($decoded) ? $decoded : [];
-            }
-
-            if ($recargoProducto && is_array($recargos) && !empty($recargos)) {
+            if ($recargoProducto && !empty($recargos)) {
                 foreach ($recargos as $recargoItem) {
+                    $medioPago = trim($recargoItem['medio_pago'] ?? 'Medio de pago');
+                    $montoBase = isset($recargoItem['monto']) ? (float) $recargoItem['monto'] : 0;
                     $montoRecargo = isset($recargoItem['recargo']) ? (float) $recargoItem['recargo'] : 0;
+
                     if ($montoRecargo <= 0) {
+                        if ($montoBase > 0) {
+                            $montoBaseFormat = number_format($montoBase, 0, '', '');
+                            $mediosSinRecargo[] = "{$medioPago}: \${$montoBaseFormat}";
+                        }
                         continue;
                     }
 
-                    $medioPago = $recargoItem['medio_pago'] ?? 'Medio de pago';
-                    $montoBase = isset($recargoItem['monto']) ? (float) $recargoItem['monto'] : 0;
-                    $montoBaseFormat = number_format($montoBase, 0, ',', '.');
+                    $montoTotalFormat = number_format($montoBase + $montoRecargo, 0, '', '');
 
                     OrderProduct::create([
                         'product_id' => $recargoProducto->id,
                         'order_id' => $order_id,
                         'state_id' => $detail[0]['state']['id'],
                         'unit_price' => $montoRecargo,
-                        'description' => "{$medioPago} - (base $ {$montoBaseFormat})",
+                        'description' => "{$medioPago} - (\${$montoTotalFormat})",
                         'amount' => 1,
                     ]);
                 }
+
+                self::appendPaymentObservation($order_id, $mediosSinRecargo);
             } elseif ($recargoProducto && $request->filled('recargo') && (float) $request->recargo > 0) {
                 $data = [
                     'product_id' => $recargoProducto->id,
@@ -251,6 +254,56 @@ class OrderController extends \App\Http\Controllers\Controller
         }
 
         return true;
+    }
+
+    private static function normalizePaymentLines(Request $request): array
+    {
+        $recargos = $request->input('recargos', []);
+
+        if (is_string($recargos)) {
+            $decoded = json_decode($recargos, true);
+            $recargos = is_array($decoded) ? $decoded : [];
+        }
+
+        return is_array($recargos) ? $recargos : [];
+    }
+
+    private static function appendPaymentObservation(int $orderId, array $mediosSinRecargo): void
+    {
+        if (empty($mediosSinRecargo)) {
+            return;
+        }
+
+        $order = Order::find($orderId);
+        if (!$order) {
+            return;
+        }
+
+        $observation = (string) $order->observation;
+        $parts = explode('@', $observation, 2);
+        $baseObservation = trim($parts[0]);
+        $paymentObservation = implode(';', $mediosSinRecargo);
+
+        $order->observation = $baseObservation . '@' . $paymentObservation;
+        $order->save();
+    }
+
+    private static function getJazzObservation(Order $order): ?string
+    {
+        $observation = (string) $order->observation;
+        if (strpos($observation, '@') !== false) {
+            $parts = explode('@', $observation, 2);
+            $paymentObservation = trim($parts[1] ?? '');
+            if ($paymentObservation !== '') {
+                return $paymentObservation;
+            }
+        }
+
+        $recargo = $order->detail->first(function ($detail) {
+            return $detail->product->code === 'AJUSTE';
+        });
+
+        return $recargo ? $recargo->description : null;
     }
 
     public function enviarCorreo()
@@ -316,8 +369,8 @@ class OrderController extends \App\Http\Controllers\Controller
         })->first();
 
         // Generar observaciÃ³n con el recargo si existe
-        $observation = null;
-        if ($recargo) {
+        $observation = self::getJazzObservation($order);
+        if (!$observation && $recargo) {
             $observation = $recargo->description;
         }
 

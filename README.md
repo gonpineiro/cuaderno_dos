@@ -45,3 +45,22 @@ Estructura enviada
 5. Forma de pago que pase al jazz.
 6. Dejar guardado el nro de comprobante en cuaderno, porque el nro interno no sirve.
 7. Proceso para unificar codigos de productos. Definiendo el codigo que queda y el otro que es absorbido por el otro.
+
+
+reconfiguracion de envio de medios de pago, la primer version de la implementacion se enviaba el recargo del producto y se generaba un unico producto ajuste.
+Ahora se controla cada uno de manera independiente:
+
+4hr: Configuracion del frontend para enviar los “recargos + no_recargos” → antes enviaba un objeto con {label, monto, recargo}
+
+6hr: Se genera un producto de tipo ajuste por medio de pago que tenga recargo
+
+2hr: seteo de descripcion producto del pedido: “label recargo - monto + recargo =  total a cobrar por medio de pago
+
+Control de medios sin recargo:
+4hr: controlar los medios sin recargo para no generar producto ajuste, y sin alterar el precio original (total)
+2hr: concatena en la observacion del pedido la observacion original + detalle de los sin recargo (label y total) (utilizando @ como delimitador)
+4hr: reconfiguracion de la api de generacion de pedido (principal) para enviar como observacion “lo que va despues del @”
+
+Total: 22hr
+
+
