@@ -40,7 +40,7 @@ class OrderController extends \App\Http\Controllers\Controller
         // Agrupa los productos por su campo "id"
         $productos_agrupados = collect($productos)->groupBy('product_id');
 
-        // Filtra los grupos que tengan más de un elemento
+        // Filtra los grupos que tengan mÃ¡s de un elemento
         $productos_sin_repetidos = $productos_agrupados->filter(function ($grupo) {
             return count($grupo) == 1;
         })->flatten(1)->values()->all();
@@ -62,17 +62,17 @@ class OrderController extends \App\Http\Controllers\Controller
 
             $detail = $request->detail;
 
-            // Obtén los IDs de producto de detail
+            // ObtÃ©n los IDs de producto de detail
             $productIdsInDetail = array_map(function ($item) {
                 return $item['product']['id'];
             }, $detail);
 
-            // Elimina los registros OrderProduct que no están en $productIdsInDetail
+            // Elimina los registros OrderProduct que no estÃ¡n en $productIdsInDetail
             OrderProduct::where('order_id', $id)
                 ->whereNotIn('product_id', $productIdsInDetail)
                 ->delete();
 
-            // Actualiza o agrega registros OrderProduct según detail
+            // Actualiza o agrega registros OrderProduct segÃºn detail
             foreach ($detail as $item) {
                 $orderProductData = [
                     'order_id' => $order->id,
@@ -110,7 +110,7 @@ class OrderController extends \App\Http\Controllers\Controller
 
         $user = User::find(auth()->user()->id);
         if (!$user->can('pedido.delete')) {
-            return sendResponse(null, "Acción no autorizada");
+            return sendResponse(null, "AcciÃ³n no autorizada");
         }
 
         try {
@@ -208,18 +208,46 @@ class OrderController extends \App\Http\Controllers\Controller
             }
         }
 
-        if (isset($request->recargo) && $request->recargo && !empty($detail)) {
+        if (!empty($detail)) {
             $recargoProducto = Product::productoAjuste();
-            $rl = $request->recargo_label;
-            $data = [
-                'product_id' => $recargoProducto->id,
-                'order_id' => $order_id,
-                'state_id' => $detail[0]['state']['id'],
-                'unit_price' => $request->recargo,
-                'description' => /*$rl ? $rl : 'AJUSTE POR MEDIO DE PAGO'*/ 'Financiación',
-                'amount' => 1,
-            ];
-            OrderProduct::create($data);
+            $recargos = $request->input('recargos', []);
+
+            if (is_string($recargos)) {
+                $decoded = json_decode($recargos, true);
+                $recargos = is_array($decoded) ? $decoded : [];
+            }
+
+            if ($recargoProducto && is_array($recargos) && !empty($recargos)) {
+                foreach ($recargos as $recargoItem) {
+                    $montoRecargo = isset($recargoItem['recargo']) ? (float) $recargoItem['recargo'] : 0;
+                    if ($montoRecargo <= 0) {
+                        continue;
+                    }
+
+                    $medioPago = $recargoItem['medio_pago'] ?? 'Medio de pago';
+                    $montoBase = isset($recargoItem['monto']) ? (float) $recargoItem['monto'] : 0;
+                    $montoBaseFormat = number_format($montoBase, 0, ',', '.');
+
+                    OrderProduct::create([
+                        'product_id' => $recargoProducto->id,
+                        'order_id' => $order_id,
+                        'state_id' => $detail[0]['state']['id'],
+                        'unit_price' => $montoRecargo,
+                        'description' => "{$medioPago} - (base $ {$montoBaseFormat})",
+                        'amount' => 1,
+                    ]);
+                }
+            } elseif ($recargoProducto && $request->filled('recargo') && (float) $request->recargo > 0) {
+                $data = [
+                    'product_id' => $recargoProducto->id,
+                    'order_id' => $order_id,
+                    'state_id' => $detail[0]['state']['id'],
+                    'unit_price' => $request->recargo,
+                    'description' => $request->input('recargo_label') ?: 'Ajuste',
+                    'amount' => 1,
+                ];
+                OrderProduct::create($data);
+            }
         }
 
         return true;
@@ -263,7 +291,7 @@ class OrderController extends \App\Http\Controllers\Controller
         } */
 
         if ($order->ref_jazz_id) {
-            return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
+            return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. NÂ°: $order->ref_jazz_id", 410);
         }
 
         DB::beginTransaction();
@@ -282,12 +310,12 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $service = new PedidoService();
 
-        // Detectar productos de recargo (código "AJUSTE")
+        // Detectar productos de recargo (cÃ³digo "AJUSTE")
         $recargo = $order->detail->filter(function ($detail) {
             return $detail->product->code === 'AJUSTE';
         })->first();
 
-        // Generar observación con el recargo si existe
+        // Generar observaciÃ³n con el recargo si existe
         $observation = null;
         if ($recargo) {
             $observation = $recargo->description;
@@ -302,9 +330,11 @@ class OrderController extends \App\Http\Controllers\Controller
             //$order->setNumeroJazz();
             $order->save();
 
-            return "Pedido Jazz N°: $id_pedido_jazz generado correctamente!";
+            return "Pedido Jazz NÂ°: $id_pedido_jazz generado correctamente!";
         } catch (\Exception $e) {
             throw $e;
         }
     }
 }
+
+

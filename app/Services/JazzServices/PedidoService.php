@@ -31,15 +31,17 @@ class PedidoService extends ApiService
         $productData = $this->getJazzData($order->detail, $id_pedido_jazz);
 
         foreach ($productData as $data) {
-            $order_product = OrderProduct::where('order_id', $order->id)->where('product_id', $data["product_id"])->first();
-            $pedido_producto = $this->agregarArticulo($data, $id_pedido_jazz, $order_product);
+            $pedido_producto = $this->agregarArticulo($data, $id_pedido_jazz);
 
             if ($pedido_producto["refID"] == 0) {
                 throw new \Exception('Es probable que el producto no exista en Jazz');
             }
 
-            $order_product->ref_jazz_id = $pedido_producto["refID"];
-            $order_product->save();
+            $order_product = OrderProduct::find($data["id"]);
+            if ($order_product) {
+                $order_product->ref_jazz_id = $pedido_producto["refID"];
+                $order_product->save();
+            }
         }
 
         $finalizar = $this->finalizarPedido($id_pedido_jazz);
@@ -77,14 +79,14 @@ class PedidoService extends ApiService
     }
 
 
-    public function agregarArticulo(array $data, $numero_interno, $order_product)
+    public function agregarArticulo(array $data, $numero_interno)
     {
         $_data = [
             "nroInterno" => $numero_interno,
             "idProducto" => $data['idProducto'],
             "cantidad" =>  $data['cantidad'],
             "descuento" => 0,
-            "detalle" => $order_product->description,
+            "detalle" => $data['detalle'],
             "precio" => $data['precio'],
             /* !! */
             "unidad" => 0,
