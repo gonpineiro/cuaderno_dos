@@ -211,42 +211,42 @@ class OrderController extends \App\Http\Controllers\Controller
         if (!empty($detail)) {
             $recargoProducto = Product::productoAjuste();
             $recargos = self::normalizePaymentLines($request);
-            $mediosSinRecargo = [];
+            $paymentObservationLines = [];
 
             if ($recargoProducto && !empty($recargos)) {
                 foreach ($recargos as $recargoItem) {
                     $medioPago = trim($recargoItem['medio_pago'] ?? 'Medio de pago');
                     $montoBase = isset($recargoItem['monto']) ? (float) $recargoItem['monto'] : 0;
                     $montoRecargo = isset($recargoItem['recargo']) ? (float) $recargoItem['recargo'] : 0;
+                    $montoTotal = $montoBase + $montoRecargo;
 
-                    if ($montoRecargo <= 0) {
-                        if ($montoBase > 0) {
-                            $montoBaseFormat = number_format($montoBase, 0, '', '');
-                            $mediosSinRecargo[] = "{$medioPago}: \${$montoBaseFormat}";
-                        }
-                        continue;
+                    if ($montoTotal > 0) {
+                        $montoTotalFormat = number_format($montoTotal, 0, '', '');
+                        $paymentObservationLines[] = "{$medioPago}: \${$montoTotalFormat}";
                     }
 
-                    $montoTotalFormat = number_format($montoBase + $montoRecargo, 0, '', '');
+                    if ($montoRecargo <= 0) {
+                        continue;
+                    }
 
                     OrderProduct::create([
                         'product_id' => $recargoProducto->id,
                         'order_id' => $order_id,
                         'state_id' => $detail[0]['state']['id'],
                         'unit_price' => $montoRecargo,
-                        'description' => "{$medioPago} - (\${$montoTotalFormat})",
+                        'description' => "Financiación {$medioPago}",
                         'amount' => 1,
                     ]);
                 }
 
-                self::appendPaymentObservation($order_id, $mediosSinRecargo);
+                self::appendPaymentObservation($order_id, $paymentObservationLines);
             } elseif ($recargoProducto && $request->filled('recargo') && (float) $request->recargo > 0) {
                 $data = [
                     'product_id' => $recargoProducto->id,
                     'order_id' => $order_id,
                     'state_id' => $detail[0]['state']['id'],
                     'unit_price' => $request->recargo,
-                    'description' => $request->input('recargo_label') ?: 'Ajuste',
+                    'description' => 'Financiación ' . ($request->input('recargo_label') ?: 'Ajuste'),
                     'amount' => 1,
                 ];
                 OrderProduct::create($data);
@@ -268,9 +268,9 @@ class OrderController extends \App\Http\Controllers\Controller
         return is_array($recargos) ? $recargos : [];
     }
 
-    private static function appendPaymentObservation(int $orderId, array $mediosSinRecargo): void
+    private static function appendPaymentObservation(int $orderId, array $paymentObservationLines): void
     {
-        if (empty($mediosSinRecargo)) {
+        if (empty($paymentObservationLines)) {
             return;
         }
 
@@ -282,7 +282,7 @@ class OrderController extends \App\Http\Controllers\Controller
         $observation = (string) $order->observation;
         $parts = explode('@', $observation, 2);
         $baseObservation = trim($parts[0]);
-        $paymentObservation = implode(';', $mediosSinRecargo);
+        $paymentObservation = implode(';', $paymentObservationLines);
 
         $order->observation = $baseObservation . '@' . $paymentObservation;
         $order->save();
