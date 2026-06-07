@@ -344,7 +344,7 @@ class OrderController extends \App\Http\Controllers\Controller
         } */
 
         if ($order->ref_jazz_id) {
-            return sendResponse(null, "Este pedido ya tiene una relacion con Pedidos de jazz. NÂ°: $order->ref_jazz_id", 410);
+            return sendResponse(null, "Este pedido ya tiene una relación con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
         }
 
         DB::beginTransaction();
@@ -361,14 +361,15 @@ class OrderController extends \App\Http\Controllers\Controller
 
     public static function generar_pedido_jazz($order)
     {
+        $order = $order->fresh(['detail.product', 'client']);
         $service = new PedidoService();
 
-        // Detectar productos de recargo (cÃ³digo "AJUSTE")
+        // Detectar productos de recargo (código "AJUSTE")
         $recargo = $order->detail->filter(function ($detail) {
             return $detail->product->code === 'AJUSTE';
         })->first();
 
-        // Generar observaciÃ³n con el recargo si existe
+        // Generar observación con el recargo si existe
         $observation = self::getJazzObservation($order);
         if (!$observation && $recargo) {
             $observation = $recargo->description;
@@ -383,11 +384,10 @@ class OrderController extends \App\Http\Controllers\Controller
             //$order->setNumeroJazz();
             $order->save();
 
-            return "Pedido Jazz NÂ°: $id_pedido_jazz generado correctamente!";
+            return "Pedido Jazz N°: $id_pedido_jazz generado correctamente!";
         } catch (\Exception $e) {
             throw $e;
         }
     }
 }
-
 
