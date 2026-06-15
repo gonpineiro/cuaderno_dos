@@ -46,7 +46,7 @@ class StoreClientRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             /* 'dni' => 'required|max:8|min:8|unique:clients', */
-            'dni' => 'max:8',
+            'dni' => 'max:11',
             'email' => 'required|email|max:255|unique:clients',
             'phone' => 'required|max:150',
             'city_id' => 'required',
