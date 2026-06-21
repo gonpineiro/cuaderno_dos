@@ -50,6 +50,7 @@ class UpdateClientRequest extends FormRequest
             'email' => 'required|email|max:255',
             'phone' => 'required|max:150',
             'city_id' => 'required',
+            'synz_jazz' => 'nullable|boolean',
         ];
     }
 

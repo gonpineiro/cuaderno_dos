@@ -140,3 +140,44 @@ if (!function_exists('get_excep_array')) {
         ];
     }
 }
+
+if (!function_exists('generateCuit')) {
+    function generateCuit(string $dni): string
+    {
+        $dni = preg_replace('/\D+/', '', $dni);
+
+        if (strlen($dni) !== 8) {
+            return '';
+        }
+
+        $multipliers = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+
+        // Desde 2021 el prefijo oficial para personas humanas puede ser aleatorio
+        // entre 20, 23, 24 y 27. Como aca solo recibimos el DNI, generamos un
+        // CUIT valido priorizando prefijos genericos.
+        $prefixes = ['23', '24', '20', '27'];
+
+        foreach ($prefixes as $prefix) {
+            $base = $prefix . $dni;
+            $sum = 0;
+
+            foreach (str_split($base) as $index => $digit) {
+                $sum += ((int) $digit) * $multipliers[$index];
+            }
+
+            $verifier = 11 - ($sum % 11);
+
+            if ($verifier === 11) {
+                $verifier = 0;
+            }
+
+            if ($verifier === 10) {
+                continue;
+            }
+
+            return $base . $verifier;
+        }
+
+        return '';
+    }
+}

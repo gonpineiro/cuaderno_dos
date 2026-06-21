@@ -66,7 +66,8 @@ class Ticket extends Model
         }
         $arrayMap = [
             'App\\Models\\PriceQuote' => 'cotizacion',
-            'App\\Models\\Product' => 'producto'
+            'App\\Models\\Product' => 'producto',
+            'App\\Models\\Order' => 'pedido'
         ];
 
         return $arrayMap[$this->ticketable_type];

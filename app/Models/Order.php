@@ -190,6 +190,11 @@ class Order extends Model
             ->toArray();
     }
 
+    public function tickets()
+    {
+        return $this->morphMany(Ticket::class, 'ticketable');
+    }
+
     /* public function getGeneralStateAttribute()
     {
         // 🚚 Si tiene envío → manda el estado del envío

@@ -11,6 +11,7 @@ use App\Http\Resources\Client\ClientJazzResource;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Models\Jazz\ClientJazz;
+use App\Services\JazzServices\ClienteService;
 
 class ClientController extends Controller
 {
@@ -29,7 +30,9 @@ class ClientController extends Controller
         /*  $client->update(['reference_id', "ID" . $client->id]); */
         $client->reference_id = "ID" . $client->id;
         $client->save();
-        return new ClientResource($client, 'complete');
+        $this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
+
+        return new ClientResource($client->fresh(), 'complete');
     }
 
     public function show($id)
@@ -95,6 +98,26 @@ class ClientController extends Controller
         return sendResponse(ClientJazzResource::collection($results));
     }
 
+    public function crearClienteJazz(Request $request)
+    {
+        try {
+            $cliente = Client::with('city')->find($request->id);
+
+            if (!$cliente) {
+                return sendResponse(null, 'Cliente no encontrado', 404);
+            }
+
+            $service = new ClienteService();
+            $idCliente = $service->agregarCliente($cliente);
+            $cliente->jazz_id = $idCliente;
+            $cliente->save();
+
+            return sendResponse(['idCliente' => $idCliente]);
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), 500);
+        }
+    }
+
     public function relacionarClienteJazz(Request $request)
     {
         $cliente = Client::find($request->cliente_id);
@@ -123,11 +146,24 @@ class ClientController extends Controller
         try {
             $client = Client::findOrFail($request->id);
             $client->fill($request->all())->save();
+            $this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
 
-            return sendResponse(new ClientResource($client, 'complete'));
+            return sendResponse(new ClientResource($client->fresh(), 'complete'));
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage(), 301);
         }
+    }
+
+    protected function syncClientWithJazz(Client $client, bool $syncJazz): void
+    {
+        if (!$syncJazz || $client->jazz_id) {
+            return;
+        }
+
+        $service = new ClienteService();
+        $idCliente = $service->agregarCliente($client->load('city'));
+        $client->jazz_id = $idCliente;
+        $client->save();
     }
 
     public function destroy($id)
