@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -89,6 +90,12 @@ class ClientController extends Controller
 
         $query->where(function ($q) use ($columns, $search) {
             foreach ($columns as $column) {
+                if ($column === 'CUIT') {
+                    $normalizedSearch = str_replace('-', '', (string) $search);
+                    $q->orWhereRaw("REPLACE({$column}, '-', '') like ?", ["%{$normalizedSearch}%"]);
+                    continue;
+                }
+
                 $q->orWhere($column, 'like', "%{$search}%");
             }
         });
@@ -147,6 +154,11 @@ class ClientController extends Controller
             $client = Client::findOrFail($request->id);
             $client->fill($request->all())->save();
             $this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
+
+            if (!$request->boolean('synz_jazz') && $client->jazz_id) {
+                $service = new ClienteService();
+                $service->modificarCliente($client->load('city'));
+            }
 
             return sendResponse(new ClientResource($client->fresh(), 'complete'));
         } catch (\Exception $e) {

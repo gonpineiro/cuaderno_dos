@@ -278,8 +278,16 @@ La sincronización de pedido implica obtener datos de un pedido en Jazz (consult
 
 ```php
 // Formato de datos para crear pedido en Jazz
-public function getFormatData($cliente_jazz_id)
+public function getFormatData(Order $order, $cliente_jazz_id)
 {
+    $typePrice = optional(optional($order->price_quote)->type_price)->value;
+
+    // Regla hardcodeada actual para Jazz:
+    // contado -> lista 6
+    // lista   -> lista 2
+    // fallback -> lista 6
+    $idLista = $typePrice === 'lista' ? 2 : 6;
+
     return [
         "empresa" => 1,
         "sucursal" => 2,
@@ -288,7 +296,7 @@ public function getFormatData($cliente_jazz_id)
         "idCliente" => $cliente_jazz_id,
         "ivaTipo" => 3,
         "idVendedor" => $user->idVendedor ? $user->idVendedor : 1,
-        "idLista" => 6,
+        "idLista" => $idLista,
         "condicion" => 0,
         "moneda" => 1,
         "enMostrador" => "S",

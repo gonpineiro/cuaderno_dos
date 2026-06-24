@@ -110,9 +110,14 @@ class PedidoService extends ApiService
         return $this->post('Pedido/FinalizarPedido', $_data);
     }
 
-    public function getFormatData($cliente_jazz_id, string $observation = null)
+    public function getFormatData(Order $order, $cliente_jazz_id, string $observation = null)
     {
         $user = auth()->user();
+        $typePrice = optional(optional($order->price_quote)->type_price)->value;
+        // Regla de negocio actual hardcodeada para Jazz:
+        // contado -> lista 6, lista -> lista 2. Si no hay type_price, se mantiene 6 por compatibilidad.
+        $idLista = $typePrice === 'lista' ? 2 : 6;
+
         return [
             "empresa" => 1,
             "sucursal" => 2,
@@ -122,7 +127,7 @@ class PedidoService extends ApiService
             "ivaTipo" => 3,
             "idVendedor" => $user->idVendedor ? $user->idVendedor : 1,
             "vendedorComision" => 0,
-            "idLista" => 6,
+            "idLista" => $idLista,
             "obs" => $observation,
             "condicion" => 0,
             "moneda" => 1,

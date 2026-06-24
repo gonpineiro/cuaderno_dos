@@ -95,6 +95,7 @@ class ClientJazz extends Model
             'CP',
             'Localidad',
             'Mail',
+            'NroDocumento',
             'CUIT',
             'Telefono',
             'TelParticular',

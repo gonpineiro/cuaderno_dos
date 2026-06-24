@@ -36,6 +36,19 @@ class ClienteService extends ApiService
         return $this->get("Cliente/ObtenerCliente/{$idCliente}");
     }
 
+    public function modificarCliente(Client $cliente)
+    {
+        $idCliente = (int) $cliente->jazz_id;
+
+        if (!$idCliente) {
+            throw new \Exception('El cliente no tiene jazz_id para modificar en Jazz');
+        }
+
+        $payload = $this->buildPayload($cliente, $idCliente);
+
+        return $this->post('Cliente/ModificarCliente', $payload);
+    }
+
     protected function getNextIdCliente(): int
     {
         $lastId = DB::connection('jazz')
@@ -63,6 +76,8 @@ class ClienteService extends ApiService
             'telParticular' => '',
             'telCelular' => '',
             'fax' => '',
+            'permitirFacturarenctacte' => true,
+            'fechaNacimiento' => now()->format('d/m/Y'),
             'descuentoHabitual' => '0',
             'activo' => 'A',
             'limiteCred' => 0,
@@ -103,14 +118,20 @@ class ClienteService extends ApiService
 
     protected function getClientCuit(Client $cliente): string
     {
-        $dni = preg_replace('/\D+/', '', (string) $cliente->dni);
+        $cuit = preg_replace('/\D+/', '', (string) $cliente->cuit);
 
-        if (strlen($dni) === 11) {
-            return $dni;
+        if (strlen($cuit) === 11) {
+            return substr($cuit, 0, 2) . '-' . substr($cuit, 2, 8) . '-' . substr($cuit, 10, 1);
         }
 
+        $dni = preg_replace('/\D+/', '', (string) $cliente->dni);
+
         if (strlen($dni) === 8) {
-            return (string) generateCuit($dni);
+            $generatedCuit = (string) generateCuit($dni);
+
+            if (strlen($generatedCuit) === 11) {
+                return substr($generatedCuit, 0, 2) . '-' . substr($generatedCuit, 2, 8) . '-' . substr($generatedCuit, 10, 1);
+            }
         }
 
         return '';
