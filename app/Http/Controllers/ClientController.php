@@ -26,12 +26,17 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         $body = $request->all();
+        $syncJazz = $request->boolean('synz_jazz');
 
         $client = Client::create($body);
         /*  $client->update(['reference_id', "ID" . $client->id]); */
         $client->reference_id = "ID" . $client->id;
         $client->save();
-        $this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
+        $this->syncClientWithJazz($client, $syncJazz);
+
+        if ($syncJazz && $client->jazz_id) {
+            $this->syncClientDataWithJazz($client);
+        }
 
         return new ClientResource($client->fresh(), 'complete');
     }
@@ -158,6 +163,7 @@ class ClientController extends Controller
             if (!$request->boolean('synz_jazz') && $client->jazz_id) {
                 $service = new ClienteService();
                 $service->modificarCliente($client->load('city'));
+                $this->syncClientDataWithJazz($client);
             }
 
             return sendResponse(new ClientResource($client->fresh(), 'complete'));
@@ -176,6 +182,29 @@ class ClientController extends Controller
         $idCliente = $service->agregarCliente($client->load('city'));
         $client->jazz_id = $idCliente;
         $client->save();
+    }
+
+    protected function syncClientDataWithJazz(Client $client): void
+    {
+        if (!$client->jazz_id) {
+            return;
+        }
+
+        $client->loadMissing('config');
+        $clientJazz = ClientJazz::findOrFail($client->jazz_id);
+        $clientJazz->NroDocumento = $client->dni;
+
+        $hasCuentaCorrienteConfig = $client->config->contains(function ($config) {
+            return !is_null($config->es_cuenta_corriente);
+        });
+
+        if ($hasCuentaCorrienteConfig) {
+            $clientJazz->PermitirFacturarenctacte = $client->config->contains(function ($config) {
+                return (int) $config->es_cuenta_corriente === 1;
+            }) ? 'S' : 'N';
+        }
+
+        $clientJazz->save();
     }
 
     public function destroy($id)

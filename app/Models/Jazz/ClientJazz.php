@@ -8,6 +8,8 @@ class ClientJazz extends Model
 {
     protected $connection = 'jazz';
     protected $table = 'clientes';
+    protected $primaryKey = 'IdCliente';
+    public $timestamps = false;
 
     protected $fillable = [
         'IdCliente',
