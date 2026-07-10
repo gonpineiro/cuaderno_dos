@@ -291,19 +291,31 @@ class OrderController extends \App\Http\Controllers\Controller
     private static function getJazzObservation(Order $order): ?string
     {
         $observation = (string) $order->observation;
-        if (strpos($observation, '@') !== false) {
-            $parts = explode('@', $observation, 2);
-            $paymentObservation = trim($parts[1] ?? '');
-            if ($paymentObservation !== '') {
-                return $paymentObservation;
-            }
-        }
+        $parts = explode('@', $observation, 2);
+        $orderObservation = trim($parts[0] ?? '');
+        $paymentObservation = trim($parts[1] ?? '');
 
         $recargo = $order->detail->first(function ($detail) {
             return $detail->product->code === 'AJUSTE';
         });
 
-        return $recargo ? $recargo->description : null;
+        if ($paymentObservation === '' && $recargo) {
+            $paymentObservation = trim((string) $recargo->description);
+        }
+
+        if ($orderObservation !== '' && $paymentObservation !== '') {
+            return "Pedido: {$orderObservation} - Medios de pago: {$paymentObservation}";
+        }
+
+        if ($orderObservation !== '') {
+            return "Pedido: {$orderObservation}";
+        }
+
+        if ($paymentObservation !== '') {
+            return "Medios de pago: {$paymentObservation}";
+        }
+
+        return null;
     }
 
     public function enviarCorreo()

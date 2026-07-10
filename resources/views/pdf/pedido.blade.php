@@ -60,15 +60,37 @@
         font-weight: 500;
         letter-spacing: 0.04em;
     }
+
+    .company-badge-cell {
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    .company-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 1px solid #003368;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #003368;
+        background-color: #eef4fb;
+    }
 </style>
 
 <body>
     <div class="card px-3" style="margin-bottom: 50px">
         <table>
             <tr>
-                <td colspan="3">
+                <td colspan="{{ $pedido->client && $pedido->client->is_company ? 2 : 3 }}">
                     <h1>ID: {{$pedido->id}}</h1>
                 </td>
+                @if ($pedido->client && $pedido->client->is_company)
+                    <td class="company-badge-cell">
+                        <span class="company-badge">EMPRESA</span>
+                    </td>
+                @endif
             </tr>
             <hr>
             <tr>

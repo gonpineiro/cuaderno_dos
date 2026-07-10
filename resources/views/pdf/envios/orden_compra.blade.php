@@ -36,4 +36,11 @@
 
     <span class="total">{{$total}}</span>
 </p>
+
+<div class="signature-block">
+    <div class="signature-title">RETIRÉ CONFORME</div>
+    <div class="signature-line">
+        NOMBRE FIRMA DNI
+    </div>
+</div>
 @endsection

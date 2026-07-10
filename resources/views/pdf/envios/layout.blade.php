@@ -45,6 +45,27 @@
         font-size: 1.5rem;
     }
 
+    .signature-block {
+        margin-top: 48px;
+        width: 45%;
+        text-align: left;
+        margin-left: auto;
+    }
+
+    .signature-line {
+        border-top: 1px solid #000;
+        margin-top: 52px;
+        padding-top: 8px;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+    }
+
+    .signature-title {
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+    }
+
     .width-5 {
         width: 5%;
     }

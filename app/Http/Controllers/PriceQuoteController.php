@@ -320,7 +320,7 @@ class PriceQuoteController extends Controller
                 OrderController::generar_pedido_jazz($order);
             }
 
-            //TraitPedidosEmail::pedidoProductoUnico($order);
+            TraitPedidosEmail::pedidoProductoUnico($order);
 
             DB::commit();
 

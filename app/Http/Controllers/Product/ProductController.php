@@ -142,11 +142,15 @@ class ProductController extends \App\Http\Controllers\Controller
                     $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
                 });
             })
-                ->withCount(['price_quotes as cantidad_cotizaciones' => function ($query) use ($request) {
-                    $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
-                        $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
-                    });
-                }])
+                ->select('products.*')
+                ->selectSub(function ($query) {
+                    $query->from('price_quote_product')
+                        ->join('price_quotes', 'price_quotes.id', '=', 'price_quote_product.price_quote_id')
+                        ->whereColumn('price_quote_product.product_id', 'products.id')
+                        ->whereNull('price_quote_product.deleted_at')
+                        ->whereNull('price_quotes.deleted_at')
+                        ->selectRaw('COUNT(DISTINCT price_quote_product.price_quote_id)');
+                }, 'cantidad_cotizaciones')
                 ->distinct();
         }
 
