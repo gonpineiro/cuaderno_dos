@@ -118,7 +118,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return sendResponse(ProductResource::collection($products));
     }
 
-    public function getInCotizaciones(Request $request)
+    /* public function getInCotizaciones(Request $request)
     {
         $model = new Product();
 
@@ -151,6 +151,47 @@ class ProductController extends \App\Http\Controllers\Controller
                         ->whereNull('price_quotes.deleted_at')
                         ->selectRaw('COUNT(DISTINCT price_quote_product.price_quote_id)');
                 }, 'cantidad_cotizaciones')
+                ->distinct();
+        }
+
+        $products = $products->get();
+
+        $col = ProductCotizacionesResource::collection($products);
+
+        $col = $col->values();
+
+        return sendResponse($col);
+    } */
+
+    public function getInCotizaciones(Request $request)
+    {
+        $model = new Product();
+
+        $attributes = $model->getFillable();
+        $products = Product::query();
+
+        $type = $request->type;
+        if (!$type) {
+            $products = $products->whereHas('price_quotes')
+                ->distinct()
+                ->where(function ($query) use ($attributes, $request) {
+                    foreach ($attributes as $attribute) {
+                        $query->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+                    }
+                });
+        }
+
+        if ($type === 'vehiculos') {
+            $products = $products->whereHas('price_quotes', function ($query) use ($request) {
+                $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                    $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                });
+            })
+                ->withCount(['price_quotes as cantidad_cotizaciones' => function ($query) use ($request) {
+                    $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                        $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                    });
+                }])
                 ->distinct();
         }
 
