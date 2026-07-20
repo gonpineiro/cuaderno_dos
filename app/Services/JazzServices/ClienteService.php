@@ -68,7 +68,7 @@ class ClienteService extends ApiService
             'numero' => (string) $idCliente,
             'cp' => '',
             'localidad' => $this->normalizeString(optional($cliente->city)->name),
-            'ivaTipo' => 0,
+            'ivaTipo' => $this->getIvaTipo($cliente),
             'obs' => $this->normalizeString($cliente->observation),
             /* 'cuit' => $this->getClientCuit($cliente), */
             'mail' => $this->normalizeString($cliente->email),
@@ -94,6 +94,20 @@ class ClienteService extends ApiService
             'reservado' => 'S',
             'idPais' => 6,
         ];
+    }
+
+    protected function getIvaTipo(Client $cliente): int
+    {
+        $condicionIva = optional($cliente->condicion_iva)->value;
+
+        $ivaTipoMap = [
+            'resp_incripto' => 0,
+            'exento' => 2,
+            'cons_final' => 3,
+            'resp_monotributo' => 4,
+        ];
+
+        return $ivaTipoMap[$condicionIva] ?? 5;
     }
 
     protected function shouldRetryWithNextId(string $message): bool
