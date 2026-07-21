@@ -96,7 +96,7 @@ class ClienteService extends ApiService
         ];
     }
 
-    protected function getIvaTipo(Client $cliente): int
+    public function getIvaTipo(Client $cliente): int
     {
         $condicionIva = optional($cliente->condicion_iva)->value;
 
