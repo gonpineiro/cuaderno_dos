@@ -70,7 +70,7 @@ class ClienteService extends ApiService
             'localidad' => $this->normalizeString(optional($cliente->city)->name),
             //'ivaTipo' => $this->getIvaTipo($cliente),
             'obs' => $this->normalizeString($cliente->observation),
-            'cuit' =>/*  $this->getClientCuit($cliente) */ '  -        - ',
+            'cuit' => $this->getClientCuit($cliente),
             'mail' => $this->normalizeString($cliente->email),
             'telefono' => $this->normalizeString($cliente->phone),
             'telParticular' => '',
