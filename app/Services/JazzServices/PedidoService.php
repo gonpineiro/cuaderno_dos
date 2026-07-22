@@ -4,8 +4,6 @@ namespace App\Services\JazzServices;
 
 use App\Models\Order;
 use App\Models\OrderProduct;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 class PedidoService extends ApiService
 {
@@ -62,7 +60,6 @@ class PedidoService extends ApiService
         return $detail->map(function ($detail) use ($nroInterno) {
             $idProducto = $detail->product->idProducto ? $detail->product->idProducto : 2;
 
-            Log::info($idProducto);
             return [
                 "id"   => $detail->id,
                 'product_id' => $detail->product_id,
