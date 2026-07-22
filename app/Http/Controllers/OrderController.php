@@ -359,14 +359,10 @@ class OrderController extends \App\Http\Controllers\Controller
             return sendResponse(null, "Este pedido ya tiene una relación con Pedidos de jazz. N°: $order->ref_jazz_id", 410);
         }
 
-        DB::beginTransaction();
-
         try {
             $res =  $this->generar_pedido_jazz($order);
-            DB::commit();
             return sendResponse($res);
         } catch (\Exception $e) {
-            DB::rollBack();
             return sendResponse(null, $e->getMessage(), 303);
         }
     }
@@ -391,10 +387,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
         try {
             $id_pedido_jazz = $service->crearPedidoCompleto($data, $order);
-
-            $order->ref_jazz_id = $id_pedido_jazz;
-            //$order->setNumeroJazz();
-            $order->save();
 
             return "Pedido Jazz N°: $id_pedido_jazz generado correctamente!";
         } catch (\Exception $e) {
