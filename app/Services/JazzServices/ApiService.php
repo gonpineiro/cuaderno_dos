@@ -11,6 +11,7 @@ class ApiService
 {
     protected $baseUrl;
     protected $token;
+    private const MAX_DEBUG_BODY_LENGTH = 5000;
 
     public function __construct()
     {
@@ -133,30 +134,60 @@ class ApiService
             $response = Http::withToken($this->token)
                 ->post("{$this->baseUrl}/{$endpoint}", $data);
 
+            $responseLog = [
+                'status'  => $response->status(),
+                'headers' => $response->headers(),
+                'body'    => $this->getReadableResponseBody($response),
+            ];
+
             $logJazzApi->update([
-                'response' => [
-                    'status'  => $response->status(),
-                    'headers' => $response->headers(),
-                    'body'    => $response->json() ?? $response->body(),
-                ],
+                'response' => $responseLog,
                 'time_ms' => round((microtime(true) - $start) * 1000),
             ]);
 
             if ($response->failed()) {
+                Log::error('Error POST Jazz', [
+                    'endpoint' => $endpoint,
+                    'status' => $response->status(),
+                    'request' => $data,
+                    'response' => $responseLog,
+                    'log_jazz_api_id' => $logJazzApi->id,
+                ]);
+
                 throw new \Exception(
-                    'Error en la consulta POST a Jazz',
+                    'Error en la consulta POST a Jazz. Endpoint: ' . $endpoint . '. Status: ' . $response->status(),
                     $response->status()
                 );
             }
 
             return $response->json();
         } catch (\Throwable $e) {
-            Log::info($e->getTrace());
+            Log::error('Excepcion POST Jazz', [
+                'endpoint' => $endpoint,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'request' => $data,
+                'log_jazz_api_id' => $logJazzApi->id,
+            ]);
+
             $logJazzApi->update([
                 'error' => get_excep_array($e),
             ]);
 
             throw $e;
         }
+    }
+
+    private function getReadableResponseBody($response)
+    {
+        $body = $response->body();
+
+        if (strlen($body) > self::MAX_DEBUG_BODY_LENGTH) {
+            return substr($body, 0, self::MAX_DEBUG_BODY_LENGTH) . '... [truncated]';
+        }
+
+        return $response->json() ?? $body;
     }
 }
