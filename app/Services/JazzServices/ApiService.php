@@ -5,12 +5,12 @@ namespace App\Services\JazzServices;
 use App\Models\Jazz\LogJazzApi;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ApiService
 {
     protected $baseUrl;
     protected $token;
-    private const MAX_LOG_BODY_LENGTH = 10000;
 
     public function __construct()
     {
@@ -45,7 +45,11 @@ class ApiService
                 $response = Http::post($path, $params);
 
                 $logJazzApi->update([
-                    'response' => $this->formatResponseForLog($response),
+                    'response' => [
+                        'status' => $response->status(),
+                        'headers' => $response->headers(),
+                        'body' => $response->json() ?? $response->body(),
+                    ],
                     'time_ms' => round((microtime(true) - $start) * 1000),
                 ]);
 
@@ -83,7 +87,11 @@ class ApiService
                 ->get("{$this->baseUrl}/{$endpoint}", $queryParams);
 
             $logJazzApi->update([
-                'response' => $this->formatResponseForLog($response),
+                'response' => [
+                    'status'  => $response->status(),
+                    'headers' => $response->headers(),
+                    'body'    => $response->json() ?? $response->body(),
+                ],
                 'time_ms' => round((microtime(true) - $start) * 1000),
             ]);
 
@@ -126,7 +134,11 @@ class ApiService
                 ->post("{$this->baseUrl}/{$endpoint}", $data);
 
             $logJazzApi->update([
-                'response' => $this->formatResponseForLog($response),
+                'response' => [
+                    'status'  => $response->status(),
+                    'headers' => $response->headers(),
+                    'body'    => $response->json() ?? $response->body(),
+                ],
                 'time_ms' => round((microtime(true) - $start) * 1000),
             ]);
 
@@ -139,31 +151,12 @@ class ApiService
 
             return $response->json();
         } catch (\Throwable $e) {
+            Log::info($e->getTrace());
             $logJazzApi->update([
                 'error' => get_excep_array($e),
             ]);
 
             throw $e;
         }
-    }
-
-    private function formatResponseForLog($response): array
-    {
-        return [
-            'status' => $response->status(),
-            'headers' => $response->headers(),
-            'body' => $this->limitLogBody($response),
-        ];
-    }
-
-    private function limitLogBody($response)
-    {
-        $rawBody = $response->body();
-
-        if (strlen($rawBody) > self::MAX_LOG_BODY_LENGTH) {
-            return substr($rawBody, 0, self::MAX_LOG_BODY_LENGTH) . '... [truncated]';
-        }
-
-        return $response->json() ?? $rawBody;
     }
 }
