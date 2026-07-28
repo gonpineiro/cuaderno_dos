@@ -190,9 +190,10 @@ class ClientController extends Controller
             return;
         }
 
-        $client->loadMissing('config');
+        $client->loadMissing('config', 'condicion_iva');
         $clientJazz = ClientJazz::findOrFail($client->jazz_id);
         $clientJazz->NroDocumento = $client->dni;
+        $clientJazz->IVA_Tipo = (new ClienteService())->getIvaTipo($client);
 
         $hasCuentaCorrienteConfig = $client->config->contains(function ($config) {
             return !is_null($config->es_cuenta_corriente);

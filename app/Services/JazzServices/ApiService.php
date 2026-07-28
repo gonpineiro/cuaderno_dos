@@ -151,7 +151,7 @@ class ApiService
 
             return $response->json();
         } catch (\Throwable $e) {
-            Log::info($e->getTrace());
+            //Log::info($e->getTrace());
             $logJazzApi->update([
                 'error' => get_excep_array($e),
             ]);

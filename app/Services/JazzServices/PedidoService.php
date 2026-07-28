@@ -5,6 +5,7 @@ namespace App\Services\JazzServices;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PedidoService extends ApiService
@@ -29,6 +30,7 @@ class PedidoService extends ApiService
         $id_pedido_jazz = $pedido['refID'];
 
         $productData = $this->getJazzData($order->detail, $id_pedido_jazz);
+        $orderProductRefs = [];
 
         foreach ($productData as $data) {
             $pedido_producto = $this->agregarArticulo($data, $id_pedido_jazz);
@@ -37,11 +39,7 @@ class PedidoService extends ApiService
                 throw new \Exception('Es probable que el producto no exista en Jazz');
             }
 
-            $order_product = OrderProduct::find($data["id"]);
-            if ($order_product) {
-                $order_product->ref_jazz_id = $pedido_producto["refID"];
-                $order_product->save();
-            }
+            $orderProductRefs[$data["id"]] = $pedido_producto["refID"];
         }
 
         $finalizar = $this->finalizarPedido($id_pedido_jazz);
@@ -49,6 +47,20 @@ class PedidoService extends ApiService
         if (isset($finalizar['hasErrorMessage']) && $finalizar['hasErrorMessage']) {
             throw new \Exception($finalizar['responseMessage']);
         }
+
+        DB::transaction(function () use ($order, $id_pedido_jazz, $orderProductRefs) {
+            foreach ($orderProductRefs as $orderProductId => $refJazzId) {
+                $order_product = OrderProduct::find($orderProductId);
+                if ($order_product) {
+                    $order_product->ref_jazz_id = $refJazzId;
+                    $order_product->save();
+                }
+            }
+
+            $order->ref_jazz_id = $id_pedido_jazz;
+            //$order->setNumeroJazz();
+            $order->save();
+        });
 
         return $id_pedido_jazz;
     }

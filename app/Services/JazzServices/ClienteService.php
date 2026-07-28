@@ -68,9 +68,9 @@ class ClienteService extends ApiService
             'numero' => (string) $idCliente,
             'cp' => '',
             'localidad' => $this->normalizeString(optional($cliente->city)->name),
-            'ivaTipo' => $this->getIvaTipo($cliente),
+            //'ivaTipo' => $this->getIvaTipo($cliente),
             'obs' => $this->normalizeString($cliente->observation),
-            /* 'cuit' => $this->getClientCuit($cliente), */
+            'cuit' => $this->getClientCuit($cliente),
             'mail' => $this->normalizeString($cliente->email),
             'telefono' => $this->normalizeString($cliente->phone),
             'telParticular' => '',
@@ -96,7 +96,7 @@ class ClienteService extends ApiService
         ];
     }
 
-    protected function getIvaTipo(Client $cliente): int
+    public function getIvaTipo(Client $cliente): int
     {
         $condicionIva = optional($cliente->condicion_iva)->value;
 
