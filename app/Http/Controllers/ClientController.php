@@ -158,13 +158,13 @@ class ClientController extends Controller
         try {
             $client = Client::findOrFail($request->id);
             $client->fill($request->all())->save();
-            $this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
+            //$this->syncClientWithJazz($client, $request->boolean('synz_jazz'));
 
-            if (!$request->boolean('synz_jazz') && $client->jazz_id) {
+            /* if (!$request->boolean('synz_jazz') && $client->jazz_id) {
                 $service = new ClienteService();
                 $service->modificarCliente($client->load('city'));
                 $this->syncClientDataWithJazz($client);
-            }
+            } */
 
             return sendResponse(new ClientResource($client->fresh(), 'complete'));
         } catch (\Exception $e) {
