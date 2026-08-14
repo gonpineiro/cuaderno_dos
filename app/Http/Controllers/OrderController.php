@@ -288,6 +288,81 @@ class OrderController extends \App\Http\Controllers\Controller
         $order->save();
     }
 
+    private static function hasPaymentObservation(Order $order): bool
+    {
+        $parts = explode('@', (string) $order->observation, 2);
+        return trim($parts[1] ?? '') !== '';
+    }
+
+    private static function hasAdjustmentProduct(Order $order, ?Product $recargoProducto = null): bool
+    {
+        return $order->detail->contains(function ($detail) use ($recargoProducto) {
+            if ($recargoProducto && (int) $detail->product_id === (int) $recargoProducto->id) {
+                return true;
+            }
+
+            return optional($detail->product)->code === 'AJUSTE';
+        });
+    }
+
+    private static function ensurePaymentDataForJazz(Order $order, Request $request): void
+    {
+        $recargos = self::normalizePaymentLines($request);
+        if (empty($recargos)) {
+            return;
+        }
+
+        $order->loadMissing(['detail.product']);
+        $recargoProducto = Product::productoAjuste();
+        $paymentObservationLines = [];
+
+        foreach ($recargos as $recargoItem) {
+            $medioPago = trim($recargoItem['medio_pago'] ?? 'Medio de pago');
+            $montoBase = isset($recargoItem['monto']) ? (float) $recargoItem['monto'] : 0;
+            $montoRecargo = isset($recargoItem['recargo']) ? (float) $recargoItem['recargo'] : 0;
+            $montoTotal = $montoBase + $montoRecargo;
+
+            if ($montoTotal > 0) {
+                $montoTotalFormat = number_format($montoTotal, 0, '', '');
+                $paymentObservationLines[] = "{$medioPago}: \${$montoTotalFormat}";
+            }
+        }
+
+        if (!self::hasPaymentObservation($order) && !empty($paymentObservationLines)) {
+            self::appendPaymentObservation($order->id, $paymentObservationLines);
+        }
+
+        if (!$recargoProducto || self::hasAdjustmentProduct($order, $recargoProducto)) {
+            return;
+        }
+
+        $baseDetail = $order->detail->first(function ($detail) use ($recargoProducto) {
+            return (int) $detail->product_id !== (int) $recargoProducto->id;
+        });
+
+        if (!$baseDetail) {
+            return;
+        }
+
+        foreach ($recargos as $recargoItem) {
+            $montoRecargo = isset($recargoItem['recargo']) ? (float) $recargoItem['recargo'] : 0;
+            if ($montoRecargo <= 0) {
+                continue;
+            }
+
+            $medioPago = trim($recargoItem['medio_pago'] ?? 'Ajuste');
+
+            OrderProduct::create([
+                'product_id' => $recargoProducto->id,
+                'order_id' => $order->id,
+                'state_id' => $baseDetail->state_id,
+                'unit_price' => $montoRecargo,
+                'description' => "Financiación {$medioPago}",
+                'amount' => 1,
+            ]);
+        }
+    }
+
     private static function getJazzObservation(Order $order): ?string
     {
         $observation = (string) $order->observation;
@@ -360,6 +435,7 @@ class OrderController extends \App\Http\Controllers\Controller
         }
 
         try {
+            self::ensurePaymentDataForJazz($order, $request);
             $res =  $this->generar_pedido_jazz($order);
             return sendResponse($res);
         } catch (\Exception $e) {

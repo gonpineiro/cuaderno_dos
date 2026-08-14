@@ -12,6 +12,7 @@ use App\Http\Resources\Client\ClientJazzResource;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Models\Jazz\ClientJazz;
+use App\Services\JazzServices\ClientJazzSyncService;
 use App\Services\JazzServices\ClienteService;
 
 class ClientController extends Controller
@@ -190,22 +191,8 @@ class ClientController extends Controller
             return;
         }
 
-        $client->loadMissing('config', 'condicion_iva');
         $clientJazz = ClientJazz::findOrFail($client->jazz_id);
-        $clientJazz->NroDocumento = $client->dni;
-        $clientJazz->IVA_Tipo = (new ClienteService())->getIvaTipo($client);
-
-        $hasCuentaCorrienteConfig = $client->config->contains(function ($config) {
-            return !is_null($config->es_cuenta_corriente);
-        });
-
-        if ($hasCuentaCorrienteConfig) {
-            $clientJazz->PermitirFacturarenctacte = $client->config->contains(function ($config) {
-                return (int) $config->es_cuenta_corriente === 1;
-            }) ? 'S' : 'N';
-        }
-
-        $clientJazz->save();
+        (new ClientJazzSyncService())->syncJazzFromLocal($client, $clientJazz);
     }
 
     public function destroy($id)
