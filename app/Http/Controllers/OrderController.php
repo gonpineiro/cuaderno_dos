@@ -445,8 +445,17 @@ class OrderController extends \App\Http\Controllers\Controller
 
     public static function generar_pedido_jazz($order)
     {
-        $order = $order->fresh(['detail.product', 'client', 'price_quote.type_price']);
+        $order = $order->fresh(['detail.product', 'detail.state', 'client', 'price_quote.type_price']);
         $service = new PedidoService();
+        $detailSinCancelados = $order->detail->filter(function ($detail) {
+            return optional($detail->state)->value !== 'cancelado';
+        })->values();
+
+        if ($detailSinCancelados->isEmpty()) {
+            throw new \Exception('El pedido no tiene productos activos para enviar a Jazz');
+        }
+
+        $order->setRelation('detail', $detailSinCancelados);
 
         // Detectar productos de recargo (código "AJUSTE")
         $recargo = $order->detail->filter(function ($detail) {

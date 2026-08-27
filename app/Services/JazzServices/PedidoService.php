@@ -71,20 +71,24 @@ class PedidoService extends ApiService
      */
     public function getJazzData($detail, $nroInterno)
     {
-        return $detail->map(function ($detail) use ($nroInterno) {
-            $idProducto = $detail->product->idProducto ? $detail->product->idProducto : 2;
+        return $detail
+            ->filter(function ($detail) {
+                return optional($detail->state)->value !== 'cancelado';
+            })
+            ->map(function ($detail) use ($nroInterno) {
+                $idProducto = $detail->product->idProducto ? $detail->product->idProducto : 2;
 
-            Log::info($idProducto);
-            return [
-                "id"   => $detail->id,
-                'product_id' => $detail->product_id,
-                "idProducto"  =>  $idProducto,
-                "precio" => $detail->unit_price,
-                "cantidad" => $detail->amount,
-                "detalle" => $detail->description,
-                "nroInterno" => $nroInterno
-            ];
-        })
+                Log::info($idProducto);
+                return [
+                    "id"   => $detail->id,
+                    'product_id' => $detail->product_id,
+                    "idProducto"  =>  $idProducto,
+                    "precio" => $detail->unit_price,
+                    "cantidad" => $detail->amount,
+                    "detalle" => $detail->description,
+                    "nroInterno" => $nroInterno
+                ];
+            })
             //->filter(fn($item) => !empty($item["idProducto"]))
             ->values()
             ->toArray();
