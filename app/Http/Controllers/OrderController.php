@@ -74,12 +74,21 @@ class OrderController extends \App\Http\Controllers\Controller
 
             // Actualiza o agrega registros OrderProduct segÃºn detail
             foreach ($detail as $item) {
+                $product = Product::findOrFail($item['product']['id']);
+                $unitPrice = $item['unit_price'];
+
+                // Los pedidos con precio distinto de lista mantienen el precio unitario redondeado,
+                // igual que cuando se crean desde una cotización.
+                if ($order->price_quote->type_price->value !== 'lista' && $product->code !== 'AJUSTE') {
+                    $unitPrice = redondearNumero($unitPrice);
+                }
+
                 $orderProductData = [
                     'order_id' => $order->id,
-                    'product_id' => $item['product']['id'],
-                    'provider_id' => $item['provider'] ? $item['provider']['id'] : null,
+                    'product_id' => $product->id,
+                    'provider_id' => !empty($item['provider']) ? $item['provider']['id'] : null,
                     'amount' => $item['amount'],
-                    'unit_price' => $item['unit_price'],
+                    'unit_price' => $unitPrice,
                     /* 'description' => $item['description'], */
                     'state_id' => $item['state']['id'],
                 ];
