@@ -187,8 +187,7 @@ class ProductController extends \App\Http\Controllers\Controller
                     $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
                         $innerQuery->where(
                             'name',
-                            'LIKE',
-                            '%' . $request->string . '%'
+                            $request->string
                         );
                     });
                 })
@@ -197,8 +196,7 @@ class ProductController extends \App\Http\Controllers\Controller
                         $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
                             $innerQuery->where(
                                 'name',
-                                'LIKE',
-                                '%' . $request->string . '%'
+                                $request->string
                             );
                         });
                     }
