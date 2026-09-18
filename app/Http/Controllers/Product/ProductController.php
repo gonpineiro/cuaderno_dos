@@ -182,16 +182,27 @@ class ProductController extends \App\Http\Controllers\Controller
         }
 
         if ($type === 'vehiculos') {
-            $products = $products->whereHas('price_quotes', function ($query) use ($request) {
-                $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
-                    $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
-                });
-            })
-                ->withCount(['price_quotes as cantidad_cotizaciones' => function ($query) use ($request) {
+            $products = $products
+                ->whereHas('price_quotes', function ($query) use ($request) {
                     $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
-                        $innerQuery->where('name', 'LIKE', '%' . $request->string . '%');
+                        $innerQuery->where(
+                            'name',
+                            'LIKE',
+                            '%' . $request->string . '%'
+                        );
                     });
-                }])
+                })
+                ->withCount([
+                    'price_quotes as cantidad_cotizaciones' => function ($query) use ($request) {
+                        $query->whereHas('vehiculo', function ($innerQuery) use ($request) {
+                            $innerQuery->where(
+                                'name',
+                                'LIKE',
+                                '%' . $request->string . '%'
+                            );
+                        });
+                    }
+                ])
                 ->distinct();
         }
 
