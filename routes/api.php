@@ -25,6 +25,7 @@ use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\VehiculoController;
+use Illuminate\Support\Facades\Artisan;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -198,3 +199,41 @@ Route::post('producto/jazz/sincronizar', [JazzController::class, 'sync']);
 Route::get('products_jazz', [JazzController::class, 'getProducts']);
 Route::get('generar_pedido', [JazzController::class, 'generarPedidoApi']);
 Route::get('cotizacion/pdf/{id}', [PriceQuoteController::class, 'getPdf']);
+
+Route::get('sync-client-jazz', function () {
+    set_time_limit(0);
+    ini_set('max_execution_time', '0');
+
+    $exitCode = Artisan::call('sync:client-jazz');
+
+    if ($exitCode !== 0) {
+        return response()->json([
+            'message' => 'El comando sync:client-jazz terminó con error.',
+            'output' => Artisan::output(),
+        ], 500);
+    }
+
+    return response()->json([
+        'message' => 'El comando sync:client-jazz se ejecutó correctamente.',
+        'output' => Artisan::output(),
+    ]);
+});
+
+Route::get('sync-client-jazz-data', function () {
+    set_time_limit(0);
+    ini_set('max_execution_time', '0');
+
+    $exitCode = Artisan::call('sync:client-jazz-data');
+
+    if ($exitCode !== 0) {
+        return response()->json([
+            'message' => 'El comando sync:client-jazz-data terminó con error.',
+            'output' => Artisan::output(),
+        ], 500);
+    }
+
+    return response()->json([
+        'message' => 'El comando sync:client-jazz-data se ejecutó correctamente.',
+        'output' => Artisan::output(),
+    ]);
+});
