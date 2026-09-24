@@ -226,7 +226,7 @@ Route::get('sync-client-jazz-data', function () {
 
     $progressPath = storage_path('app/sync_client_jazz_data_progress.json');
     $lockPath = storage_path('app/sync_client_jazz_data.lock');
-    $limit = max(1, min(200, (int) request('limit', 25)));
+    $limit = max(1, min(200, (int) request('limit', 150)));
 
     if (request()->boolean('reset') && is_file($progressPath)) {
         unlink($progressPath);
