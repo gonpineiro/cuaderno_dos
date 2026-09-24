@@ -26,6 +26,7 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\VehiculoController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 Route::post('login', [ApiController::class, 'login']);
 Route::post('register', [ApiController::class, 'register']);
@@ -223,17 +224,82 @@ Route::get('sync-client-jazz-data', function () {
     set_time_limit(0);
     ini_set('max_execution_time', '0');
 
-    $exitCode = Artisan::call('sync:client-jazz-data');
+    $progressPath = storage_path('app/sync_client_jazz_data_progress.json');
+    $lockPath = storage_path('app/sync_client_jazz_data.lock');
+    $limit = max(1, min(200, (int) request('limit', 25)));
 
-    if ($exitCode !== 0) {
-        return response()->json([
-            'message' => 'El comando sync:client-jazz-data terminó con error.',
-            'output' => Artisan::output(),
-        ], 500);
+    if (request()->boolean('reset') && is_file($progressPath)) {
+        unlink($progressPath);
     }
 
-    return response()->json([
-        'message' => 'El comando sync:client-jazz-data se ejecutó correctamente.',
-        'output' => Artisan::output(),
-    ]);
+    $lock = fopen($lockPath, 'c');
+
+    if (!$lock || !flock($lock, LOCK_EX | LOCK_NB)) {
+        return response()->json([
+            'message' => 'El proceso sync:client-jazz-data ya está en ejecución.',
+        ], 409);
+    }
+
+    try {
+        $progress = is_file($progressPath)
+            ? json_decode(file_get_contents($progressPath), true)
+            : [];
+        $lastId = (int) ($progress['last_id'] ?? 0);
+
+        $clientIds = DB::table('clients')
+            ->whereNotNull('jazz_id')
+            ->whereNull('deleted_at')
+            ->where('id', '>', $lastId)
+            ->orderBy('id')
+            ->limit($limit)
+            ->pluck('id')
+            ->all();
+
+        if (empty($clientIds)) {
+            return response()->json([
+                'message' => 'El comando sync:client-jazz-data ya terminó por completo.',
+                'last_id' => $lastId,
+            ]);
+        }
+
+        $exitCode = Artisan::call('sync:client-jazz-data', [
+            '--client-id' => $clientIds,
+            '--chunk' => $limit,
+        ]);
+
+        if ($exitCode !== 0) {
+            return response()->json([
+                'message' => 'El comando sync:client-jazz-data terminó con error. Se puede reintentar la misma URL.',
+                'last_id' => $lastId,
+                'client_ids' => $clientIds,
+                'output' => Artisan::output(),
+            ], 500);
+        }
+
+        $lastProcessedId = max($clientIds);
+
+        file_put_contents($progressPath, json_encode([
+            'last_id' => $lastProcessedId,
+            'updated_at' => now()->toDateTimeString(),
+        ]));
+
+        $remaining = DB::table('clients')
+            ->whereNotNull('jazz_id')
+            ->whereNull('deleted_at')
+            ->where('id', '>', $lastProcessedId)
+            ->count();
+
+        return response()->json([
+            'message' => $remaining > 0
+                ? 'Lote de sync:client-jazz-data ejecutado correctamente. Volvé a ejecutar esta URL para continuar.'
+                : 'El comando sync:client-jazz-data se ejecutó correctamente por completo.',
+            'processed' => count($clientIds),
+            'last_id' => $lastProcessedId,
+            'remaining' => $remaining,
+            'output' => Artisan::output(),
+        ]);
+    } finally {
+        flock($lock, LOCK_UN);
+        fclose($lock);
+    }
 });
