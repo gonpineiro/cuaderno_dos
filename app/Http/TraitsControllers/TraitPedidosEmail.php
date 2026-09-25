@@ -280,7 +280,7 @@ trait TraitPedidosEmail
 
     public static function pedidoRetirarVencido(Order $pedido)
     {
-        $email = 'gon.pineiro@gmail.com';
+        $email = app()->environment() === 'production' ? $pedido->client->email : 'Nicolasallende90@gmail.com';
         $correo = new PedidoRetirarVencido($pedido);
 
         try {
