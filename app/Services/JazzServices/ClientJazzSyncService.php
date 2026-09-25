@@ -123,7 +123,9 @@ class ClientJazzSyncService
         $this->setIfNotBlank($desired, 'name', $nameParts['name'] ?? null);
         $this->setIfKeyExists($desired, 'lastname', $nameParts);
         $this->setIfNotBlank($desired, 'adress', $this->normalizeText($clientJazz->Domicilio, 255));
-        $this->setIfNotBlank($desired, 'phone', $this->extractPhone($clientJazz));
+        if ($this->normalizeText($client->phone, 30) === '') {
+            $this->setIfNotBlank($desired, 'phone', $this->extractPhone($clientJazz));
+        }
         $this->setIfNotBlank($desired, 'email', $this->extractMail($clientJazz));
         $this->setIfNotBlank($desired, 'dni', $this->normalizeJazzDocument($clientJazz->NroDocumento));
         $this->setIfNotBlank($desired, 'cuit', $this->normalizeCuit($clientJazz->CUIT));

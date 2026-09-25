@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\SyncClientJazz;
 
 use App\Models\Client;
 use App\Models\Jazz\ClientJazz;
@@ -13,7 +13,7 @@ class SyncClientJazzData extends Command
 {
     protected $signature = 'sync:client-jazz-data
                             {--client-id=* : IDs locales de clientes a sincronizar}
-                            {--chunk=100 : Cantidad de clientes por lote}
+                            {--chunk=150 : Cantidad de clientes por lote}
                             {--dry-run : Analiza cambios sin actualizar datos locales}';
 
     protected $description = 'Actualiza clientes locales asociados con la informacion disponible en Jazz';

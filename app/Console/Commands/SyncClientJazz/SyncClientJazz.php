@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\SyncClientJazz;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Connection;
