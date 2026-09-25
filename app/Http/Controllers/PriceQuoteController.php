@@ -223,7 +223,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->generar_pedido_jazz) {
-                OrderController::generar_pedido_jazz($order);
+                OrderController::generar_pedido_jazz($order, $request->jazz_cliente_id);
             }
 
             DB::commit();
@@ -270,7 +270,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->generar_pedido_jazz) {
-                OrderController::generar_pedido_jazz($order);
+                OrderController::generar_pedido_jazz($order, $request->jazz_cliente_id);
             }
 
             DB::commit();
@@ -317,7 +317,7 @@ class PriceQuoteController extends Controller
             $priceQuote->save();
 
             if ($request->generar_pedido_jazz) {
-                OrderController::generar_pedido_jazz($order);
+                OrderController::generar_pedido_jazz($order, $request->jazz_cliente_id);
             }
 
             TraitPedidosEmail::pedidoProductoUnico($order);

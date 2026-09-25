@@ -445,14 +445,14 @@ class OrderController extends \App\Http\Controllers\Controller
 
         try {
             self::ensurePaymentDataForJazz($order, $request);
-            $res =  $this->generar_pedido_jazz($order);
+            $res =  $this->generar_pedido_jazz($order, $request->input('jazz_cliente_id'));
             return sendResponse($res);
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage(), 303);
         }
     }
 
-    public static function generar_pedido_jazz($order)
+    public static function generar_pedido_jazz($order, $jazzClienteId = null)
     {
         $order = $order->fresh(['detail.product', 'detail.state', 'client', 'price_quote.type_price']);
         $service = new PedidoService();
@@ -477,7 +477,13 @@ class OrderController extends \App\Http\Controllers\Controller
             $observation = $recargo->description;
         }
 
-        $data = $service->getFormatData($order, $order->client->jazz_id, $observation);
+        $clienteJazzId = (int) ($jazzClienteId ?: $order->client->jazz_id);
+
+        if (!$clienteJazzId) {
+            throw new \Exception('El cliente no tiene relación con Jazz');
+        }
+
+        $data = $service->getFormatData($order, $clienteJazzId, $observation);
 
         try {
             $id_pedido_jazz = $service->crearPedidoCompleto($data, $order);
