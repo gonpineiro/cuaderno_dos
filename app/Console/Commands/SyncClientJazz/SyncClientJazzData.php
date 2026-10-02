@@ -11,6 +11,14 @@ use Throwable;
 
 class SyncClientJazzData extends Command
 {
+    /**
+     * IDs locales de clientes que no deben actualizarse desde Jazz.
+     */
+    private const EXCLUDED_CLIENT_IDS = [
+        // Agregar aqui los IDs de clientes a excluir.
+        348
+    ];
+
     protected $signature = 'sync:client-jazz-data
                             {--client-id=* : IDs locales de clientes a sincronizar}
                             {--chunk=150 : Cantidad de clientes por lote}
@@ -35,6 +43,10 @@ class SyncClientJazzData extends Command
             ->whereNotNull('jazz_id')
             ->whereNull('deleted_at')
             ->with('config');
+
+        if (!empty(self::EXCLUDED_CLIENT_IDS)) {
+            $query->whereNotIn('id', self::EXCLUDED_CLIENT_IDS);
+        }
 
         if (!empty($clientIds)) {
             $query->whereIn('id', $clientIds);
