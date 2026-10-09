@@ -21,6 +21,10 @@ class PriceQuoteProductResource extends JsonResource
 
         $array['product'] =  new ProductResource($this->product);
 
+        if ($request->boolean('update_prices') && $this->product->jazz) {
+            $array['unit_price'] = $this->product->jazz->precio_lista_2;
+        }
+
         $array['state'] =  $this->state;
         $array['provider'] =  $this->provider;
 
