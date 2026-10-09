@@ -47,10 +47,9 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
             <h3 style="margin:0; color: black;">
                 Tipo Precio:
             </h3>
+            {{ mb_strtoupper($tipo_precio, 'UTF-8') }}
             @if (optional(optional($cotizacion->client)->condicion_iva)->value === 'resp_incripto')
-                PRECIOS SIN IVA
-            @else
-                {{ mb_strtoupper($tipo_precio, 'UTF-8') }}
+                <br>PRECIOS SIN IVA
             @endif
     </td>
     </tr>
