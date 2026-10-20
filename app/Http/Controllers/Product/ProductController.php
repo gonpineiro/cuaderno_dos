@@ -387,12 +387,13 @@ class ProductController extends \App\Http\Controllers\Controller
             $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
         }
 
-        $results = $products->orderBy('factory_code', 'asc')
+        $results = $products->orderByRaw('products.idProducto IS NOT NULL DESC')
             ->orderBy(
                 ProductJazz::select('precio_lista_2')
                     ->whereColumn('product_jazz.id', 'products.idProducto'),
                 'desc'
             )
+            ->orderBy('factory_code', 'asc')
             ->get();
 
         if (!$results) {
