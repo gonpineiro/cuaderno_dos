@@ -41,7 +41,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
     </tbody>
 
     <tfoot>
-        @if($iva)
+        @if(false)
         <tr>
             <td colspan="2" style="text-align:right; padding:4px 4px;">
                 <strong>Subtotal</strong>
