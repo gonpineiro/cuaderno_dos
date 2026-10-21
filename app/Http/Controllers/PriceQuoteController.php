@@ -430,9 +430,11 @@ class PriceQuoteController extends Controller
         $responsable_inscripto  = Table::where('name', 'client_condicion_iva')->where('value', 'resp_incripto')->first();
 
         $valor_iva = null;
-        $debe_discriminar_iva = $order->type_price->value !== 'lista'
-            && $order->client->condicion_iva
+        $es_responsable_inscripto = $order->client->condicion_iva
             && $order->client->condicion_iva->id === $responsable_inscripto->id;
+        $debe_discriminar_iva = $order->type_price->value === 'lista'
+            ? !$es_responsable_inscripto
+            : $es_responsable_inscripto;
 
         if ($debe_discriminar_iva) {
             $valor_iva = $total - ($total / 1.21);
