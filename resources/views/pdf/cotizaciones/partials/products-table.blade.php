@@ -48,7 +48,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
                 Tipo Precio:
             </h3>
             {{ mb_strtoupper($tipo_precio, 'UTF-8') }}
-            @if (optional(optional($cotizacion->client)->condicion_iva)->value === 'resp_incripto')
+            @if ($cotizacion->type_price->value !== 'lista' && optional(optional($cotizacion->client)->condicion_iva)->value === 'resp_incripto')
                 <br>PRECIOS SIN IVA
             @endif
     </td>
