@@ -53,7 +53,7 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
     <tr>
         <td><small>Precios sujeto a modificación sin previo aviso</small></td>
     </tr>
-    @if (!$iva || optional(optional($cotizacion->client)->condicion_iva)->value === 'resp_incripto')
+    @if (optional(optional($cotizacion->client)->condicion_iva)->value === 'resp_incripto')
     <tr>
         <td><strong>PRECIO SIN IVA</strong></td>
     </tr>
