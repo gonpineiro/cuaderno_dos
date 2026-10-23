@@ -53,6 +53,11 @@ $tipo_precio = $cotizacion->type_price->value == 'contado' ? ($iva ? $contadoSin
     <tr>
         <td><small>Precios sujeto a modificación sin previo aviso</small></td>
     </tr>
+    @if (!$iva)
+    <tr>
+        <td><strong>PRECIO SIN IVA</strong></td>
+    </tr>
+    @endif
     <tr>
         <td style="width:100%;">
             <h3 style="margin:0; color: black;">
