@@ -427,12 +427,10 @@ class PriceQuoteController extends Controller
 
         $total = get_total_price($detail);
 
-        $responsable_inscripto  = Table::where('name', 'client_condicion_iva')->where('value', 'resp_incripto')->first();
-
         $valor_iva = null;
-        $es_responsable_inscripto = $order->client->condicion_iva
-            && $order->client->condicion_iva->id === $responsable_inscripto->id;
-        $debe_discriminar_iva = $order->type_price->value === 'lista'
+        $es_responsable_inscripto = optional($order->client->condicion_iva)->value === 'resp_incripto';
+        $es_precio_lista = strtolower(trim((string) $order->type_price->value)) === 'lista';
+        $debe_discriminar_iva = $es_precio_lista
             ? !$es_responsable_inscripto
             : $es_responsable_inscripto;
 
