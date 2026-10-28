@@ -430,9 +430,7 @@ class PriceQuoteController extends Controller
         $valor_iva = null;
         $es_responsable_inscripto = optional($order->client->condicion_iva)->value === 'resp_incripto';
         $es_precio_lista = strtolower(trim((string) $order->type_price->value)) === 'lista';
-        $debe_discriminar_iva = $es_precio_lista
-            ? !$es_responsable_inscripto
-            : $es_responsable_inscripto;
+        $debe_discriminar_iva = !$es_precio_lista && $es_responsable_inscripto;
 
         if ($debe_discriminar_iva) {
             $valor_iva = $total - ($total / 1.21);

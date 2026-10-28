@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class PriceQuotePdfPriceTypeTest extends TestCase
 {
-    public function test_price_type_and_tax_condition_are_shown_independently(): void
+    public function test_list_price_does_not_show_tax_legend(): void
     {
         $cotizacion = (object) [
             'type_price' => (object) ['value' => 'lista'],
@@ -30,7 +30,7 @@ class PriceQuotePdfPriceTypeTest extends TestCase
             ])->render();
 
             $this->assertStringContainsString('LISTA', $html);
-            $this->assertStringContainsString('PRECIOS SIN IVA', $html);
+            $this->assertStringNotContainsString('PRECIO SIN IVA', $html);
         }
     }
 }
