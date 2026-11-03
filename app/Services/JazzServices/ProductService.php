@@ -113,6 +113,26 @@ class ProductService extends ApiService
                 ]);
         }
 
+        self::normalizeProductLocations();
+
         return $total;
+    }
+
+    public static function normalizeProductLocations()
+    {
+        return DB::affectingStatement(<<<'SQL'
+            UPDATE products p
+            JOIN product_jazz pj ON pj.id = p.idProducto AND pj.code = p.code
+            SET
+                p.ship = TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(pj.ubicacion, 'NAVE:', -1), '-', 1)),
+                p.module = TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(pj.ubicacion, 'MOD:', -1), '-', 1)),
+                p.`column` = TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(pj.ubicacion, 'COL:', -1), '-', 1)),
+                p.`row` = TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(pj.ubicacion, 'FILA:', -1), '-', 1)),
+                p.side = TRIM(SUBSTRING_INDEX(pj.ubicacion, 'LADO:', -1))
+            WHERE p.idProducto IS NOT NULL
+                AND p.ship IS NULL
+                AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(pj.ubicacion, 'NAVE:', -1), '-', 1)) IS NOT NULL
+        SQL
+        );
     }
 }

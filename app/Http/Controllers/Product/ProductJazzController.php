@@ -148,4 +148,15 @@ class ProductJazzController extends Controller
             return sendResponse(null, $th->getMessage());
         }
     }
+
+    public function normalizeLocations()
+    {
+        try {
+            return sendResponse([
+                'updated' => ProductService::normalizeProductLocations(),
+            ]);
+        } catch (\Throwable $th) {
+            return sendResponse(null, $th->getMessage(), 500);
+        }
+    }
 }

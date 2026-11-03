@@ -93,11 +93,15 @@ Se utiliza `SUBSTRING_INDEX` anidado para extraer valores entre prefijos y delim
 
 3. **TRIM()**: Elimina espacios en blanco al inicio y final del valor extraído.
 
+## Ejecución automática
+
+El comando `php artisan update:stock-prices` ejecuta esta actualización al finalizar la carga de stock y precios. Solo completa productos vinculados cuyo `ship` todavía es `NULL`; no reemplaza ubicaciones locales ya normalizadas.
+
 ## Uso Recomendado
 
 1. **Ejecutar primero el SELECT** para verificar qué registros serán afectados
 2. **Revisar los resultados** y confirmar que la extracción es correcta
-3. **Ejecutar el UPDATE** para aplicar los cambios
+3. **Ejecutar el UPDATE** solo para una corrección manual excepcional; la sincronización de stock/precios ya lo hace al finalizar
 4. **Ejecutar nuevamente el SELECT** para verificar que la consistencia se logró
 
 ## Archivos Relacionados
