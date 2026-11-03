@@ -1,114 +1,31 @@
-# Configuración del Agente
+# AGENTS.md
 
-Este archivo contiene guidelines e información útil para agentes IA que trabajan en este proyecto Laravel.
+## Alcance
 
-## Descripción del Proyecto
+Este repositorio contiene la API Laravel 8.75 del sistema Allende: cotizaciones, pedidos, envíos, catálogo, compras, autenticación, PDF/correo e integración con Jazz.
 
-Backend API Laravel para gestionar cotizaciones, pedidos y envíos. Se integra con el sistema ERP externo **Jazz**.
+La documentación canónica está fuera de este repositorio, en [`../docs/README.md`](../docs/README.md). Léela primero y continúa por la página del dominio afectado. En particular:
 
-### Flujo de Negocio
-```
-PriceQuote (Cotización) → Order (Pedido: online/cliente/siniestro) → Shipment (Envío)
-```
+- [flujo comercial](../docs/modules/commercial/overview.md);
+- [catálogo](../docs/modules/catalog/overview.md);
+- [integración Jazz](../docs/integrations/jazz/overview.md);
+- [API, datos y autorización](../docs/shared/api/overview.md), [datos](../docs/shared/data/overview.md) y [autorización](../docs/shared/authorization/overview.md);
+- [operación y riesgos](../docs/operations/overview.md) y [riesgos conocidos](../docs/quality/risks-and-gaps.md).
 
-### Tecnologías Principales
-- Laravel 9+
-- Autenticación JWT (tymon/jwt-auth)
-- Permisos: Spatie
-- Base de datos: MySQL + conexión MySQL a Jazz
-- PDF: DomPDF
+No mantengas documentación dentro de este repositorio. Las rutas, controladores, servicios, modelos, migraciones y configuración actual son la evidencia primaria; la documentación raíz describe el comportamiento verificado.
 
----
+## Reglas de implementación
 
-## Archivos de Documentación
+- Mantén validación de entrada en `FormRequest` cuando exista, reglas en la capa ya utilizada y respuestas mediante Resources/helpers existentes.
+- Revisa `routes/api.php` antes de cambiar un contrato HTTP y conserva la autorización del servidor: los controles de la interfaz no bastan.
+- Usa transacciones para escrituras locales que abarquen varias entidades. Jazz, correo y otros efectos externos no participan de una transacción distribuida; ante un timeout, concilia antes de reintentar.
+- Los detalles de cotización, pedido y envío son históricos e independientes después de la copia. No recalcules precios del catálogo de forma implícita.
+- Estados, tipos y formas de pago se resuelven por `tables.name` + `tables.value`; evita depender de IDs, excepto las dependencias explícitas documentadas.
+- El esquema versionado no reproduce necesariamente producción: contrasta migraciones, modelos y base objetivo antes de cambios de datos.
 
-Toda la documentación del proyecto está en el directorio `doc/`:
+## Verificación y operación segura
 
-| Archivo | Descripción |
-|---------|-------------|
-| `doc/documentacion_completa.md` | Documentación principal (modelos, endpoints, flujo de negocio) |
-| `doc/integracion_jazz.md` | Detalles de integración con Jazz (Productos, Pedidos, Clientes, API) |
-| `doc/commands_tools.md` | Comandos útiles (Docker, Laravel, Sincronización) |
-| `doc/permissions.md` | Permisos y Roles (Spatie Laravel Permission) |
-| `doc/productos.md` | Información de productos |
-| `doc/consistencia_ubicacion.md` | Notas de consistencia de ubicación |
-| `doc/changes.md` | Registro de cambios |
-
----
-
-## Comandos Útiles
-
-Consulta `doc/commands_tools.md` para comandos completos de Docker, Laravel y sincronización.
-
----
-
-## Tareas Comunes
-
-### Crear una Cotización
-1. Crear `PriceQuote` con client_id y datos del vehículo
-2. Agregar productos mediante el pivot `PriceQuoteProduct`
-3. Calcular total usando coeficientes
-
-### Convertir Cotización a Pedido
-- Llamar al endpoint: `POST /api/cotizacion/asignar/{type}`
-- Types: `online`, `cliente`, `siniestro`
-- Auto-determina el tipo según el cliente (is_insurance) y productos (is_special)
-
-### Sincronizar Productos desde Jazz
-1. Ejecutar: `php artisan sync:product-jazz`
-2. O API: `POST /api/producto/jazz/sincronizar`
-3. Los productos van a la tabla `product_jazz`
-4. Vincular a productos internos mediante `products.idProducto`
-
-### Enviar Pedido a Jazz
-1. Verificar que el pedido tenga cliente Jazz (`client.jazz_id`)
-2. Llamar: `POST /api/pedido/generar_factura_jazz`
-3. Usa `PedidoService` para crear el pedido en Jazz
-
----
-
-## Integración con Jazz
-
-### Tablas
-- `product_jazz` - Productos sincronizados
-- `product_jazz_temp` - Datos temporales de sincronización
-- `product_jazz_history` - Historial de sincronización
-- `product_brands_jazz` - Mapeo de marcas
-- `log_jazz_api` - Logs de llamadas API
-
-### Servicios
-- `App\Services\JazzServices\ApiService` - Autenticación base
-- `App\Services\JazzServices\ProductService` - API de productos
-- `App\Services\JazzServices\PedidoService` - API de pedidos
-
-### Configuración
-- El archivo `.env` contiene credenciales de Jazz
-- Conexión a base de datos en `config/database.php`
-
----
-
-## Modelos Principales
-
-| Modelo | Tabla | Descripción |
-|--------|-------|-------------|
-| PriceQuote | price_quotes | Cotizaciones con productos |
-| Order | orders | Pedidos (online/cliente/siniestro) |
-| Shipment | shipments | Envíos |
-| Product | products | Productos internos |
-| ProductJazz | product_jazz | Productos de Jazz |
-| Client | clients | Clientes |
-| Coeficiente | coeficientes | Coeficientes de precio |
-| Ticket | tickets | Reclamos internos |
-| PurchaseOrder | purchase_orders | Órdenes de compra a proveedores |
-
----
-
-## Permisos
-
-Consulta `doc/permissions.md` para documentación completa de roles, permisos y asignaciones.
-
----
-
-## URL Base de la API
-
-Todos los endpoints comienzan con `/api/` y requieren autenticación JWT excepto `/api/login` y `/api/register`.
+- Para cambios PHP, ejecuta el test enfocado o `php artisan test` dentro del entorno PHP/Docker y revisa `php artisan route:list` cuando afectes rutas.
+- No ejecutes migraciones destructivas, seeders, sincronizaciones masivas, correos reales ni llamadas Jazz como prueba.
+- No edites `.env` ni copies valores sensibles. Documenta solamente nombres y propósito de variables.
+- Para cambios de comportamiento, contrato, operación, integración o configuración, actualiza la página canónica en `../docs/` y ejecuta `python ../.agents/skills/document-system/scripts/audit_docs.py ../docs`.
