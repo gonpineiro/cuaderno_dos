@@ -25,7 +25,7 @@ No mantengas documentación dentro de este repositorio. Las rutas, controladores
 
 ## Verificación y operación segura
 
-- Para cambios PHP, ejecuta el test enfocado o `php artisan test` dentro del entorno PHP/Docker y revisa `php artisan route:list` cuando afectes rutas.
+- El desarrollo del backend se ejecuta con Docker Compose definido en `docker-compose.yml`; no se espera PHP ni Composer instalados en el host. Confirma el servicio con `docker compose config --services` y, con el contenedor activo, ejecuta los comandos dentro de `app`: `docker compose exec app php artisan test` o el test enfocado correspondiente. Cuando afectes rutas, revisa `docker compose exec app php artisan route:list`. Si Docker o el contenedor no están disponibles, informa ese bloqueo concreto; no lo sustituyas por una comprobación en el host.
 - No ejecutes migraciones destructivas, seeders, sincronizaciones masivas, correos reales ni llamadas Jazz como prueba.
 - No edites `.env` ni copies valores sensibles. Documenta solamente nombres y propósito de variables.
 - Para cambios de comportamiento, contrato, operación, integración o configuración, actualiza la página canónica en `../docs/` y ejecuta `python ../.agents/skills/document-system/scripts/audit_docs.py ../docs`.
