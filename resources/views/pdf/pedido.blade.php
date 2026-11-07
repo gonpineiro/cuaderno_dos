@@ -36,6 +36,11 @@
         font-size: 1.3rem;
     }
 
+    .observation-content {
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
     .total {
         font-weight: 500;
     }
@@ -118,7 +123,7 @@
             </tr>
             <tr>
                 <td><strong>Forma de pago:</strong></td>
-                <td>{{$pedido->payment_method->description}}</td>
+                <td>{{optional($pedido->payment_method)->description}}</td>
             </tr>
             <tr>
                 <td><strong>Vehículo:</strong></td>
@@ -135,7 +140,7 @@
         </table>
         <hr>
         <h3>Observaciones</h3>
-        <p>{{$pedido->observation}}</p>
+        <p class="observation-content">{{$pedido->observation}}</p>
     </div>
 
     <table class="table-productos">

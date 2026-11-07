@@ -151,7 +151,6 @@ class OrderController extends \App\Http\Controllers\Controller
 
         $total = get_total_price($detail);
 
-        $a =  $order->payment_method->value;
         $fecha = \Carbon\Carbon::parse($order->created_at)->format('d/m/Y');
         $data = [
             'pedido' => $order,
