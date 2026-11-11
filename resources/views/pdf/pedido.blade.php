@@ -122,8 +122,8 @@
                 <td>{{$pedido->client->phone}}</td>
             </tr>
             <tr>
-                <td><strong>Forma de pago:</strong></td>
-                <td>{{optional($pedido->payment_method)->description}}</td>
+                <td><strong>Medios de pago:</strong></td>
+                <td>{{$pedido->payment_methods}}</td>
             </tr>
             <tr>
                 <td><strong>Vehículo:</strong></td>

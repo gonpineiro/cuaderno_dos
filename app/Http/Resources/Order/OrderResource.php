@@ -43,6 +43,7 @@ class OrderResource extends JsonResource
         $this->client->city;
         $array['client'] = $this->client;
 
+        $array['payment_methods'] = $this->payment_methods;
         $this->payment_method && $array['payment_method'] = $this->payment_method;
         $this->information_source && $array['information_source'] = $this->information_source;
 
@@ -96,6 +97,7 @@ class OrderResource extends JsonResource
 
         $array['shipment_state_id'] = $this->shipment ? $this->shipment->state_id : null;
 
+        $array['payment_methods'] = $this->payment_methods;
         if ($this->payment_method) {
             $array['payment_method'] = $this->payment_method->description;
         }
