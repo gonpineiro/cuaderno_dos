@@ -377,14 +377,18 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function search(Request $request)
     {
-        $model = new Product();
-
-        $attributes = $model->getFillable();
-
         $products = Product::query()->withTrashed();
 
-        foreach ($attributes as $attribute) {
-            $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+        $factoryCode = trim((string) $request->factory_code);
+
+        if ($factoryCode !== '') {
+            $products->whereRaw('LOWER(TRIM(factory_code)) = ?', [strtolower($factoryCode)]);
+        } else {
+            $attributes = (new Product())->getFillable();
+
+            foreach ($attributes as $attribute) {
+                $products->orWhere($attribute, 'LIKE', '%' . $request->string . '%');
+            }
         }
 
         $results = $products->orderByRaw('products.idProducto IS NOT NULL DESC')
