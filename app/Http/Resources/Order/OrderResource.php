@@ -96,8 +96,8 @@ class OrderResource extends JsonResource
 
         $array['shipment_state_id'] = $this->shipment ? $this->shipment->state_id : null;
 
-        if ($this->payment_method) {
-            $array['payment_method'] = $this->payment_method->description;
+        if ($paymentMethod = $this->paymentMethodDescription()) {
+            $array['payment_method'] = $paymentMethod;
         }
 
         $array['estimated_date'] = $this->estimated_date;
@@ -108,6 +108,20 @@ class OrderResource extends JsonResource
         //$array['estado_general'] = $this->state->value;
 
         return $array;
+    }
+
+    private function paymentMethodDescription(): ?string
+    {
+        if ($this->payment_method) {
+            return $this->payment_method->description;
+        }
+
+        $paymentObservation = explode('@', (string) $this->observation, 2)[1] ?? '';
+        $paymentMethods = array_filter(array_map(function ($line) {
+            return trim(preg_replace('/:\s*\$.*$/', '', $line));
+        }, explode(';', $paymentObservation)));
+
+        return $paymentMethods ? implode(', ', $paymentMethods) : null;
     }
 
     public static function toForm($order)
