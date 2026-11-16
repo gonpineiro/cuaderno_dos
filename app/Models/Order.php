@@ -111,6 +111,29 @@ class Order extends Model
         return $this->belongsTo(Table::class, 'payment_method_id');
     }
 
+    public function getPaymentMethodsAttribute(): ?string
+    {
+        $observation = (string) $this->observation;
+        $separator = strpos($observation, '@');
+
+        if ($separator !== false) {
+            $paymentLines = substr($observation, $separator + 1);
+            $methods = collect(explode(';', $paymentLines))
+                ->map(function ($line) {
+                    return trim(preg_replace('/:\s*\$.*$/', '', $line));
+                })
+                ->filter()
+                ->unique()
+                ->values();
+
+            if ($methods->isNotEmpty()) {
+                return $methods->implode(', ');
+            }
+        }
+
+        return $this->payment_method ? $this->payment_method->description : null;
+    }
+
     public function information_source()
     {
         return $this->belongsTo(Table::class, 'information_source_id');

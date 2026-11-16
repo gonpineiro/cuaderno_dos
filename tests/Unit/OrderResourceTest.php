@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Client;
 use App\Models\Order;
+use App\Models\Table;
 use App\Models\User;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Tests\TestCase;
 
 class OrderResourceTest extends TestCase
 {
-    public function test_it_uses_payment_methods_from_the_observation_when_no_single_method_exists(): void
+    public function test_it_prioritizes_payment_methods_from_the_observation(): void
     {
         $order = new Order;
         $order->setRawAttributes([
@@ -24,7 +25,9 @@ class OrderResourceTest extends TestCase
         $order->setRelation('client', new Client(['name' => 'Cliente']));
         $order->setRelation('vehiculo', new Vehiculo(['name' => 'Vehículo']));
         $order->setRelation('shipment', null);
-        $order->setRelation('payment_method', null);
+        $paymentMethod = new Table;
+        $paymentMethod->setRawAttributes(['description' => 'Cuenta corriente']);
+        $order->setRelation('payment_method', $paymentMethod);
 
         $data = (new OrderResource($order))->resolve(Request::create('/'));
 
@@ -32,5 +35,6 @@ class OrderResourceTest extends TestCase
             'CONTADO / DEB / 1 CUOTA, 6 CUOTAS NARANJA',
             $data['payment_method'],
         );
+        $this->assertSame($data['payment_method'], $data['payment_methods']);
     }
 }
