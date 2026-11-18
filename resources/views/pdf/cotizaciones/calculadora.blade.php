@@ -11,11 +11,13 @@
     </tr>
 
     @foreach ($coefs as $coef)
+    @if (!in_array(strtolower(trim($coef['description'])), ['cuenta corriente', 'mostrador'], true))
     <tr>
         <td>{{ $coef['description']}}</td>
         <td>{{ $coef['price']}}</td>
         <td>{{ $coef['valor_cuota']}}</td>
     </tr>
+    @endif
     @endforeach
 </table>
 
