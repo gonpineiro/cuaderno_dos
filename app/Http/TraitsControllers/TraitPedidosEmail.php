@@ -218,7 +218,13 @@ trait TraitPedidosEmail
     /** 7 - Compra a proveedor */
     public static function ordenCompra(PurchaseOrder $pedido)
     {
-        $email = app()->environment() === 'production' ? $pedido->provider->email : 'Nicolasallende90@gmail.com';
+        $provider = $pedido->provider;
+
+        if (!$provider || !$provider->permite_enviar_email || $provider->email === null) {
+            return null;
+        }
+
+        $email = app()->environment() === 'production' ? $provider->email : 'gon.pineiro@gmail.com';
         $correo = new PurchaseOrderEmail($pedido);
 
         try {

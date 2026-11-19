@@ -17,6 +17,7 @@ class CreateProvidersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->nullable();
+            $table->boolean('permite_enviar_email')->default(false)->after('email');
             $table->timestamps();
         });
     }

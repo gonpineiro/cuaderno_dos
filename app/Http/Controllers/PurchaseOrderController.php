@@ -239,17 +239,37 @@ class PurchaseOrderController extends Controller
             $purchaseOrder = PurchaseOrder::findOrFail($id);
             $previousStateId = $purchaseOrder->state_id;
 
-            $entregado = Table::where('name', 'purchase_order')->where('value', 'entregado')->firstOrFail();
-
-            if ($purchaseOrder->state_id == $entregado->id) {
-                throw new \Exception("No se puede cambiar de estado");
-            }
-
-            $purchaseOrder->update($request->only(['state_id', 'observation']));
+            $currentState = Table::where('id', $purchaseOrder->state_id)
+                ->where('name', 'purchase_order')
+                ->first();
 
             $state = Table::where('id', $request->state_id)
                 ->where('name', 'purchase_order')
-                ->firstOrFail();
+                ->first();
+
+            if (!$currentState || !$state) {
+                throw new \Exception('El estado no pertenece a una orden de compra');
+            }
+
+            $stateOrder = [
+                'pendiente' => 0,
+                'enviado' => 1,
+                'entregado' => 2,
+            ];
+
+            $currentPosition = $stateOrder[$currentState->value] ?? null;
+            $newPosition = $stateOrder[$state->value] ?? null;
+
+            if (
+                $currentPosition === null ||
+                $newPosition === null ||
+                $newPosition < $currentPosition ||
+                $newPosition > $currentPosition + 1
+            ) {
+                throw new \Exception('La orden de compra solo puede avanzar de Pendiente a Enviado y de Enviado a Entregado');
+            }
+
+            $purchaseOrder->update($request->only(['state_id', 'observation']));
 
             if ($state->value == 'enviado' && $previousStateId != $state->id) {
                 $purchaseOrder->refresh();

@@ -40,7 +40,7 @@ class PurchaseOrderEmail extends Mailable
         \Maatwebsite\Excel\Facades\Excel::store(new PurchaseOrderExport($this->purchase_order->detail), $filePath, 'local');
 
         return $this
-            ->subject("Pedido {$this->purchase_order->provider->name}")
+            ->subject("Pedido {$this->purchase_order->provider->name} - " . now()->format('d-m-Y'))
             ->view('emails.proveedor.orden_compra')
             ->with([
                 'oc' => new PurchaseOrderResource($this->purchase_order, 'complete'),
