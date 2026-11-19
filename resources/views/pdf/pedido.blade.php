@@ -171,11 +171,14 @@
     </table>
     <hr>
     <p class="w-100 importe">
+        {{--
         @if ($pedido->payment_method && $pedido->payment_method->value === 'online')
         PAGADO ONLINE:
         @else
         IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}:
         @endif
+        --}}
+        IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}:
 
         <span class="total">{{$total}}</span>
     </p>
