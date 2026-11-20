@@ -224,14 +224,21 @@ trait TraitPedidosEmail
             return null;
         }
 
-        $email = app()->environment() === 'production' ? $provider->email : 'Nicolasallende90@gmail.com';
+        $providerEmails = array_values(array_filter(array_map('trim', explode(',', $provider->email))));
+
+        if (empty($providerEmails)) {
+            return null;
+        }
+
+        $recipientEmails = app()->environment() === 'production' ? $providerEmails : ['Nicolasallende90@gmail.com'];
+        $recipientLog = implode(', ', $recipientEmails);
         $correo = new PurchaseOrderEmail($pedido);
 
         try {
-            Mail::to($email)->send(new PurchaseOrderEmail($pedido));
+            Mail::to($recipientEmails)->send(new PurchaseOrderEmail($pedido));
             EmailLog::create([
                 'type' => 'orden_compra',
-                'to' => $email,
+                'to' => $recipientLog,
                 'subject' => $correo->build()->subject ?? 'Orden de compra',
                 'entity_type' => 'purchase_order',
                 'entity_id' => $pedido->id,
@@ -241,7 +248,7 @@ trait TraitPedidosEmail
         } catch (\Exception $e) {
             EmailLog::create([
                 'type' => 'orden_compra',
-                'to' => $email,
+                'to' => $recipientLog,
                 'entity_type' => 'purchase_order',
                 'entity_id' => $pedido->id,
                 'status' => 'failed',
