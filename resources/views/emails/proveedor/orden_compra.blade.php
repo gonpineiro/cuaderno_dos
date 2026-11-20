@@ -20,7 +20,7 @@
         <tr>
             <td class="td">{{ $item['amount'] }}</td>
             <td class="td">
-                {{ !empty($item['product']['provider_code']) ? $item['product']['provider_code'] : $item['product']['code'] }}
+                {{ $item['product']['provider_code'] }}
             </td>
             <td class="td">{{ $item['product']['description'] }}</td>
         </tr>

@@ -224,7 +224,7 @@ trait TraitPedidosEmail
             return null;
         }
 
-        $email = app()->environment() === 'production' ? $provider->email : 'gon.pineiro@gmail.com';
+        $email = app()->environment() === 'production' ? $provider->email : 'Nicolasallende90@gmail.com';
         $correo = new PurchaseOrderEmail($pedido);
 
         try {
