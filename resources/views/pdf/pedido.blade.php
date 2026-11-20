@@ -178,7 +178,11 @@
         IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}:
         @endif
         --}}
+        @if ($pedido->payment_method && !in_array($pedido->payment_method->value, ['mostrador', 'corriente'], true))
+        PAGADO ONLINE:
+        @else
         IMPORTE TOTAL {{strtoupper($cotizacion->type_price->value)}}:
+        @endif
 
         <span class="total">{{$total}}</span>
     </p>
